@@ -1,0 +1,22 @@
+{
+  "name": "cypresswebapp",
+  "version": "1.0.0",
+  "description": "Tests cypress pour webapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cosmo-Tech/QA-webapp-phoenix.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cosmo-Tech/QA-webapp-phoenix/issues"
+  },
+  "homepage": "https://github.com/Cosmo-Tech/QA-webapp-phoenix#readme",
+  "devDependencies": {
+    "cypress": "^12.10.0"
+  }
+}
