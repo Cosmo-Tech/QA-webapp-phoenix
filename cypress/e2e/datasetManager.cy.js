@@ -1,5 +1,7 @@
-describe('template spec', () => {
-  it('passes', () => {
-    cy.visit('https://example.cypress.io')
-  })
-})
+var connection = require('../functions/connect.cy.js');
+
+describe('Test', () => {
+  it('Test', () => {
+    connection.connect();
+  });
+});
