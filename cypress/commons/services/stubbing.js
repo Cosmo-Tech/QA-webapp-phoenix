@@ -1,20 +1,34 @@
 // Copyright (c) Cosmo Tech
 // Licensed under the MIT license
-
-import { DEFAULT_ORGANIZATION_PERMISSIONS, DEFAULT_SCENARIOS_LIST, DEFAULT_DATASETS_LIST, DEFAULT_WORKSPACE, DEFAULT_WORKSPACES_LIST, DEFAULT_SOLUTIONS_LIST } from '../stubbing/default';
+import rfdc from 'rfdc';
+import {
+  DEFAULT_ORGANIZATION_PERMISSIONS,
+  DEFAULT_SCENARIOS_LIST,
+  DEFAULT_DATASETS_LIST,
+  DEFAULT_WORKSPACE,
+  DEFAULT_WORKSPACES_LIST,
+  DEFAULT_ORGANIZATION,
+  DEFAULT_ORGANIZATIONS_LIST,
+  DEFAULT_SOLUTIONS_LIST,
+} from '../../fixtures/stubbing/default';
 import { authUtils as auth } from '../utils/authUtils';
 
 const STUB_TYPES = [
   'AUTHENTICATION',
   'CREATE_AND_DELETE_SCENARIO',
-  'GET_DATASETS', // Supports only initial datasets loading, doesn't work for files upload/download or table components
+  'CREATE_DATASET', // Only supports datasets created after the "save" action, "save & launch" is not supported yet
+  'GET_DATASETS',
+  'GET_ORGANIZATION',
   'GET_SOLUTIONS',
   'GET_WORKSPACES',
   'GET_SCENARIOS',
-  'RUN_SCENARIO', // Supports only the scenario run request stubbing; the run status polling is not supported yet
+  'LAUNCH_SCENARIO',
   'PERMISSIONS_MAPPING',
+  'UPDATE_DATASET',
   'UPDATE_SCENARIO',
 ];
+
+const clone = rfdc();
 
 // Fake API data makes us able to stub the received workspace data while still using a real workspace for back-end calls
 //  - actualWorkspaceId is retrieved from the first API call whose endpoint contains a workspace id (when
@@ -51,6 +65,32 @@ const DEFAULT_RESOURCES_DATA = {
   scenarios: DEFAULT_SCENARIOS_LIST,
   solutions: DEFAULT_SOLUTIONS_LIST,
   workspaces: DEFAULT_WORKSPACES_LIST,
+  organizations: DEFAULT_ORGANIZATIONS_LIST,
+};
+
+// Default stubbing options to fake scenario runs. By default, the scenario runs will end immediately with a
+// 'Successful' status. To change these default options in a test, use stubbing.setScenarioRunOptions(options)
+// - runDuration represents the duration (in ms) of the 'Running' status, before it changes to 'DataIngestionInProgress'
+// - dataIngestionDuration represents the duration (in ms) of the 'DataIngestionInProgress' status, before it changes
+//   to the final status
+// - finalStatus must be one of 'Failed', 'Successful' or 'Unknown'
+// - expectedPollsCount is an integer representing the number of polling requests to intercept
+const DEFAULT_SCENARIO_RUNS_OPTIONS = {
+  runDuration: 0,
+  dataIngestionDuration: 0,
+  finalStatus: 'Successful',
+  expectedPollsCount: 1,
+};
+
+// Default stubbing options to fake dataset import jobs. By default, the dataset import will end immediately with a
+// 'SUCCESS' status. To change these default options in a test, use stubbing.setDatasetImportOptions(options)
+// - importJobDuration represents the duration (in ms) of the 'PENDING' status, before it changes to the final status
+// - finalStatus must be one of 'NONE', 'PENDING', 'ERROR', 'SUCCESS' or 'UNKNOWN'
+// - expectedPollsCount is an integer representing the number of polling requests to intercept
+const DEFAULT_DATASET_IMPORT_OPTIONS = {
+  importJobDuration: 0,
+  finalStatus: 'SUCCESS',
+  expectedPollsCount: 1,
 };
 
 export const isStubTypeValid = (stubType) => {
@@ -64,11 +104,22 @@ export const assertStubTypeIsValid = (stubType) => {
   return true;
 };
 
+const forgeScenarioRunStatus = (scenarioRun) => ({
+  id: scenarioRun.id,
+  organizationId: scenarioRun.organizationId,
+  workflowId: scenarioRun.workflowId,
+  workflowName: scenarioRun.workflowName,
+  startTime: new Date().toISOString(),
+  endTime: null,
+  phase: 'Running',
+  progress: '0/1',
+  state: 'Running',
+});
+
 class Stubbing {
   constructor() {
-    this.auth = DEFAULT_AUTH_DATA;
-    this.resources = DEFAULT_RESOURCES_DATA;
-    this.api = DEFAULT_API_DATA;
+    this.reset();
+    this.workspaceFiles = {}; // TODO: isolate each workspace instead of using only one Object
 
     this.enabledStubs = {};
     STUB_TYPES.forEach((stubType) => {
@@ -96,9 +147,11 @@ class Stubbing {
   };
 
   reset = () => {
-    this.auth = DEFAULT_AUTH_DATA;
-    this.resources = DEFAULT_RESOURCES_DATA;
-    this.api = DEFAULT_API_DATA;
+    this.auth = clone(DEFAULT_AUTH_DATA);
+    this.resources = clone(DEFAULT_RESOURCES_DATA);
+    this.api = clone(DEFAULT_API_DATA);
+    this.scenarioRunOptions = clone(DEFAULT_SCENARIO_RUNS_OPTIONS);
+    this.datasetImportOptions = DEFAULT_DATASET_IMPORT_OPTIONS;
   };
 
   isEnabledFor = (stubType) => {
@@ -139,13 +192,23 @@ class Stubbing {
   setFakeRoles = (roles) => (this.auth.fakeRoles = roles);
   getFakeRoles = () => this.auth.fakeRoles;
 
-  getUser = () => (this.isEnabledFor('AUTHENTICATION') && this.getFakeUser() != null ? this.getFakeUser() : this.getAuthenticatedUser());
+  getUser = () =>
+    this.isEnabledFor('AUTHENTICATION') && this.getFakeUser() != null
+      ? this.getFakeUser()
+      : this.getAuthenticatedUser();
 
   setActualWorkspaceId = (workspaceId) => (this.api.actualWorkspaceId = workspaceId);
   getActualWorkspaceId = () => this.api.actualWorkspaceId;
   getFakeWorkspaceId = () => this.api.fakeWorkspaceId;
   setOrganizationPermissions = (newMapping) => (this.api.organizationPermissions = newMapping);
   getOrganizationPermissions = () => this.api.organizationPermissions;
+
+  getOrganizations = () => this._getResources('organizations');
+  setOrganizations = (newOrganizations) => this._setResources('organizations', newOrganizations);
+  patchOrganization = (organizationId, organizationPatch) =>
+    this._patchResourceById('organizations', organizationId, organizationPatch);
+  getOrganizationById = (organizationId) => this._getResourceById('organizations', organizationId);
+  getDefaultOrganizationId = () => this.getOrganizations()?.[0]?.id ?? DEFAULT_ORGANIZATION.id;
 
   getScenarios = () => this._getResources('scenarios');
   setScenarios = (newScenarios) => this._setResources('scenarios', newScenarios);
@@ -181,15 +244,64 @@ class Stubbing {
   setDatasets = (newDatasets) => this._setResources('datasets', newDatasets);
   addDataset = (newDataset) => this._addResource('datasets', newDataset);
   getDatasetById = (datasetId) => this._getResourceById('datasets', datasetId);
+  deleteDatasetByName = (datasetName) => this._deleteResourceByName('datasets', datasetName);
+  patchDataset = (datasetId, datasetPatch) => this._patchResourceById('datasets', datasetId, datasetPatch);
+
+  patchDatasetSecurity = (datasetId, defaultRole, accessControlList) =>
+    this.patchDataset(datasetId, { security: { default: defaultRole, accessControlList: accessControlList } });
+
+  patchDatasetDefaultSecurity = (datasetId, newDefaultSecurity) => {
+    const dataset = this.getDatasetById(datasetId);
+    this.patchDatasetSecurity(datasetId, newDefaultSecurity, dataset.security?.accessControlList ?? []);
+  };
+
+  addDatasetAccessControl = (datasetId, newACLSecurityItem) => {
+    const dataset = this.getDatasetById(datasetId);
+    const newACL = [...dataset.security.accessControlList, newACLSecurityItem];
+    this.patchDatasetSecurity(datasetId, dataset.security?.default, newACL);
+  };
+
+  updateDatasetAccessControl = (datasetId, aclEntryToUpdate) => {
+    const dataset = this.getDatasetById(datasetId);
+    const newACL = (dataset.security?.accessControlList ?? []).map((entry) =>
+      entry.id === aclEntryToUpdate.id ? aclEntryToUpdate : entry
+    );
+    this.patchDatasetSecurity(datasetId, dataset.security?.default, newACL);
+  };
+
+  removeDatasetAccessControl = (datasetId, idToRemove) => {
+    const dataset = this.getDatasetById(datasetId);
+    const newACL = (dataset.security?.accessControlList ?? []).filter((entry) => entry.id !== idToRemove);
+    this.patchDatasetSecurity(datasetId, dataset.security?.default, newACL);
+  };
 
   getSolutions = () => this._getResources('solutions');
   setSolutions = (newSolutions) => this._setResources('solutions', newSolutions);
   getSolutionById = (solutionId) => this._getResourceById('solutions', solutionId);
 
+  getScenarioRuns = () => this._getResources('scenarioRuns');
+  setScenarioRuns = (newScenarioRuns) => this._setResources('scenarioRuns', newScenarioRuns);
+  addScenarioRun = (newScenarioRun) => {
+    newScenarioRun.status = forgeScenarioRunStatus(newScenarioRun);
+    this._addResource('scenarioRuns', newScenarioRun);
+  };
+  getScenarioRunById = (runId) => this._getResourceById('scenarioRuns', runId);
+
   getWorkspaces = () => this._getResources('workspaces');
   setWorkspaces = (newWorkspaces) => this._setResources('workspaces', newWorkspaces);
   getWorkspaceById = (workspaceId) => this._getResourceById('workspaces', workspaceId);
   getDefaultWorkspaceId = () => DEFAULT_WORKSPACE.id;
+
+  setScenarioRunOptions = (options) => (this.scenarioRunOptions = { ...this.scenarioRunOptions, ...options });
+  getScenarioRunOptions = () => this.scenarioRunOptions;
+
+  setDatasetImportOptions = (options) => (this.datasetImportOptions = { ...this.datasetImportOptions, ...options });
+  getDatasetImportOptions = () => this.datasetImportOptions;
+
+  getWorkspaceFiles = () => this.workspaceFiles;
+  setWorkspaceFiles = (newWorkspaceFiles) => (this.workspaceFiles = newWorkspaceFiles);
+  addWorkspaceFile = (fileName, fileContent) => (this.workspaceFiles[fileName] = fileContent);
+  getWorkspaceFile = (fileName) => this.workspaceFiles[fileName];
 }
 
 export const stub = new Stubbing();

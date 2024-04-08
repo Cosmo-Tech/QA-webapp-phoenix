@@ -1,6 +1,5 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
-
 import { GENERIC_SELECTORS } from '../../constants/generic/IdConstants';
 import { apiUtils as api } from '../../utils';
 
@@ -13,14 +12,19 @@ function switchToScenarioManager() {
 function getDeleteScenarioButton() {
   return cy.get(GENERIC_SELECTORS.scenario.manager.button.delete);
 }
-function deleteScenario(scenarioName) {
+function deleteScenario(scenarioName, isRunning = false) {
+  const getScenarioToDeleteAlias = api.interceptGetScenario();
   const deleteScenarioAlias = api.interceptDeleteScenario(scenarioName);
+  const reqStopScenarioRunAlias = isRunning && api.interceptStopScenarioRun();
   const getScenariosAlias = api.interceptGetScenarios();
 
   writeInFilter(scenarioName);
   getDeleteScenarioButton().click();
   cy.get(GENERIC_SELECTORS.scenario.manager.confirmDeleteDialog).contains('button', 'Confirm').click();
+
+  api.waitAlias(getScenarioToDeleteAlias);
   api.waitAlias(deleteScenarioAlias);
+  if (isRunning) api.waitAlias(reqStopScenarioRunAlias);
   api.waitAlias(getScenariosAlias);
 }
 
@@ -81,6 +85,10 @@ function getScenarioRunStatus(scenarioId, scenarioStatus, timeout = 5) {
   return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.scenarioStatus[scenarioStatus], {
     timeout: timeout * 1000,
   });
+}
+
+function getScenarioRunTemplate(scenarioId) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.scenarioRunTemplate);
 }
 
 function getScenarioDataset(scenarioId) {
@@ -162,6 +170,7 @@ export const ScenarioManager = {
   getScenarioValidationStatusChip,
   getScenarioValidationStatusLoadingSpinner,
   getScenarioRunStatus,
+  getScenarioRunTemplate,
   getScenarioDataset,
   getScenarioViewRedirect,
   checkValidationStatus,

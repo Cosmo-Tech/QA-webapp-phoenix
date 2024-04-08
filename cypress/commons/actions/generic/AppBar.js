@@ -1,6 +1,5 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
-
 import { GENERIC_SELECTORS } from '../../constants/generic/IdConstants';
 
 // User profile menu elements
@@ -39,6 +38,21 @@ function getAboutDialogCloseButton() {
 function getAboutDialog() {
   return cy.get(GENERIC_SELECTORS.helpMenu.aboutDialog);
 }
+function getTechnicalInfoButton() {
+  return cy.get(GENERIC_SELECTORS.helpMenu.technicalInfoButton);
+}
+function getTechnicalInfoDialog() {
+  return cy.get(GENERIC_SELECTORS.helpMenu.technicalInfoDialog);
+}
+function getTechnicalInfoSolutionName() {
+  return cy.get(GENERIC_SELECTORS.helpMenu.technicalInfoSolutionName);
+}
+function getTechnicalInfoSolutionDescription() {
+  return cy.get(GENERIC_SELECTORS.helpMenu.technicalInfoSolutionDescription);
+}
+function getTechnicalInfoDialogCloseButton() {
+  return cy.get(GENERIC_SELECTORS.helpMenu.technicalInfoDialogCloseButton);
+}
 
 // User profile actions
 function openUserInfoMenu() {
@@ -70,7 +84,12 @@ function openAboutDialog() {
 function closeAboutDialog() {
   return getAboutDialogCloseButton().click();
 }
-
+function openTechnicalInfoDialog() {
+  return getTechnicalInfoButton().click();
+}
+function closeTechnicalInfoDialog() {
+  return getTechnicalInfoDialogCloseButton().click();
+}
 export const AppBar = {
   getUserInfoMenuButton,
   getUserInfoMenu,
@@ -90,4 +109,11 @@ export const AppBar = {
   openHelpMenu,
   openAboutDialog,
   closeAboutDialog,
+  getTechnicalInfoDialog,
+  getTechnicalInfoButton,
+  getTechnicalInfoSolutionName,
+  getTechnicalInfoSolutionDescription,
+  getTechnicalInfoDialogCloseButton,
+  openTechnicalInfoDialog,
+  closeTechnicalInfoDialog,
 };

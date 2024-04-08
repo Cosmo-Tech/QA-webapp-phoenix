@@ -1,8 +1,7 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
-
-import { apiUtils as api } from '../../utils';
 import { GENERIC_SELECTORS } from '../../constants/generic/IdConstants';
+import { apiUtils as api } from '../../utils';
 
 function getWorkspacesView(timeout = 5) {
   return cy.get(GENERIC_SELECTORS.workspace.view, { timeout: timeout * 1000 });
@@ -22,8 +21,29 @@ function selectWorkspace(workspaceId) {
   api.waitAliases(queries, { timeout: 60 * 1000 });
 }
 
-function getHomeButton() {
-  return cy.get(GENERIC_SELECTORS.workspace.homeButton);
+function getWorkspaceInfoAvatar() {
+  return cy.get(GENERIC_SELECTORS.workspace.workspaceInfoAvatar);
+}
+
+function getWorkspaceInfoPopover() {
+  return cy.get(GENERIC_SELECTORS.workspace.workspaceInfoPopover);
+}
+
+function getWorkspaceInfoName() {
+  return cy.get(GENERIC_SELECTORS.workspace.workspaceInfoName);
+}
+
+function getWorkspaceInfoDescription() {
+  return cy.get(GENERIC_SELECTORS.workspace.workspaceInfoDescription);
+}
+
+function getSwitchWorkspaceButton() {
+  return cy.get(GENERIC_SELECTORS.workspace.switchWorkspaceButton);
+}
+
+function switchToWorkspaceView() {
+  getWorkspaceInfoAvatar().trigger('mouseover');
+  getSwitchWorkspaceButton().should('exist').click();
 }
 
 export const Workspaces = {
@@ -31,5 +51,10 @@ export const Workspaces = {
   getWorkspaceCardById,
   getNoWorkspacePlaceholder,
   selectWorkspace,
-  getHomeButton,
+  getWorkspaceInfoAvatar,
+  getWorkspaceInfoPopover,
+  getWorkspaceInfoName,
+  getWorkspaceInfoDescription,
+  getSwitchWorkspaceButton,
+  switchToWorkspaceView,
 };

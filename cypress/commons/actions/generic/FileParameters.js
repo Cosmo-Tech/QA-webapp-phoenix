@@ -1,7 +1,7 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
-
 import { GENERIC_SELECTORS } from '../../constants/generic/IdConstants';
+import { apiUtils as api } from '../../utils';
 
 // Get the "browse" button from the provided parameterSelector and upload the file provided by filePath (path must be
 // relative to the cypress "fixtures" folder)
@@ -24,8 +24,14 @@ function getFileName(fileParameterElement) {
   return fileParameterElement.find(GENERIC_SELECTORS.genericComponents.uploadFile.fileName, { timeout: 10000 });
 }
 
+function getErrorMessage(fileParameterElement) {
+  return fileParameterElement.find(GENERIC_SELECTORS.genericComponents.uploadFile.errorMessage);
+}
+
 function download(fileParameterElement) {
+  const aliases = [api.interceptGetDataset(), api.interceptDownloadWorkspaceFile()];
   getDownloadButton(fileParameterElement).click();
+  api.waitAliases(aliases, { timeout: 60 * 1000 });
 }
 
 function _delete(fileParameterElement) {
@@ -38,6 +44,7 @@ export const FileParameters = {
   getDownloadButton,
   getDeleteButton,
   getFileName,
+  getErrorMessage,
   download,
   delete: _delete,
 };

@@ -1,10 +1,9 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
-
-import { apiUtils as api } from './apiUtils';
-import { stub } from '../services/stubbing';
-import { WEBAPP_URL_REGEX } from '../constants/generic/TestConstants';
 import { Scenarios, Workspaces } from '../actions/generic';
+import { WEBAPP_URL_REGEX } from '../constants/generic/TestConstants';
+import { stub } from '../services/stubbing';
+import { apiUtils as api } from './apiUtils';
 
 const _navigateTo = (url) => {
   cy.visit(url ?? '/', {
@@ -47,13 +46,14 @@ const browse = (options) => {
     options.workspaceId !== undefined
       ? options.workspaceId
       : stub.isEnabledFor('GET_WORKSPACES') && workspaces.length === 1
-      ? workspaces[0].id // detect from stubbed workspace data
-      : options.url?.match(WEBAPP_URL_REGEX.WORKSPACE)?.[0]; // detect from URL
+        ? workspaces[0].id // detect from stubbed workspace data
+        : options.url?.match(WEBAPP_URL_REGEX.WORKSPACE)?.[0]; // detect from URL
   // Detect scenario id if not provided (and not explicitly null)
   const scenarioId =
     options.scenarioId !== undefined
       ? options.scenarioId
       : options.url?.match(WEBAPP_URL_REGEX.SCENARIO_ID_PATTERN)?.[1];
+
   // Intercept scenario only when explicitly specified in options (part 2 of WorkingInTwoWorkspaces)
   const queries = getBrowseQueries(workspaceId, options.scenarioId);
   _navigateTo(options.url);
@@ -65,8 +65,7 @@ const browse = (options) => {
     Scenarios.getScenarioViewTab(60).should('be.visible');
   } else {
     // ...otherwise, check we're still on workspaces selector
-    // this command is disabled as there is currently no workspace to choose, so the user ends up to the scenario page directly
-    //Workspaces.getWorkspacesView(60).should('be.visible');
+    Workspaces.getWorkspacesView(60).should('be.visible');
   }
 
   cy.url({ timeout: 5000 }).should('include', options.expectedURL ?? options.url);

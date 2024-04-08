@@ -1,6 +1,5 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
-
 import { GENERIC_SELECTORS } from '../../constants/generic/IdConstants';
 import { apiUtils as api } from '../../utils';
 
@@ -46,7 +45,7 @@ function getScenarioCreationDialog() {
   return cy.get(GENERIC_SELECTORS.scenario.createDialog.dialog);
 }
 function getScenarioCreationDialogNameField() {
-  return cy.get(GENERIC_SELECTORS.scenario.createDialog.nameTextfield);
+  return cy.get(GENERIC_SELECTORS.scenario.createDialog.nameTextField);
 }
 function getScenarioCreationDialogNameInputErrorLabel() {
   return cy.get(GENERIC_SELECTORS.scenario.createDialog.errorLabel);
@@ -87,6 +86,9 @@ function getDashboardAccordion() {
 }
 function getDashboardAccordionSummary() {
   return cy.get(GENERIC_SELECTORS.scenario.dashboard.accordionSummary);
+}
+function getDashboardAccordionLogsDownloadButton() {
+  return cy.get(GENERIC_SELECTORS.scenario.dashboard.accordionLogsDownloadButton);
 }
 
 function checkIfReportIsUnsynced(expectedValue) {
@@ -187,7 +189,7 @@ function createScenario(scenarioName, isMaster, datasetOrMasterName, runTemplate
 }
 
 function validateScenario(scenarioId) {
-  const validateScenarioAlias = api.interceptUpdateScenario(scenarioId);
+  const validateScenarioAlias = api.interceptUpdateScenario({ scenarioId });
   const getScenarioAlias = api.interceptGetScenario(scenarioId);
 
   getScenarioValidateButton().click();
@@ -197,7 +199,7 @@ function validateScenario(scenarioId) {
   api.waitAlias(getScenarioAlias);
 }
 function rejectScenario(scenarioId) {
-  const rejectScenarioAlias = api.interceptUpdateScenario(scenarioId);
+  const rejectScenarioAlias = api.interceptUpdateScenario({ scenarioId });
   const getScenarioAlias = api.interceptGetScenario(scenarioId);
 
   getScenarioRejectButton().click();
@@ -207,7 +209,7 @@ function rejectScenario(scenarioId) {
   api.waitAlias(getScenarioAlias);
 }
 function resetScenarioValidationStatus(scenarioId) {
-  const resetScenarioAlias = api.interceptUpdateScenario(scenarioId);
+  const resetScenarioAlias = api.interceptUpdateScenario({ scenarioId });
   const getScenarioAlias = api.interceptGetScenario(scenarioId);
 
   getScenarioValidationStatusChipDeleteIcon().click();
@@ -245,6 +247,7 @@ export const Scenarios = {
   getDashboardPlaceholder,
   getDashboardAccordion,
   getDashboardAccordionSummary,
+  getDashboardAccordionLogsDownloadButton,
   checkIfReportIsUnsynced,
   switchToScenarioView,
   openScenarioCreationDialog,
