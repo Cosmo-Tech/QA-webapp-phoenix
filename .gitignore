@@ -1,2 +1,3 @@
 # to ignore the node_modules content
 node_modules/
+bashrc.cmd
