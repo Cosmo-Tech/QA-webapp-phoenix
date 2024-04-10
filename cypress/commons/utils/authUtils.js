@@ -30,6 +30,7 @@ const getUserFromToken = (token) => {
 function _findAccessTokenFromMSALResponse(authResponse) {
   // Look for a "secret" key in the two objects returned by MSAL (its value will be the access token)
   for (const value of Object.values(authResponse)) {
+    cy.log('secret value of authResponse: ' + authResponse);
     if ('secret' in value) {
       return value.secret;
     }
