@@ -1,0 +1,14 @@
+{
+  "folders": [
+	{
+		"path": "../CypressGCP"
+	},
+	{
+		"path": "../CypressAzure/QA-asset-phoenix"
+	},
+	{
+		"path": "."
+	}
+],
+  "settings": {}
+}

@@ -8,7 +8,8 @@ describe('Dataset Manager Sanity Checks', () => {
     connection.navigate('dataset');
     //datasetManager.createDatasetLocalFile('PROD-12909', 'A basic reference dataset for brewery model', 'reference_dataset')
     //datasetManager.searchDataset('')
-    datasetManager.deleteDataset('toto');
+    datasetManager.searchDataset('Reference-Test');
+    cy.get('#dataset-search-bar', { timeout: 60000 }).clear();
   });
 });
 
