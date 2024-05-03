@@ -2,8 +2,9 @@ import 'cypress-file-upload';
 var connection = require('../../functions/connect.cy.js');
 var datasetManager = require('../../functions/datasetManager.cy.js');
 var config = require('../../../variables.cy');
+var scenario = require('../../functions/scenario.cy.js');
 
-describe('Dataset Manager Sanity Checks', () => {
+describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
   it('PROD-13233 -> Share a dataset', () => {
     connection.connect();
     connection.navigate('dataset');
@@ -113,5 +114,43 @@ describe('Dataset Manager Sanity Checks', () => {
       });
     cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click({ force: true });
     datasetManager.clearSearch();
+  });
+
+  it('PROD-13240 -> Check permissions, need to be completed manually', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    var datasetNameAdmin = 'PROD-13240-Admin';
+    // Create the dataset
+    datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference_dataset');
+    // Share the "admin" permissions with someone
+    datasetManager.shareDatasetUser(datasetNameAdmin, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
+    datasetManager.overviewDataet(datasetNameAdmin);
+
+    var datasetNameEditor = 'PROD-13240-Editor';
+    // Create the dataset
+    datasetManager.createDatasetLocalFile(datasetNameEditor, 'A basic reference dataset for brewery model', 'reference_dataset');
+    // Share the "admin" permissions with someone
+    datasetManager.shareDatasetUser(datasetNameEditor, config.permissionUserEmail(), config.permissionUserName(), 'editor');
+    // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
+    datasetManager.overviewDataet(datasetNameEditor);
+
+    var datasetNameViewer = 'PROD-13240-Viewer';
+    // Create the dataset
+    datasetManager.createDatasetLocalFile(datasetNameViewer, 'A basic reference dataset for brewery model', 'reference_dataset');
+    // Share the "admin" permissions with someone
+    datasetManager.shareDatasetUser(datasetNameViewer, config.permissionUserEmail(), config.permissionUserName(), 'viewer');
+    // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
+    datasetManager.overviewDataet(datasetNameViewer);
+
+    connection.navigate('view');
+    scenario.createScenario(datasetNameAdmin, 'master', datasetNameAdmin, 'NoParameters');
+    scenario.runScenario(datasetNameAdmin);
+    scenario.createScenario(datasetNameEditor, 'master', datasetNameEditor, 'NoParameters');
+    scenario.runScenario(datasetNameEditor);
+    scenario.createScenario(datasetNameViewer, 'master', datasetNameViewer, 'NoParameters');
+    scenario.runScenario(datasetNameViewer);
+    // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
   });
 });

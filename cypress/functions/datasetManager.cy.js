@@ -237,6 +237,7 @@ class datasetManager {
     this.clearSearch();
   }
 
+  // Only available if the user is admin of the dataset
   static overviewDataet(datasetName) {
     this.selectDataset(datasetName);
     // Check dataset name is present
