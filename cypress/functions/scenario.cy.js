@@ -1,5 +1,8 @@
+var connection = require('../functions/connect.cy.js');
+
 class Scenario {
-  //This function create a scenario. Accepted values for the master argument are "master" or "child"
+  //This function create a scenario. Accepted values for the master argument are "master" or "child",
+  //accepted values for the runType argument are "BreweryParameters" or "NoParameters"
   static createScenario(scenarioName, master, dataset, runType) {
     // Go to the scenario view page and click on create
     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
@@ -27,8 +30,8 @@ class Scenario {
     }
     // Validate the scenario creation
     cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
-    // Check the scenario is created
-    cy.get('[placeholder="Scenario"]').should('have.attr', 'value', scenarioName);
+    // Check the scenario is created, can't use the dashboards as it's not connected in local
+    this.searchScenarioInView(scenarioName);
   }
 
   // WARNING: for now, the function only manage unique names,
@@ -40,13 +43,21 @@ class Scenario {
   static searchScenarioInManager(scenarioName) {
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('#scenario-manager-search-field').click().clear().type(scenarioName);
+    cy.wait(500);
     // Check the correct scenario is diplayed
     cy.get('[aria-label="' + scenarioName + '"]').should('exist');
   }
 
+  static searchMaybeNotExistingScenarioInManager(scenarioName) {
+    // Search for the correct scenario, select it with down arrow and type enter to validate.
+    cy.get('#scenario-manager-search-field').click().clear().type(scenarioName);
+    cy.wait(500);
+  }
+
   static searchScenarioInView(scenarioName) {
     // Search for the correct scenario, select it with down arrow and type enter to validate.
-    cy.get('[placeholder="Scenario"]').type(scenarioName).type('{downarrow}{enter}');
+    cy.get('[placeholder="Scenario"]').type(scenarioName, { force: true }).type('{downarrow}{enter}', { force: true });
+    cy.wait(500);
     // Check the correct scenario is diplayed
     cy.get('[placeholder="Scenario"]').should('have.attr', 'value', scenarioName);
   }
@@ -59,7 +70,13 @@ class Scenario {
     cy.wait(5000);
     // Wait until the end of the simulation (5 min timeout)
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');
-    cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('not.contain', 'An error occurred during the scenario run');
+    // Check the simulation is successful
+    connection.navigate('manager');
+    this.searchScenarioInManager(scenarioName);
+    cy.wait(500);
+    cy.get('[data-cy*="scenario-accordion-"]').click();
+    cy.wait(500);
+    cy.get('[data-cy="scenario-status-successful"]').should('exist');
   }
 
   // Start a simulation then cancel it
@@ -81,11 +98,17 @@ class Scenario {
 
   // Works only if the search returns one scenario.
   static deleteScenario(scenarioName) {
-    this.searchScenarioInManager(scenarioName);
+    this.searchMaybeNotExistingScenarioInManager(scenarioName);
     cy.wait(1000);
-    cy.get('[data-cy="scenario-delete-button"]').click({ multiple: true });
-    cy.contains('Confirm', { timeout: 60000 }).click();
-    cy.get('[aria-label="' + scenarioName + '"]').should('not.exist');
+    cy.get('[data-cy="scenario-manager-view"]').then(($ele) => {
+      if ($ele.find('[class="rst__tree"]').length === 0) {
+        cy.log('No scenario to delete');
+      } else {
+        cy.get('[data-cy="scenario-delete-button"]').click({ multiple: true });
+        cy.contains('Confirm', { timeout: 60000 }).click();
+        cy.get('[aria-label="' + scenarioName + '"]').should('not.exist');
+      }
+    });
   }
 }
 

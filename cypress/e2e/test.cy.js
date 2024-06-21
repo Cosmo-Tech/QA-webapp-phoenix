@@ -9,7 +9,10 @@ describe('Dataset Manager Sanity Checks', () => {
     //connection.navigate('view');
     //scenario.createScenario('TestCreateScenario', 'master', 'SharingTest', 'NoParameters');
     connection.navigate('manager');
-    scenario.deleteScenario('TestCreateScenario');
+    scenario.deleteScenario('PROD-12909');
+    scenario.deleteScenario('PROD-12909');
+
+    //scenario.deleteScenario('TestCreateScenario');
     //datasetManager.createDatasetLocalFile('SharingTest', 'A dataset to test the sharing', 'reference_dataset');
     //datasetManager.shareDatasetUser('SharingTest', 'raphael.durville@cosmotech.com', 'raphaeldurville', 'viewer');
     //datasetManager.updateDatasetUser('SharingTest', 'raphael.durville@cosmotech.com', 'raphaeldurville', 'editor');

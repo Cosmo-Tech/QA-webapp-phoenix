@@ -82,25 +82,10 @@ class datasetManager {
     cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
     cy.get('[data-cy=enum-input-value-tooltip-AzureStorage]').click();
     // Enter the requested information
-    var informationIndex = 1;
-    cy.get('input[id^="mui-"]').each(($el) => {
-      cy.log('informationIndex avant = ' + informationIndex);
-      if (informationIndex === 1) {
-        var informationTexte = accountName;
-      } else if (informationIndex === 2) {
-        var informationTexte = containerName;
-      } else if (informationIndex === 3) {
-        var informationTexte = datasetPath;
-      }
-      cy.get($el).click({ force: true }).type(informationTexte, { force: true });
-      //cy.wrap($el).find('input').click({ force: true }).type(informationTexte, { force: true });
-      informationIndex = informationIndex + 1;
-      cy.log('informationIndex après = ' + informationIndex);
-    });
+    cy.get('#text-input-name').click({ force: true }).clear().type(accountName, { force: true });
+    cy.get('#text-input-location').click({ force: true }).clear().type(containerName, { force: true });
+    cy.get('#text-input-path').click({ force: true }).clear().type(datasetPath, { force: true });
 
-    //cy.contains('Account name').click({ force: true }).type(accountName, { force: true });
-    //cy.contains('Container name').click({ force: true }).type(containerName, { force: true });
-    //cy.contains('Path').click({ force: true }).type(datasetPath, { force: true });
     // Confirm the creation
     cy.get('[data-cy="confirm-dataset-creation"]').click();
     // Check dataset is created
@@ -141,7 +126,7 @@ class datasetManager {
     cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
     cy.get('[data-cy=enum-input-value-tooltip-ADT]').click();
     // Enter the requested information
-    cy.get('input[id^="mui-"]').click({ force: true }).type(datasetPath, { force: true });
+    cy.get('#text-input-location').click({ force: true }).clear().type(datasetPath, { force: true });
     // Confirm the creation
     cy.get('[data-cy="confirm-dataset-creation"]').click();
     // Check dataset is created
