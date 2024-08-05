@@ -39,7 +39,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.overviewDataet(datasetName);
 
     // Check you can create a scenario with the created dataset
-    connection.navigate('view');
+    connection.navigate('scenario-view');
     scenario.createScenario(datasetName, 'master', datasetName, 'NoParameters');
     scenario.runScenario(datasetName);
   });
@@ -79,7 +79,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.overviewDataet(datasetName);
 
     // Check you can create a scenario with the created dataset
-    connection.navigate('view');
+    connection.navigate('scenario-view');
     scenario.createScenario(datasetName, 'master', datasetName, 'NoParameters');
     scenario.runScenario(datasetName);
   });
@@ -118,7 +118,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.overviewDataet(datasetName);
 
     // Check you can create a scenario with the created dataset
-    connection.navigate('view');
+    connection.navigate('scenario-view');
     scenario.createScenario(datasetName, 'master', datasetName, 'NoParameters');
     scenario.runScenario(datasetName);
   });
@@ -190,7 +190,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.overviewDataet(datasetNameAzureStorage);
 
     // Check you can run scenario with the subdataset created
-    connection.navigate('view');
+    connection.navigate('scenario-view');
     scenario.createScenario(datasetNameLocalFile, 'master', datasetNameLocalFile, 'NoParameters');
     scenario.runScenario(datasetNameLocalFile);
     scenario.createScenario(datasetNameAzureStorage, 'master', datasetNameAzureStorage, 'NoParameters');

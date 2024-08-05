@@ -1,7 +1,7 @@
 import 'cypress-file-upload';
 var connection = require('../../functions/connect.cy.js');
 var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy');
+var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
@@ -114,6 +114,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
       });
     cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click({ force: true });
     datasetManager.clearSearch();
+    datasetManager.deleteDataset(datasetName);
   });
 
   it('PROD-13240 -> Check permissions, need to be completed manually', () => {
@@ -144,7 +145,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
     datasetManager.overviewDataet(datasetNameViewer);
 
-    connection.navigate('view');
+    connection.navigate('scenario-view');
     scenario.createScenario(datasetNameAdmin, 'master', datasetNameAdmin, 'NoParameters');
     scenario.runScenario(datasetNameAdmin);
     scenario.createScenario(datasetNameEditor, 'master', datasetNameEditor, 'NoParameters');
