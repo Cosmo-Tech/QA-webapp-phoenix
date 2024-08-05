@@ -38,7 +38,7 @@ class ConnectToWebApp {
 
   // Accepted values are view, dataset, dashboards, manager and about
   static navigate(menuValue) {
-    if (menuValue === 'view') {
+    if (menuValue === 'scenario-view') {
       cy.get('[data-cy="tabs.scenario.key"]').click({ force: true });
       cy.url().should('contains', 'scenario');
     } else if (menuValue === 'dataset') {
