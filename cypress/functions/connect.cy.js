@@ -52,7 +52,7 @@ class ConnectToWebApp {
       cy.url().should('contains', 'scenariomanager');
     } else if (menuValue === 'digital-twin') {
       cy.get('[data-cy="tabs.instance.key"]').click({ force: true });
-      cy.url().should('contains', 'scenariomanager');
+      cy.url().should('contains', 'instance');
     } else if (menuValue === 'about') {
       cy.get('[data-testid="HelpOutlineIcon"]').click({ force: true });
       cy.get('[data-cy="about-button"]').click({ force: true });
