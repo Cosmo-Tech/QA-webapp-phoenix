@@ -110,6 +110,15 @@ class Scenario {
       }
     });
   }
+
+  // Warning, this function will delete ALL the scenarios.
+  static deleteAllScenario() {
+    connection.navigate('manager');
+    cy.get('[data-testid="DeleteForeverIcon"').each(($el) => {
+      cy.wrap($el).click();
+      cy.contains('Confirm', { timeout: 60000 }).click();
+    });
+  }
 }
 
 module.exports = Scenario;
