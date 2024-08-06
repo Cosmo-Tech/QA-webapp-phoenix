@@ -36,7 +36,7 @@ class ConnectToWebApp {
     api.waitAliases(queries, { timeout: 60 * 1000 });
   }
 
-  // Accepted values are view, dataset, dashboards, manager and about
+  // Accepted values are scenario-view, dataset, dashboards, manager, digital-twin, technical, documentation, help and about
   static navigate(menuValue) {
     if (menuValue === 'scenario-view') {
       cy.get('[data-cy="tabs.scenario.key"]').click({ force: true });
@@ -50,11 +50,23 @@ class ConnectToWebApp {
     } else if (menuValue === 'manager') {
       cy.get('[data-cy="tabs.scenariomanager.key"]').click({ force: true });
       cy.url().should('contains', 'scenariomanager');
+    } else if (menuValue === 'digital-twin') {
+      cy.get('[data-cy="tabs.instance.key"]').click({ force: true });
+      cy.url().should('contains', 'scenariomanager');
     } else if (menuValue === 'about') {
       cy.get('[data-testid="HelpOutlineIcon"]').click({ force: true });
       cy.get('[data-cy="about-button"]').click({ force: true });
+    } else if (menuValue === 'technical') {
+      cy.get('[data-testid="HelpOutlineIcon"]').click({ force: true });
+      cy.get('[data-cy="technical-info-button"]').click({ force: true });
+    } else if (menuValue === 'documentation') {
+      cy.get('[data-testid="HelpOutlineIcon"]').click({ force: true });
+      cy.get('[data-cy="documentation-link"]').click({ force: true });
+    } else if (menuValue === 'help') {
+      cy.get('[data-testid="HelpOutlineIcon"]').click({ force: true });
+      cy.get('[data-cy="support-link"]').click({ force: true });
     } else {
-      cy.log('Unknown menu. This function accept only "view", "dataset", "dashboards", "manager" or "about" as values.');
+      cy.log('Unknown menu. This function accept only "scenario-view", "dataset", "dashboards", "manager", "digital-twin", "technical", "documentation", "help" or "about" as values.');
     }
   }
 
