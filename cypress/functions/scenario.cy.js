@@ -34,6 +34,47 @@ class Scenario {
     this.searchScenarioInView(scenarioName);
   }
 
+  // Create scenario with ID recovering but tests needs to be done in the
+
+  /*static createScenarioWithID(scenarioName, master, dataset, runType) {
+    cy.intercept({ method: 'POST', url: 'https://dev.api.cosmotech.com/phoenix/v3-1/organizations/O-gZYpnd27G7/workspaces/w-70klgqeroooz/scenarios', times: 1 }, (req) => {
+      req.continue();
+    }).as('requeteScenario');
+
+     // Go to the scenario view page and click on create
+     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
+     // Enter the provided values
+     cy.get('#scenarioName').click().type(scenarioName);
+     // Master or child scenario, choose dataset or parent
+     if (master === 'master') {
+       cy.get('[data-cy="create-scenario-dialog-master-checkbox"]').click({ force: true });
+       cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}{enter}');
+     } else if (master === 'child') {
+       // No need to do uncheck the box, by default the box is not checked
+       cy.get('[placeholder="Parent Scenario"]').click().clear().type(dataset);
+     } else {
+       cy.log('Unknown value. This function accepts only "master" or "child" as values.');
+     }
+     // Choose run type. Currently accepts "BreweryParameters" and "NoParameters"
+     if (runType === 'BreweryParameters') {
+       cy.get('[data-cy="create-scenario-dialog-type-select"]').click({ force: true });
+       cy.get('[placeholder="Select a dataset"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
+     } else if (runType === 'NoParameters') {
+       cy.get('[data-cy="create-scenario-dialog-type-select"]').click({ force: true });
+       cy.get('[placeholder="Select a dataset"]').click().clear().type('Run template without parameters').type('{downarrow}{enter}');
+     } else {
+       cy.log('Unknown value. This function accepts only "BreweryParameters" or "NoParameters" as values.');
+     }
+     // Validate the scenario creation
+     cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
+
+    cy.wait('@requeteScenario').then((intercept) => {
+      cy.wrap(intercept.response.body.id).as('interceptId');
+    });
+    // do all actions needing the id here
+    cy.get('@interceptId').then((id) => console.log(id));
+  }*/
+
   // WARNING: for now, the function only manage unique names,
   // if the search function find two scenarios, it may cause an error
   // example: scenario 1 is named "Toto", scenario 2 is named "Toto2"
@@ -114,10 +155,38 @@ class Scenario {
   // Warning, this function will delete ALL the scenarios.
   static deleteAllScenario() {
     connection.navigate('manager');
-    cy.get('[data-testid="DeleteForeverIcon"').each(($el) => {
+    cy.get('[data-testid="DeleteForeverIcon"]').each(($el) => {
       cy.wrap($el).click();
       cy.contains('Confirm', { timeout: 60000 }).click();
     });
+  }
+
+  static validateScenario(scenarioName) {
+    // Search the scenario
+    this.searchScenarioInView(scenarioName);
+    // Validated the scenario
+    cy.get('[data-cy="validate-scenario-button"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="scenario-validation-status"]').should('exist');
+  }
+
+  static rejectScenario(scenarioName) {
+    // Search the scenario
+    this.searchScenarioInView(scenarioName);
+    // Validated the scenario
+    cy.get('[data-cy="reject-scenario-button"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="scenario-validation-status"]').should('exist');
+  }
+
+  static cancelValidationScenario(scenarioName) {
+    // Search the scenario
+    this.searchScenarioInView(scenarioName);
+    // Validated the scenario
+    cy.get('[data-testid="CancelIcon"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy="validate-scenario-button"]').should('exist');
+    cy.get('[data-cy="reject-scenario-button"]').should('exist');
   }
 }
 
