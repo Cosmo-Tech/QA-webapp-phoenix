@@ -31,6 +31,7 @@ class Scenario {
     // Validate the scenario creation
     cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
     // Check the scenario is created, can't use the dashboards as it's not connected in local
+    cy.wait(1000);
     this.searchScenarioInView(scenarioName);
   }
 

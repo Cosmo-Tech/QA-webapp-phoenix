@@ -11,5 +11,11 @@ describe('To use after the sanity check and the manual checks', () => {
     scenario.deleteScenario('PROD-13240-Admin');
     scenario.deleteScenario('PROD-13240-Editor');
     scenario.deleteScenario('PROD-13240-Viewer');
+    scenario.deleteScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
+    scenario.deleteScenario('A-ValidatedScenario');
+    scenario.deleteScenario('B-RejectedScenario');
+
+    connection.navigate('dataset');
+    datasetManager.deleteDataset('Reference-for-all-scenario-creation-tests');
   });
 });
