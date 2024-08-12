@@ -44,6 +44,7 @@ describe('Global IHM and menu checks', () => {
     cy.get('[data-cy="launch-scenario-button"]').should('not.exist');
     cy.get('[data-cy="scenario-params-accordion"]').should('not.exist');
 
+    scenario.deleteScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
     scenario.createScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
 
     // New buttons are available and the no scenario yet message is not anymore diplayed
@@ -65,6 +66,8 @@ describe('Global IHM and menu checks', () => {
     cy.get('[data-cy="successful-run-logs-download-button"]').should('exist');
 
     // Create scenario for validation/reject checks
+    scenario.deleteScenario('A-ValidatedScenario');
+    scenario.deleteScenario('B-RejectedScenario');
     scenario.createScenario('A-ValidatedScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
     scenario.validateScenario('A-ValidatedScenario');
     scenario.createScenario('B-RejectedScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
