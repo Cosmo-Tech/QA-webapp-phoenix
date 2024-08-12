@@ -4,6 +4,7 @@ class Scenario {
   //This function create a scenario. Accepted values for the master argument are "master" or "child",
   //accepted values for the runType argument are "BreweryParameters" or "NoParameters"
   static createScenario(scenarioName, master, dataset, runType) {
+    connection.navigate('scenario-view');
     // Go to the scenario view page and click on create
     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
     // Enter the provided values
@@ -83,6 +84,7 @@ class Scenario {
   // the selection of the first scenario not beeing the one expected
 
   static searchScenarioInManager(scenarioName) {
+    connection.navigate('manager');
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('#scenario-manager-search-field').click().clear().type(scenarioName);
     cy.wait(500);
@@ -91,12 +93,14 @@ class Scenario {
   }
 
   static searchMaybeNotExistingScenarioInManager(scenarioName) {
+    connection.navigate('manager');
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('#scenario-manager-search-field').click().clear().type(scenarioName);
     cy.wait(500);
   }
 
   static searchScenarioInView(scenarioName) {
+    connection.navigate('scenario-view');
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('[placeholder="Scenario"]').type(scenarioName, { force: true }).type('{downarrow}{enter}', { force: true });
     cy.wait(500);
@@ -105,6 +109,7 @@ class Scenario {
   }
 
   static runScenario(scenarioName) {
+    connection.navigate('scenario-view');
     // Search the scenario
     this.searchScenarioInView(scenarioName);
     // Run the scenario
@@ -123,6 +128,7 @@ class Scenario {
 
   // Start a simulation then cancel it
   static cancelRunSimulation(scenarioName) {
+    connection.navigate('scenario-view');
     // Search the scenario
     this.searchScenarioInView(scenarioName);
     // Run the scenario
@@ -140,6 +146,7 @@ class Scenario {
 
   // Works only if the search returns one scenario.
   static deleteScenario(scenarioName) {
+    connection.navigate('manager');
     this.searchMaybeNotExistingScenarioInManager(scenarioName);
     cy.wait(1000);
     cy.get('[data-cy="scenario-manager-view"]').then(($ele) => {
@@ -163,6 +170,7 @@ class Scenario {
   }
 
   static validateScenario(scenarioName) {
+    connection.navigate('scenario-view');
     // Search the scenario
     this.searchScenarioInView(scenarioName);
     // Validated the scenario
@@ -172,6 +180,7 @@ class Scenario {
   }
 
   static rejectScenario(scenarioName) {
+    connection.navigate('scenario-view');
     // Search the scenario
     this.searchScenarioInView(scenarioName);
     // Validated the scenario
@@ -181,6 +190,7 @@ class Scenario {
   }
 
   static cancelValidationScenario(scenarioName) {
+    connection.navigate('scenario-view');
     // Search the scenario
     this.searchScenarioInView(scenarioName);
     // Validated the scenario
