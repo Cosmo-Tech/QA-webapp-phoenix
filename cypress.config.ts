@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+var config = require('./variables.cy');
 
 export default defineConfig({
   experimentalMemoryManagement: true,
@@ -16,7 +17,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config);
     },
-    baseUrl: 'http://localhost:3000',
+    baseUrl: config.urlWebApp(),
     // specPattern: 'cypress/e2e/SanityChecks/**/*.cy.js',
   },
 });

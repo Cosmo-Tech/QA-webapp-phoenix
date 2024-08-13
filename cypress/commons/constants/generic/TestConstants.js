@@ -1,11 +1,13 @@
 // Copyright (c) Cosmo Tech.
 // Licensed under the MIT license.
 
+var config = require('../../../../variables.cy');
+
 export { ORGANIZATION_ID } from '../../GlobalConfiguration';
 
-export const URL_ROOT = 'https://dev.api.cosmotech.com';
+export const URL_ROOT = config.urlAPI();
 export const AUTH_QUERY_URL = 'https://login.microsoftonline.com/e413b834-8be8-4822-a370-be619545cb49/oauth2/v2.0/token';
-export const LOCAL_WEBAPP_URL = 'http://localhost:3000';
+export const LOCAL_WEBAPP_URL = config.urlWebApp();
 export const URL_POWERBI = `${LOCAL_WEBAPP_URL}/api/get-embed-info`;
 
 export const PAGE_NAME = {
