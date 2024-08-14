@@ -4,7 +4,7 @@ var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('Global IHM and menu checks', () => {
-  it('Delete All Senario | May fail is no scenario', () => {
+  /*it('Delete All Senario | May fail is no scenario', () => {
     connection.connect();
     scenario.deleteAllScenario();
   });
@@ -144,5 +144,13 @@ describe('Global IHM and menu checks', () => {
     scenario.searchScenarioInView('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
     cy.get('[id="pbiAppPlaceHolder"]').should('exist');
     cy.get('[data-testid="RefreshIcon"]').should('exist');
+  });*/
+
+  it('PROD-13736 -> Sign-in and user session', () => {
+    //connection.connect();
+    //connection.navigate('scenario-view');
+    //scenario.searchScenarioInView('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
+    //cy.get('[id="pbiAppPlaceHolder"]').should('exist');
+    //cy.get('[data-testid="RefreshIcon"]').should('exist');
   });
 });

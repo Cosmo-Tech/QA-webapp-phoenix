@@ -15,17 +15,17 @@ class Scenario {
       cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}{enter}');
     } else if (master === 'child') {
       // No need to do uncheck the box, by default the box is not checked
-      cy.get('[placeholder="Parent Scenario"]').click().clear().type(dataset);
+      cy.get('[placeholder="Parent Scenario"]').click().clear().type(dataset).type('{downarrow}{enter}');
     } else {
       cy.log('Unknown value. This function accepts only "master" or "child" as values.');
     }
     // Choose run type. Currently accepts "BreweryParameters" and "NoParameters"
     if (runType === 'BreweryParameters') {
-      cy.get('[data-cy="create-scenario-dialog-type-select"]').click({ force: true });
-      cy.get('[placeholder="Select a dataset"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
+      cy.get('[id="scenarioType"]').click({ force: true });
+      cy.get('[id="scenarioType"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
     } else if (runType === 'NoParameters') {
-      cy.get('[data-cy="create-scenario-dialog-type-select"]').click({ force: true });
-      cy.get('[placeholder="Select a dataset"]').click().clear().type('Run template without parameters').type('{downarrow}{enter}');
+      cy.get('[id="scenarioType"]').click({ force: true });
+      cy.get('[id="scenarioType"]').click().clear().type('Run template without parameters').type('{downarrow}{enter}');
     } else {
       cy.log('Unknown value. This function accepts only "BreweryParameters" or "NoParameters" as values.');
     }
@@ -101,6 +101,7 @@ class Scenario {
 
   static searchScenarioInView(scenarioName) {
     connection.navigate('scenario-view');
+    cy.wait(500);
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('[placeholder="Scenario"]').type(scenarioName, { force: true }).type('{downarrow}{enter}', { force: true });
     cy.wait(500);
@@ -155,7 +156,7 @@ class Scenario {
       } else {
         cy.get('[data-cy="scenario-delete-button"]').click({ multiple: true });
         cy.contains('Confirm', { timeout: 60000 }).click();
-        cy.get('[aria-label="' + scenarioName + '"]').should('not.exist');
+        cy.get('[aria-label="' + scenarioName + '"]').should('not.exist', { timeout: 60000 });
       }
     });
   }

@@ -7,11 +7,10 @@ var scenario = require('../functions/scenario.cy.js');
 describe('There are only tests of tests, not real tests', () => {
   it('test something', () => {
     connection.connect();
-    connection.navigate('about');
-    cy.get('[role="dialog"]').should('exist');
-    cy.get('[data-cy="about-dialog-close-button"]').click();
-    connection.navigate('help');
-    cy.url().should('contain', 'https://cosmotech.okta.com/');
+    connection.navigate('scenario-view');
+    cy.get('[placeholder="Scenario"]').type('3e-.Z90 RTE_FR', { force: true });
+    cy.wait(500);
+    cy.get('[role="presentation"').should('contain', 'No options');
   });
 
   /*it('recover URL', () => {
