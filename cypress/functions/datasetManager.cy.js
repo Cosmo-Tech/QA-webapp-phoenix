@@ -5,11 +5,18 @@ class datasetManager {
   //This function create a dataset with the source "Local File". It requires the local file to be in the Fixtures > Datasets folder.
 
   static createDatasetLocalFile(datasetName, description, fileName) {
-    // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
-    this.deleteDataset(datasetName);
-
     // Create a new dataset
-    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    cy.get('body').then(($createButton) => {
+      if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
+        // If no dataset yet, button is different. No need to check if dataset already existing.
+        cy.get('[data-cy="create-dataset-button"]').click();
+      } else {
+        // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
+        this.deleteDataset(datasetName);
+        cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+      }
+    });
+
     // Check the creation wizard text
     cy.get('[role="dialog"]').should('contain', 'Create dataset');
     cy.get('[role="dialog"]').should('contain', 'Metadata');
@@ -50,11 +57,18 @@ class datasetManager {
   }
 
   static createDatasetAzureStorage(datasetName, description, accountName, containerName, datasetPath) {
-    // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
-    this.deleteDataset(datasetName);
-
     // Create a new dataset
-    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    cy.get('body').then(($createButton) => {
+      if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
+        // If no dataset yet, button is different. No need to check if dataset already existing.
+        cy.get('[data-cy="create-dataset-button"]').click();
+      } else {
+        // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
+        this.deleteDataset(datasetName);
+        cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+      }
+    });
+
     // Check the creation wizard text
     cy.get('[role="dialog"]').should('contain', 'Create dataset');
     cy.get('[role="dialog"]').should('contain', 'Metadata');
@@ -94,11 +108,18 @@ class datasetManager {
   }
 
   static createDatasetADT(datasetName, description, datasetPath) {
-    // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
-    this.deleteDataset(datasetName);
-
     // Create a new dataset
-    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    cy.get('body').then(($createButton) => {
+      if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
+        // If no dataset yet, button is different. No need to check if dataset already existing.
+        cy.get('[data-cy="create-dataset-button"]').click();
+      } else {
+        // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
+        this.deleteDataset(datasetName);
+        cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+      }
+    });
+
     // Check the creation wizard text
     cy.get('[role="dialog"]').should('contain', 'Create dataset');
     cy.get('[role="dialog"]').should('contain', 'Metadata');
