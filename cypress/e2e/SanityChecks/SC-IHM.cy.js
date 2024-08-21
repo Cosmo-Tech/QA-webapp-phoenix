@@ -4,7 +4,7 @@ var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('Global IHM and menu checks', () => {
-  it('Delete All Senario | May fail is no scenario', () => {
+  it('Delete All Senario | May fail if no scenario', () => {
     connection.connect();
     scenario.deleteAllScenario();
   });
@@ -17,20 +17,20 @@ describe('Global IHM and menu checks', () => {
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
   });
 
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM - Dashboards check', () => {
+  it('PROD-11913 -> Scenario view & Scenario Manager - IHM - Dashboards check if no scenario', () => {
     connection.connect();
     connection.navigate('dashboards');
     cy.contains('Stocks Follow-up').click();
     cy.get('body').should('contain', 'No scenario. You can create a new scenario in the Scenario view.');
   });
 
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM - Digital Twin check', () => {
+  it('PROD-11913 -> Scenario view & Scenario Manager - IHM - Digital Twin check if no scenario', () => {
     connection.connect();
     connection.navigate('digital-twin');
     cy.get('body').should('contain', 'No scenario. You can create a new scenario in the Scenario view.');
   });
 
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM', () => {
+  it('PROD-11913 -> Scenario view & Scenario Manager - IHM Scenario View if no scenario', () => {
     connection.connect();
     connection.navigate('scenario-view');
     // Only "Create" button and "Dashboard" section
@@ -43,7 +43,9 @@ describe('Global IHM and menu checks', () => {
     cy.get('[data-cy="reject-scenario-button"]').should('not.exist');
     cy.get('[data-cy="launch-scenario-button"]').should('not.exist');
     cy.get('[data-cy="scenario-params-accordion"]').should('not.exist');
+  });
 
+  it('PROD-11913 -> Scenario view & Scenario Manager - IHM Scenario View and Scenario Manager', () => {
     scenario.deleteScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
     scenario.createScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
 
