@@ -6,11 +6,8 @@ var config = require('../../variables.cy');
 class ConnectToWebApp {
   //This function connect a generic user so it is possible to navigate in the solution for other tests
   static connect() {
-    Login.login();
-    // Check the connection is done and you're on the landing page
-    cy.url().should('contains', 'workspaces');
-    // Connect to the correct workspace, defined in the variables
-    this.connectWorkspace();
+    // The login connect directly to the correct workspace through the argument url: config.workspace()
+    Login.login({ url: config.workspace() });
 
     // Set the language to English so cypress can assert texts with no confusion with French.
     // Navigate through the menu to reach the language parameters

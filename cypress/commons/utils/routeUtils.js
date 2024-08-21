@@ -4,6 +4,7 @@ import { Scenarios, Workspaces } from '../actions/generic';
 import { WEBAPP_URL_REGEX } from '../constants/generic/TestConstants';
 import { stub } from '../services/stubbing';
 import { apiUtils as api } from './apiUtils';
+var config = require('../../../variables.cy');
 
 const _navigateTo = (url) => {
   cy.visit(url ?? '/', {
@@ -49,10 +50,7 @@ const browse = (options) => {
         ? workspaces[0].id // detect from stubbed workspace data
         : options.url?.match(WEBAPP_URL_REGEX.WORKSPACE)?.[0]; // detect from URL
   // Detect scenario id if not provided (and not explicitly null)
-  const scenarioId =
-    options.scenarioId !== undefined
-      ? options.scenarioId
-      : options.url?.match(WEBAPP_URL_REGEX.SCENARIO_ID_PATTERN)?.[1];
+  const scenarioId = options.scenarioId !== undefined ? options.scenarioId : options.url?.match(WEBAPP_URL_REGEX.SCENARIO_ID_PATTERN)?.[1];
 
   // Intercept scenario only when explicitly specified in options (part 2 of WorkingInTwoWorkspaces)
   const queries = getBrowseQueries(workspaceId, options.scenarioId);
@@ -61,7 +59,7 @@ const browse = (options) => {
   waitBrowseQueries(queries);
 
   // If workspace is known or scenario is specified, check we land on scenario view...
-  if (workspaceId || scenarioId) {
+  if (workspaceId || scenarioId || config.workspace()) {
     Scenarios.getScenarioViewTab(60).should('be.visible');
   } else {
     // ...otherwise, check we're still on workspaces selector
