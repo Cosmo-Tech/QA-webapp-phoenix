@@ -1,3 +1,4 @@
 # to ignore the node_modules content
 node_modules/
 *.cmd
+variables.cy.js
