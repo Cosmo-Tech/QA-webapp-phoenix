@@ -5,6 +5,7 @@ class datasetManager {
   //This function create a dataset with the source "Local File". It requires the local file to be in the Fixtures > Datasets folder.
 
   static createDatasetLocalFile(datasetName, description, fileName) {
+    this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
       if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
@@ -57,6 +58,7 @@ class datasetManager {
   }
 
   static createDatasetAzureStorage(datasetName, description, accountName, containerName, datasetPath) {
+    this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
       if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
@@ -108,6 +110,7 @@ class datasetManager {
   }
 
   static createDatasetADT(datasetName, description, datasetPath) {
+    this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
       if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
@@ -246,6 +249,8 @@ class datasetManager {
   // Only available if the user is admin of the dataset
   static overviewDataet(datasetName) {
     this.selectDataset(datasetName);
+    // Wait 5s to be sure the values are displayed
+    cy.wait(5000);
     // Check dataset name is present
     cy.get('[data-cy="dataset-name"]').should('contain', datasetName);
     // Check the layout icons
