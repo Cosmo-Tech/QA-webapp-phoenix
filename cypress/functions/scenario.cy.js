@@ -101,10 +101,10 @@ class Scenario {
 
   static searchScenarioInView(scenarioName) {
     connection.navigate('scenario-view');
-    cy.wait(500);
+    cy.wait(1000);
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('[placeholder="Scenario"]').type(scenarioName, { force: true }).type('{downarrow}{enter}', { force: true });
-    cy.wait(500);
+    cy.wait(2000);
     // Check the correct scenario is diplayed
     cy.get('[placeholder="Scenario"]').should('have.attr', 'value', scenarioName);
   }
