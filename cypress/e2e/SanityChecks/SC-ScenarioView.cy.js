@@ -5,12 +5,100 @@ var scenario = require('../../functions/scenario.cy.js');
 const { exists } = require('i18next');
 
 describe('Scenario View feature', () => {
-  /*it('Create a dataset for scenario creations', () => {
+  it('Create a dataset for scenario creations', () => {
     //Create a dataset that will be needed during all test that create scenarios with no specific dataset required. This dataset will be removed at the end of the tests in the After.cy.js tests.
     connection.connect();
     connection.navigate('dataset');
     var datasetName = 'Reference-for-all-scenario-creation-tests';
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
+  });
+
+  it('PROD-11815 - Validate and Reject scenario', () => {
+    // Partialy tested in the IHM check but fully rechecked in this test
+    connection.connect();
+    scenario.deleteScenario('PROD-11815');
+    scenario.createScenario('PROD-11815', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+
+    // Validate scenario and check parameters are disabled
+    scenario.validateScenario('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
+    cy.get('[data-cy="reject-scenario-button"]').should('not.exist');
+    cy.get('[data-cy="disabled-input-value"]').should('exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
+
+    // Run the scenario and check the scenario is still "validated"
+    connection.navigate('scenario-view');
+    scenario.runScenario('PROD-11815');
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
+    cy.get('[data-cy="reject-scenario-button"]').should('not.exist');
+    cy.get('[data-cy="disabled-input-value"]').should('exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
+
+    // Check searching "validated" returns the validated scenario
+    connection.navigate('manager');
+    cy.get('#scenario-manager-search-field').click().clear().type('Validated');
+    cy.wait(500);
+    cy.get('[aria-label="PROD-11815"]').should('exist');
+
+    // Remove the "Validated" status
+    connection.navigate('scenario-view');
+    cy.get('[data-testid="CancelIcon"]').click();
+    cy.get('[data-cy="validate-scenario-button"]').should('exist');
+    cy.get('[data-cy="reject-scenario-button"]').should('exist');
+    cy.get('[data-cy="disabled-input-value"]').should('not.exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('not.exist');
+
+    // Reject the scenario and check parameters are disabled
+    scenario.rejectScenario('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
+    cy.get('[data-cy="validate-scenario-button"]').should('not.exist');
+    cy.get('[data-cy="disabled-input-value"]').should('exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
+
+    // Run the scenario and check the scenario is still "Rejected"
+    scenario.runScenario('PROD-11815');
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
+    cy.get('[data-cy="validate-scenario-button"]').should('not.exist');
+    cy.get('[data-cy="disabled-input-value"]').should('exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
+
+    // Check searching "rejected" returns the validated scenario
+    connection.navigate('manager');
+    cy.get('#scenario-manager-search-field').click().clear().type('Rejected');
+    cy.wait(500);
+    cy.get('[aria-label="PROD-11815"]').should('exist');
+
+    // Remove the "Rejected" status
+    connection.navigate('scenario-view');
+    cy.get('[data-testid="CancelIcon"]').click();
+    cy.get('[data-cy="validate-scenario-button"]').should('exist');
+    cy.get('[data-cy="reject-scenario-button"]').should('exist');
+    cy.get('[data-cy="disabled-input-value"]').should('not.exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('not.exist');
+
+    // Run the scenario and check the scenario has still no status
+    scenario.runScenario('PROD-11815');
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="validate-scenario-button"]').should('exist');
+    cy.get('[data-cy="reject-scenario-button"]').should('exist');
+    cy.get('[data-cy="disabled-input-value"]').should('not.exist');
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-11815');
+    cy.get('[data-cy="scenario-validation-status"]').should('not.exist');
   });
 
   it('PROD-12097 - Parameters', () => {
@@ -190,9 +278,9 @@ describe('Scenario View feature', () => {
 
     //Run a scenario (to check child scenarios can be run)
     scenario.runScenario('PROD-11884-ChildrenB-Lvl2');
-  });*/
+  });
 
-  it('PROD-11883 and PROD-11809: Create and scenario', () => {
+  it('PROD-11883 and PROD-11809: Create and run scenario', () => {
     connection.connect();
     // Delete all scenarios created in this test, in case it's a second try
     scenario.deleteScenario('PROD-11883-CheckCreationForm');
