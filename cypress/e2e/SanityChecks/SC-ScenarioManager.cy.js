@@ -16,11 +16,13 @@ describe('Scenario Manager feature', () => {
   });*/
 
   it('PROD-11816: Edit the name of a scenario', () => {
-    //Create a dataset that will be needed during all test that create scenarios with no specific dataset required. This dataset will be removed at the end of the tests in the After.cy.js tests.
     connection.connect();
+    // Remove scenarios in case it's a second try
     scenario.deleteScenario('Updated-PROD-11816');
     scenario.deleteScenario('PROD-11816-EditName');
+    // Create the scenario that will be used for the edition tests
     scenario.createScenario('PROD-11816-EditName', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    // Edit the name of the scenario
     connection.navigate('manager');
     scenario.searchScenarioInManager('PROD-11816-EditName');
     cy.get('[data-testid="EditIcon"]').click();
@@ -30,6 +32,7 @@ describe('Scenario Manager feature', () => {
       .clear()
       .type('Updated-PROD-11816' + '{enter}');
 
+    // Check the new name is persistant
     scenario.searchScenarioInManager('Updated-PROD-11816');
 
     // Try forbiden character and check the error message display
@@ -90,5 +93,43 @@ describe('Scenario Manager feature', () => {
     // Remove the two scenario used
     scenario.deleteScenario('Updated-PROD-11816');
     scenario.deleteScenario('PROD-11816-EditName');
+  });
+
+  it('PROD-11817: Delete a scenario', () => {
+    //Create a dataset that will be needed during all test that create scenarios with no specific dataset required. This dataset will be removed at the end of the tests in the After.cy.js tests.
+    connection.connect();
+    // Remove the created scenario in case it's a second try
+    scenario.deleteScenario('PROD-1187-DeleteScenario');
+    //scenario.deleteScenario('PROD-11816-EditName');
+    // Create and run the scenario that will be used for the deletion tests
+    scenario.createScenario('PROD-1187-DeleteScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.runScenario('PROD-1187-DeleteScenario');
+
+    // Delete the scenario
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-1187-DeleteScenario');
+    cy.get('[data-cy="scenario-delete-button"]').click();
+    // Check the warning popup displays a text to warn the user
+    cy.get('[id="confirm-scenario-delete-description"]', { timeout: 60000 }).should('have.text', 'This operation is irreversible. Dataset(s) will not be removed, but the scenario parameters will be lost. If this scenario has children, they will be moved to a new parent. The new parent will be the parent of the deleted scenario.');
+    cy.get('[aria-labelledby="confirm-scenario-delete"]').should('contain', 'Cancel');
+    cy.get('[aria-labelledby="confirm-scenario-delete"]').should('contain', 'Confirm');
+    // Confirm the deletion
+    cy.contains('Confirm').click();
+    cy.wait(2000);
+
+    // Create a scenario once again, with the same name as the deleted one
+    scenario.createScenario('PROD-1187-DeleteScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+
+    // Delete then cancel deletion
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-1187-DeleteScenario');
+    cy.get('[data-cy="scenario-delete-button"]').click();
+    cy.contains('Cancel', { timeout: 60000 }).click();
+    cy.wait(200);
+    // Check scenario has not been deleted
+    scenario.searchScenarioInManager('PROD-1187-DeleteScenario');
+
+    // Clean the scenario used for the test
+    scenario.deleteScenario('PROD-1187-DeleteScenario');
   });
 });

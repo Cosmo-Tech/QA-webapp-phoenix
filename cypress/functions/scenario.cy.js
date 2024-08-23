@@ -145,7 +145,7 @@ class Scenario {
     cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('contain', 'An error occurred during the scenario run');
   }
 
-  // Works only if the search returns one scenario.
+  // Works only if the search returns one or no scenario.
   static deleteScenario(scenarioName) {
     connection.navigate('manager');
     this.searchMaybeNotExistingScenarioInManager(scenarioName);
