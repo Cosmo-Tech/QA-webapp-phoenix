@@ -7,13 +7,13 @@ const { SendAndArchive } = require('@mui/icons-material');
 
 describe('Scenario Manager feature', () => {
   // May not be needed if other test has been run yet, but dataset created in case it's needed
-  /*it('Create a dataset for scenario creations', () => {
+  it('Create a dataset for scenario creations', () => {
     //Create a dataset that will be needed during all test that create scenarios with no specific dataset required. This dataset will be removed at the end of the tests in the After.cy.js tests.
     connection.connect();
     connection.navigate('dataset');
     var datasetName = 'Reference-for-all-scenario-creation-tests';
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
-  });*/
+  });
 
   it('PROD-11816: Edit the name of a scenario', () => {
     connection.connect();
@@ -100,7 +100,6 @@ describe('Scenario Manager feature', () => {
     connection.connect();
     // Remove the created scenario in case it's a second try
     scenario.deleteScenario('PROD-1187-DeleteScenario');
-    //scenario.deleteScenario('PROD-11816-EditName');
     // Create and run the scenario that will be used for the deletion tests
     scenario.createScenario('PROD-1187-DeleteScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
     scenario.runScenario('PROD-1187-DeleteScenario');
@@ -131,5 +130,53 @@ describe('Scenario Manager feature', () => {
 
     // Clean the scenario used for the test
     scenario.deleteScenario('PROD-1187-DeleteScenario');
+  });
+
+  it('PROD-13737: Search scenarios', () => {
+    connection.connect();
+    // Remove scenarios in case it's a second try
+    scenario.deleteScenario('SearchScenario-PROD-13737-SearchScenario');
+    scenario.deleteScenario('PROD-13737-SearchScenario');
+    scenario.deleteScenario('SearchScenario-PROD-13737');
+    scenario.deleteScenario('PROD-1373X');
+    scenario.deleteScenario('SearchScenario-NotResearched');
+    // Create the scenarios that will be used for the edition tests
+    scenario.createScenario('PROD-13737-SearchScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('SearchScenario-NotResearched', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('SearchScenario-PROD-13737', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('SearchScenario-PROD-13737-SearchScenario', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('PROD-1373X', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+
+    // Check there is a research text field in the scenario manager view and search for PROD-13737. It should return only 3 scenarios.
+    connection.navigate('manager');
+    cy.get('[id="scenario-manager-search-field"]').should('exist');
+    cy.get('#scenario-manager-search-field').click().clear().type('PROD-13737');
+    cy.wait(500);
+    // Check the correct scenarios are diplayed
+    cy.get('[aria-label="PROD-13737-SearchScenario"]').should('exist');
+    cy.get('[aria-label="SearchScenario-PROD-13737-SearchScenario"]').should('exist');
+    cy.get('[aria-label="SearchScenario-PROD-13737"]').should('exist');
+    // CHeck the scenarios that don't match the research are not displayed
+    cy.get('[aria-label="PROD-1373X"]').should('not.exist');
+    cy.get('[aria-label="SearchScenario-NotResearched"]').should('not.exist');
+
+    // Clear the search field, all scenario are listed again
+    cy.get('#scenario-manager-search-field').click().clear();
+    cy.get('[aria-label="PROD-13737-SearchScenario"]').should('exist');
+    cy.get('[aria-label="SearchScenario-PROD-13737-SearchScenario"]').should('exist');
+    cy.get('[aria-label="SearchScenario-PROD-13737"]').should('exist');
+    cy.get('[aria-label="PROD-1373X"]').should('exist');
+    cy.get('[aria-label="SearchScenario-NotResearched"]').should('exist');
+
+    // Search string that is sure to don't match any scenario and check the page is empty
+    cy.get('#scenario-manager-search-field').click().clear().type('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    cy.get('[data-cy^="scenario-accordion"]').should('not.exist');
+
+    // Clean the scenario used during the test
+    scenario.deleteScenario('SearchScenario-PROD-13737-SearchScenario');
+    scenario.deleteScenario('PROD-13737-SearchScenario');
+    scenario.deleteScenario('SearchScenario-PROD-13737');
+    scenario.deleteScenario('PROD-1373X');
+    scenario.deleteScenario('SearchScenario-NotResearched');
   });
 });
