@@ -1,3 +1,4 @@
+import 'cypress-file-upload';
 var connection = require('../../functions/connect.cy.js');
 var datasetManager = require('../../functions/datasetManager.cy.js');
 var config = require('../../../variables.cy.js');

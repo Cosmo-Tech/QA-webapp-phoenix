@@ -1,6 +1,7 @@
 import 'cypress-file-upload';
 var connection = require('../../functions/connect.cy.js');
 var datasetManager = require('../../functions/datasetManager.cy.js');
+var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('Dataset Manager Sanity Checks', () => {

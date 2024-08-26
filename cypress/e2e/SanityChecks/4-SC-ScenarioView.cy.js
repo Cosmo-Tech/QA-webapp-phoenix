@@ -1,8 +1,8 @@
+import 'cypress-file-upload';
 var connection = require('../../functions/connect.cy.js');
 var datasetManager = require('../../functions/datasetManager.cy.js');
 var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
-const { exists } = require('i18next');
 
 describe('Scenario View feature', () => {
   it('Create a dataset for scenario creations', () => {

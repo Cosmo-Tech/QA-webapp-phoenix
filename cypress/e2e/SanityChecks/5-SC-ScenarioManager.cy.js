@@ -1,9 +1,8 @@
+import 'cypress-file-upload';
 var connection = require('../../functions/connect.cy.js');
 var datasetManager = require('../../functions/datasetManager.cy.js');
 var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
-const { exists } = require('i18next');
-const { SendAndArchive } = require('@mui/icons-material');
 
 describe('Scenario Manager feature', () => {
   // May not be needed if other test has been run yet, but dataset created in case it's needed
