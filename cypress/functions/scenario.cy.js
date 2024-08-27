@@ -156,7 +156,8 @@ class Scenario {
       } else {
         cy.get('[data-cy="scenario-delete-button"]').click({ multiple: true });
         cy.contains('Confirm', { timeout: 60000 }).click();
-        cy.get('[aria-label="' + scenarioName + '"]').should('not.exist', { timeout: 60000 });
+        cy.wait(2000);
+        cy.get('[aria-label="' + scenarioName + '"]', { timeout: 60000 }).should('not.exist', { timeout: 60000 });
       }
     });
   }
@@ -199,6 +200,203 @@ class Scenario {
     cy.wait(1000);
     cy.get('[data-cy="validate-scenario-button"]').should('exist');
     cy.get('[data-cy="reject-scenario-button"]').should('exist');
+  }
+
+  // User has to be an email address.
+  // Name is fist and second name aglomerated (ie. john doe => johndoe)
+  // Only accepted values for permissions are viewer, editor, validator or admin
+  static shareScenarioWithUser(scenarioName, user, name, permission) {
+    this.searchScenarioInView(scenarioName);
+    cy.wait(1000);
+    // Click on share button
+    cy.get('[data-cy="share-scenario-button"]').click();
+    // Check the wizard
+    cy.get('[data-cy="share-scenario-dialog-title"]').should('contain', 'Share ' + scenarioName);
+    cy.get('[placeholder="Add people"]').should('exist');
+    cy.get('[role="dialog"]').should('contain', 'Users access');
+    cy.get('[role="dialog"]').should('contain', 'General access');
+    cy.get('[role="dialog"]').should('contain', 'Workspace');
+    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').should('exist');
+
+    // Search for the user, check all roles are available and select the correct role
+    cy.get('[placeholder="Add people"]').click().type(user);
+    cy.get('[data-cy*="share-scenario-dialog-agents-select-' + name + '"]').click({ force: true });
+    cy.get('[data-cy="share-scenario-dialog-roles-checkbox-viewer"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-roles-checkbox-editor"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-roles-checkbox-validator"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-roles-checkbox-admin"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-roles-checkbox-' + permission + '"]').click({ force: true });
+    // Confirm
+    cy.get('[data-cy=share-scenario-dialog-confirm-add-access-button]').click();
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+  }
+
+  // User has to be an email address.
+  // Name is fist and second name aglomerated (ie. john doe => johndoe)
+  // Only accepted values for permissions are viewer, editor, validator or admin
+  static updateScenarioPermissionsUser(scenarioName, user, name, permission) {
+    this.searchScenarioInView(scenarioName);
+    cy.wait(1000);
+    // Click on share button
+    cy.get('[data-cy="share-scenario-button"]').click();
+    // Check the wizard
+    cy.get('[data-cy="share-scenario-dialog-title"]').should('contain', 'Share ' + scenarioName);
+    cy.get('[placeholder="Add people"]').should('exist');
+    cy.get('[role="dialog"]').should('contain', 'Users access');
+    cy.get('[role="dialog"]').should('contain', 'General access');
+    cy.get('[role="dialog"]').should('contain', 'Workspace');
+    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').should('exist');
+    // Pass each user listed in the sharing wizard and check if the name is already here
+    cy.get('[role="dialog"]')
+      .find('[data-cy="role-editor-agent-name"]')
+      .then(($el) => {
+        cy.get($el).each(($txt) => {
+          // Recover the text of the user names listed
+          var userName = $txt.text();
+          if (userName === user) {
+            // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
+            cy.get('[data-cy*="role-editor-' + name + '"]')
+              .find('[aria-haspopup="listbox"]')
+              .click({ force: true });
+            // Check all options are available and select the role
+            cy.get('[data-value="viewer"]').should('exist');
+            cy.get('[data-value="editor"]').should('exist');
+            cy.get('[data-value="validator"]').should('exist');
+            cy.get('[data-value="admin"]').should('exist');
+            cy.get('[value="remove_specific_access"]').should('exist');
+            cy.get('[data-cy="select-option-' + permission + '"]').click({ force: true });
+            // Validate
+            cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+            return false;
+          }
+        });
+      });
+  }
+
+  // Only accepted values for permissions are viewer, editor, validator or admin
+  static updateScenarioGlobalSharing(scenarioName, permission) {
+    this.searchScenarioInView(scenarioName);
+    cy.wait(1000);
+    // Click on share button
+    cy.get('[data-cy="share-scenario-button"]').click();
+    // Check the wizard
+    cy.get('[data-cy="share-scenario-dialog-title"]').should('contain', 'Share ' + scenarioName);
+    cy.get('[placeholder="Add people"]').should('exist');
+    cy.get('[role="dialog"]').should('contain', 'Users access');
+    cy.get('[role="dialog"]').should('contain', 'General access');
+    cy.get('[role="dialog"]').should('contain', 'Workspace');
+    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').should('exist');
+    // Pass each user listed in the sharing wizard and check if the name is already here
+    cy.get('[role="dialog"]')
+      .find('[data-cy="role-editor-agent-name"]')
+      .then(($el) => {
+        cy.get($el).each(($txt) => {
+          // Recover the text of the user names listed
+          var userName = $txt.text();
+          if (userName === 'Workspace') {
+            // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
+            cy.get('[data-cy*="role-editor-Workspace"]').find('[aria-haspopup="listbox"]').click({ force: true });
+            // Check all permissions are available
+            cy.get('[data-cy="select-option-none"]').should('exist');
+            cy.get('[data-cy="select-option-viewer"]').should('exist');
+            cy.get('[data-cy="select-option-editor"]').should('exist');
+            cy.get('[data-cy="select-option-validator"]').should('exist');
+            cy.get('[data-cy="select-option-admin"]').should('exist');
+            cy.get('[data-value="' + permission + '"]').click({ force: true });
+            // Validate
+            cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+            return false;
+          }
+        });
+      });
+  }
+
+  // User has to be an email address.
+  // Name is fist and second name aglomerated (ie. john doe => johndoe)
+  static removeScenarioPermissionsUser(scenarioName, user, name) {
+    this.searchScenarioInView(scenarioName);
+    cy.wait(1000);
+    // Click on share button
+    cy.get('[data-cy="share-scenario-button"]').click();
+    // Check the wizard
+    cy.get('[data-cy="share-scenario-dialog-title"]').should('contain', 'Share ' + scenarioName);
+    cy.get('[placeholder="Add people"]').should('exist');
+    cy.get('[role="dialog"]').should('contain', 'Users access');
+    cy.get('[role="dialog"]').should('contain', 'General access');
+    cy.get('[role="dialog"]').should('contain', 'Workspace');
+    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').should('exist');
+    // Pass each user listed in the sharing wizard and check if the name is already here
+    cy.get('[role="dialog"]')
+      .find('[data-cy="role-editor-agent-name"]')
+      .then(($el) => {
+        cy.get($el).each(($txt) => {
+          // Recover the text of the user names listed
+          var userName = $txt.text();
+          if (userName === user) {
+            // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
+            cy.get('[data-cy*="role-editor-' + name + '"]')
+              .find('[aria-haspopup="listbox"]')
+              .click({ force: true });
+            // Check all permissions are available
+            cy.get('[data-value="viewer"]').should('exist');
+            cy.get('[data-value="editor"]').should('exist');
+            cy.get('[data-value="validator"]').should('exist');
+            cy.get('[data-value="admin"]').should('exist');
+            cy.get('[value="remove_specific_access"]').should('exist');
+            cy.get('[data-cy="select-action-name"]').click({ force: true });
+            // Validate
+            cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+            return false;
+          }
+        });
+        // Check user is removed
+        cy.wait(1000);
+        cy.get('[data-cy="share-scenario-button"]').click();
+        cy.get('[role="dialog"]').should('not.contain', user);
+        cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click({ force: true });
+      });
+  }
+
+  static removeScenarioPermissionsGlobal(scenarioName) {
+    this.searchScenarioInView(scenarioName);
+    cy.wait(1000);
+    // Click on share button
+    cy.get('[data-cy="share-scenario-button"]').click();
+    // Check the wizard
+    cy.get('[data-cy="share-scenario-dialog-title"]').should('contain', 'Share ' + scenarioName);
+    cy.get('[placeholder="Add people"]').should('exist');
+    cy.get('[role="dialog"]').should('contain', 'Users access');
+    cy.get('[role="dialog"]').should('contain', 'General access');
+    cy.get('[role="dialog"]').should('contain', 'Workspace');
+    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').should('exist');
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').should('exist');
+    // Pass each user listed in the sharing wizard and check if the name is already here
+    cy.get('[role="dialog"]')
+      .find('[data-cy="role-editor-agent-name"]')
+      .then(($el) => {
+        cy.get($el).each(($txt) => {
+          // Recover the text of the user names listed
+          var userName = $txt.text();
+          if (userName === 'Workspace') {
+            // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
+            cy.get('[data-cy*="role-editor-Workspace"]').find('[aria-haspopup="listbox"]').click({ force: true });
+            // Check all permissions are available
+            cy.get('[data-cy="select-option-none"]').should('exist');
+            cy.get('[data-cy="select-option-viewer"]').should('exist');
+            cy.get('[data-cy="select-option-editor"]').should('exist');
+            cy.get('[data-cy="select-option-validator"]').should('exist');
+            cy.get('[data-cy="select-option-admin"]').should('exist');
+            cy.get('[data-value="none"]').click({ force: true });
+            // Validate
+            cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+            return false;
+          }
+        });
+      });
   }
 }
 
