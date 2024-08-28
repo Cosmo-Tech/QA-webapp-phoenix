@@ -155,6 +155,7 @@ class Scenario {
         cy.log('No scenario to delete');
       } else {
         cy.get('[data-cy="scenario-delete-button"]').click({ multiple: true });
+        cy.wait(500);
         cy.contains('Confirm', { timeout: 60000 }).click();
         cy.wait(2000);
         cy.get('[aria-label="' + scenarioName + '"]', { timeout: 60000 }).should('not.exist', { timeout: 60000 });
@@ -167,6 +168,7 @@ class Scenario {
     connection.navigate('manager');
     cy.get('[data-testid="DeleteForeverIcon"]').each(($el) => {
       cy.wrap($el).click();
+      cy.wait(500);
       cy.contains('Confirm', { timeout: 60000 }).click();
     });
   }
