@@ -467,6 +467,7 @@ class datasetManager {
             cy.get('[data-cy="select-action-name"]').click({ force: true });
             // Validate
             cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+            cy.wait(500);
             return false;
           }
         });

@@ -122,7 +122,7 @@ class Scenario {
     connection.navigate('manager');
     this.searchScenarioInManager(scenarioName);
     cy.wait(500);
-    cy.get('[data-cy*="scenario-accordion-"]').click();
+    cy.get('[data-cy="expand-accordion-button"]').click();
     cy.wait(500);
     cy.get('[data-cy="scenario-status-successful"]').should('exist');
   }
