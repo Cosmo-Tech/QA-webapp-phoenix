@@ -34,6 +34,7 @@ describe('Global IHM and menu checks', () => {
   });
 
   it('PROD-11913 -> Scenario view & Scenario Manager - IHM Scenario View and Scenario Manager', () => {
+    connection.connect();
     scenario.deleteScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
     scenario.createScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
 
@@ -126,13 +127,5 @@ describe('Global IHM and menu checks', () => {
     connection.navigate('technical');
     cy.get('[role="dialog"]').should('exist');
     cy.get('[data-cy="technical-info-dialog-close-button"]').click();
-  });
-
-  it('PROD-11913 -> Only if the webapp is connected to PowerBI', () => {
-    connection.connect();
-    connection.navigate('scenario-view');
-    scenario.searchScenarioInView('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
-    cy.get('[id="pbiAppPlaceHolder"]').should('exist');
-    cy.get('[data-testid="RefreshIcon"]').should('exist');
   });
 });

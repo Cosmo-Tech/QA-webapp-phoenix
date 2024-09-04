@@ -7,8 +7,10 @@ var scenario = require('../../functions/scenario.cy.js');
 describe('Dataset Manager Sanity Checks', () => {
   it('PROD-12909 & PROD-12979 -> Create from Local File and check Overview', () => {
     connection.connect();
-    connection.navigate('dataset');
     var datasetName = 'PROD-12909';
+    // Clean in case of another try
+    scenario.deleteScenario(datasetName);
+    connection.navigate('dataset');
     // Create the dataset
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Check the information
@@ -47,8 +49,10 @@ describe('Dataset Manager Sanity Checks', () => {
 
   it('PROD-12910 & PROD-12979 -> Create from Azure Storage and check Overview', () => {
     connection.connect();
-    connection.navigate('dataset');
     var datasetName = 'PROD-12910';
+    // Clean in case of another try
+    scenario.deleteScenario(datasetName);
+    connection.navigate('dataset');
     // Create the dataset
     datasetManager.createDatasetAzureStorage(datasetName, 'A basic reference dataset for brewery model', 'csmphoenixdev', 'o-gzypnd27g7', 'w-70klgqeroooz/demobrewery');
     // Check the information
@@ -87,8 +91,10 @@ describe('Dataset Manager Sanity Checks', () => {
 
   it('PROD-12911 & PROD-12979 -> Create from ADT and check Overview', () => {
     connection.connect();
-    connection.navigate('dataset');
     var datasetName = 'PROD-12911';
+    // Clean in case of another try
+    scenario.deleteScenario(datasetName);
+    connection.navigate('dataset');
     // Create the dataset
     datasetManager.createDatasetADT(datasetName, 'A basic reference dataset for brewery model', 'https://o-gzypnd27g7-demobrewery.api.weu.digitaltwins.azure.net/');
     // Check the information
@@ -192,6 +198,9 @@ describe('Dataset Manager Sanity Checks', () => {
 
     // Check you can run scenario with the subdataset created
     connection.navigate('scenario-view');
+    // Clean in case it's a second try
+    scenario.deleteScenario(datasetNameLocalFile);
+    scenario.deleteScenario(datasetNameAzureStorage);
     scenario.createScenario(datasetNameLocalFile, 'master', datasetNameLocalFile, 'NoParameters');
     scenario.runScenario(datasetNameLocalFile);
     scenario.createScenario(datasetNameAzureStorage, 'master', datasetNameAzureStorage, 'NoParameters');

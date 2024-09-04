@@ -170,10 +170,19 @@ describe('Scenario View feature', () => {
     cy.get('[id="number-input-restock_qty"]').click().clear().type('20');
     cy.get('[id="number-input-nb_waiters"]').click().clear().type('10');
 
-    // The three buttons are now available
+    // The three buttons are now available and the create, share, validate and reject buttons are disabled
     cy.get('[data-cy="save-button"]').should('exist');
     cy.get('[data-cy="discard-button"]').should('exist');
     cy.get('[data-cy="save-and-launch-label"]').should('exist');
+    cy.get('[aria-label="Please save or discard current modifications before creating a new scenario"]').should('exist');
+    cy.get('[data-cy="create-scenario-button"]').should('be.disabled');
+    cy.get('[aria-label="Please save or discard current modifications before changing the scenario access permissions"]').should('exist');
+    cy.get('[data-cy="share-scenario-button"]').should('be.disabled');
+    cy.get('[aria-label="Please save or discard current modifications before changing the scenario validation status"]').should('exist');
+    cy.get('[data-cy="validate-scenario-button"]').should('be.disabled');
+    cy.get('[data-cy="reject-scenario-button"]').should('be.disabled');
+    cy.get('[aria-label="Please save or discard current modifications before selecting another scenario"]').should('exist');
+    cy.get('[placeholder="Scenario"]').should('be.disabled');
 
     //Discard, cancel and check the value are the updated ones
     cy.get('[data-cy="discard-button"]').click();

@@ -54,7 +54,7 @@ class datasetManager {
     cy.get('[data-cy="confirm-dataset-creation"]').click();
     // Check dataset is created
     cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
-    cy.get('[data-cy*="dataset-reupload-button-"]', { timeout: 60000 }).should('exist', { timeout: 60000 });
+    cy.get('[data-cy*="dataset-reupload-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
   }
 
   static createDatasetAzureStorage(datasetName, description, accountName, containerName, datasetPath) {
@@ -106,7 +106,7 @@ class datasetManager {
     cy.get('[data-cy="confirm-dataset-creation"]').click();
     // Check dataset is created
     cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
-    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('exist', { timeout: 60000 });
+    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
   }
 
   static createDatasetADT(datasetName, description, datasetPath) {
@@ -155,7 +155,7 @@ class datasetManager {
     cy.get('[data-cy="confirm-dataset-creation"]').click();
     // Check dataset is created
     cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
-    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('exist', { timeout: 60000 });
+    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
   }
 
   // Only working with the example ETL done by Tristan. If the ETL is updated, the test will need to be updated after the "TO UPDATE IF ETL CHANGE" section.
