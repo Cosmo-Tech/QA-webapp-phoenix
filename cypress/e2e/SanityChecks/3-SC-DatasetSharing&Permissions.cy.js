@@ -125,8 +125,8 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     var datasetNameViewer = 'PROD-13240-Viewer';
 
     // Clean in case it's a second try
-    scenario.deleteScenarioScenario(datasetNameAdmin);
-    scenario.deleteScenarioScenario(datasetNameEditor);
+    scenario.deleteScenario(datasetNameAdmin);
+    scenario.deleteScenario(datasetNameEditor);
     scenario.deleteScenario(datasetNameViewer);
 
      // Create the dataset Admin
