@@ -247,7 +247,7 @@ class datasetManager {
   }
 
   // Only available if the user is admin of the dataset
-  static overviewDataet(datasetName) {
+  static overviewDataset(datasetName) {
     this.selectDataset(datasetName);
     // Wait 5s to be sure the values are displayed
     cy.wait(5000);

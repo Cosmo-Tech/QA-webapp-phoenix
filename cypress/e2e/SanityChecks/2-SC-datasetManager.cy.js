@@ -54,7 +54,7 @@ describe('Dataset Manager Sanity Checks', () => {
     scenario.deleteScenario(datasetName);
     connection.navigate('dataset');
     // Create the dataset
-    datasetManager.createDatasetAzureStorage(datasetName, 'A basic reference dataset for brewery model', 'csmphoenixdev', 'o-gzypnd27g7', 'w-70klgqeroooz/demobrewery');
+    datasetManager.createDatasetAzureStorage(datasetName, 'A basic reference dataset for brewery model', config.accountName(), config.containerName(), config.storagePath());
     // Check the information
     datasetManager.selectDataset(datasetName);
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Author');
@@ -96,7 +96,7 @@ describe('Dataset Manager Sanity Checks', () => {
     scenario.deleteScenario(datasetName);
     connection.navigate('dataset');
     // Create the dataset
-    datasetManager.createDatasetADT(datasetName, 'A basic reference dataset for brewery model', 'https://o-gzypnd27g7-demobrewery.api.weu.digitaltwins.azure.net/');
+    datasetManager.createDatasetADT(datasetName, 'A basic reference dataset for brewery model', config.adtPath());
     // Check the information
     datasetManager.selectDataset(datasetName);
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Author');
