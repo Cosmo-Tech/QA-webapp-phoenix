@@ -135,21 +135,21 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameAdmin, config.permissionUserEmail(), config.permissionUserName(), 'admin');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
-    datasetManager.overviewDataet(datasetNameAdmin);
+    datasetManager.overviewDataset(datasetNameAdmin);
 
     // Create the dataset Editor
     datasetManager.createDatasetLocalFile(datasetNameEditor, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameEditor, config.permissionUserEmail(), config.permissionUserName(), 'editor');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
-    datasetManager.overviewDataet(datasetNameEditor);
+    datasetManager.overviewDataset(datasetNameEditor);
 
     // Create the dataset Viewer
     datasetManager.createDatasetLocalFile(datasetNameViewer, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameViewer, config.permissionUserEmail(), config.permissionUserName(), 'viewer');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
-    datasetManager.overviewDataet(datasetNameViewer);
+    datasetManager.overviewDataset(datasetNameViewer);
 
     connection.navigate('scenario-view');
     scenario.createScenario(datasetNameAdmin, 'master', datasetNameAdmin, 'NoParameters');

@@ -39,7 +39,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.clearSearch();
 
     // Check overview
-    datasetManager.overviewDataet(datasetName);
+    datasetManager.overviewDataset(datasetName);
 
     // Check you can create a scenario with the created dataset
     connection.navigate('scenario-view');
@@ -81,7 +81,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.clearSearch();
 
     // Check overview
-    datasetManager.overviewDataet(datasetName);
+    datasetManager.overviewDataset(datasetName);
 
     // Check you can create a scenario with the created dataset
     connection.navigate('scenario-view');
@@ -122,7 +122,7 @@ describe('Dataset Manager Sanity Checks', () => {
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Updated description: A basic reference dataset for brewery model');
     datasetManager.clearSearch();
     // Check overview
-    datasetManager.overviewDataet(datasetName);
+    datasetManager.overviewDataset(datasetName);
 
     // Check you can create a scenario with the created dataset
     connection.navigate('scenario-view');
@@ -163,7 +163,7 @@ describe('Dataset Manager Sanity Checks', () => {
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Updated description: This is a subdataset from a local file dataset');
     datasetManager.clearSearch();
     // Check overview
-    datasetManager.overviewDataet(datasetNameLocalFile);
+    datasetManager.overviewDataset(datasetNameLocalFile);
 
     // Create a subdataset from a Azure Storage dataset
     var datasetNameAzureStorage = 'PROD-12910-sub';
@@ -194,7 +194,7 @@ describe('Dataset Manager Sanity Checks', () => {
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Updated description: This is a subdataset from a local file dataset');
     datasetManager.clearSearch();
     // Check overview
-    datasetManager.overviewDataet(datasetNameAzureStorage);
+    datasetManager.overviewDataset(datasetNameAzureStorage);
 
     // Check you can run scenario with the subdataset created
     connection.navigate('scenario-view');
