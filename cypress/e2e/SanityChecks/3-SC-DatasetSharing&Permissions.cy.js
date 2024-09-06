@@ -119,7 +119,6 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
 
   it('PROD-13240 -> Check permissions, need to be completed manually', () => {
     connection.connect();
-    connection.navigate('dataset');
     var datasetNameAdmin = 'PROD-13240-Admin';
     var datasetNameEditor = 'PROD-13240-Editor';
     var datasetNameViewer = 'PROD-13240-Viewer';
@@ -128,6 +127,8 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     scenario.deleteScenario(datasetNameAdmin);
     scenario.deleteScenario(datasetNameEditor);
     scenario.deleteScenario(datasetNameViewer);
+    
+    connection.navigate('dataset');
 
      // Create the dataset Admin
     datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference_dataset');
