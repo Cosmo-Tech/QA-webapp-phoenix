@@ -2,3 +2,4 @@
 node_modules/
 *.cmd
 variables.cy.js
+cypress/e2e/test.cy.js
