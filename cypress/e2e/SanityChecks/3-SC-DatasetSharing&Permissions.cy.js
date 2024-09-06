@@ -120,25 +120,30 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
   it('PROD-13240 -> Check permissions, need to be completed manually', () => {
     connection.connect();
     connection.navigate('dataset');
-
     var datasetNameAdmin = 'PROD-13240-Admin';
-    // Create the dataset
+    var datasetNameEditor = 'PROD-13240-Editor';
+    var datasetNameViewer = 'PROD-13240-Viewer';
+
+    // Clean in case it's a second try
+    scenario.deleteScenarioScenario(datasetNameAdmin);
+    scenario.deleteScenarioScenario(datasetNameEditor);
+    scenario.deleteScenario(datasetNameViewer);
+
+     // Create the dataset Admin
     datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameAdmin, config.permissionUserEmail(), config.permissionUserName(), 'admin');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
     datasetManager.overviewDataet(datasetNameAdmin);
 
-    var datasetNameEditor = 'PROD-13240-Editor';
-    // Create the dataset
+    // Create the dataset Editor
     datasetManager.createDatasetLocalFile(datasetNameEditor, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameEditor, config.permissionUserEmail(), config.permissionUserName(), 'editor');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
     datasetManager.overviewDataet(datasetNameEditor);
 
-    var datasetNameViewer = 'PROD-13240-Viewer';
-    // Create the dataset
+    // Create the dataset Viewer
     datasetManager.createDatasetLocalFile(datasetNameViewer, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameViewer, config.permissionUserEmail(), config.permissionUserName(), 'viewer');

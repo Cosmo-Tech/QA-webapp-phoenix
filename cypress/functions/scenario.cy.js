@@ -167,9 +167,11 @@ class Scenario {
   static deleteAllScenario() {
     connection.navigate('manager');
     cy.get('[data-testid="DeleteForeverIcon"]').each(($el) => {
-      cy.wrap($el).click();
       cy.wait(500);
+      cy.wrap($el).click();
+      cy.wait(1000);
       cy.contains('Confirm', { timeout: 60000 }).click();
+      cy.wait(2000);
     });
   }
 
