@@ -137,7 +137,7 @@ describe('Dataset Manager Sanity Checks', () => {
     // Create a subdataset from a Local File dataset
     var datasetNameLocalFile = 'PROD-12909-sub';
     // Create the subdataset
-    datasetManager.createSubDataset('PROD-12909', datasetNameLocalFile, 'This is a subdataset from a local file dataset', 'Thirsty');
+    datasetManager.createSubDataset('PROD-12909', datasetNameLocalFile, 'This is a subdataset from a local file dataset');
     // Check the information
     datasetManager.selectDataset(datasetNameLocalFile);
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Author');
@@ -168,7 +168,7 @@ describe('Dataset Manager Sanity Checks', () => {
     // Create a subdataset from a Azure Storage dataset
     var datasetNameAzureStorage = 'PROD-12910-sub';
     // Create the subdataset
-    datasetManager.createSubDataset('PROD-12910', datasetNameAzureStorage, 'This is a subdataset from a local file dataset', 'Thirsty');
+    datasetManager.createSubDataset('PROD-12910', datasetNameAzureStorage, 'This is a subdataset from a local file dataset');
     // Check the information
     datasetManager.selectDataset(datasetNameAzureStorage);
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Author');
@@ -216,10 +216,10 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.deleteDataset('PROD-12910');
     datasetManager.deleteDataset('PROD-12911');
     connection.navigate('manager');
+    scenario.deleteScenario('PROD-12909-sub');
+    scenario.deleteScenario('PROD-12910-sub');
     scenario.deleteScenario('PROD-12909');
     scenario.deleteScenario('PROD-12910');
     scenario.deleteScenario('PROD-12911');
-    scenario.deleteScenario('PROD-12909-sub');
-    scenario.deleteScenario('PROD-12910-sub');
   });
 });
