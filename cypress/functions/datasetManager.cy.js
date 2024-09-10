@@ -160,7 +160,7 @@ class datasetManager {
 
   // Only working with the example ETL done by Tristan. If the ETL is updated, the test will need to be updated after the "TO UPDATE IF ETL CHANGE" section.
   // Filter can currently accept only two options: "Thirsty" and "Not thirsty"
-  static createSubDataset(parentName, datasetName, description, filter) {
+  static createSubDataset(parentName, datasetName, description) {
     // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
     this.deleteDataset(datasetName);
     this.selectDataset(parentName);
@@ -187,14 +187,15 @@ class datasetManager {
     // Check the creation wizard text
     cy.get('[role="dialog"]').should('contain', 'Create sub dataset');
     cy.get('[role="dialog"]').should('contain', 'Metadata');
-    //cy.get('[role="dialog"]').should('contain', 'Filter');
-    //cy.get('[role="dialog"]').should('contain', 'Please select your filter');
-    //cy.get('[role="dialog"]').should('contain', 'Filter');
 
     // TO UPDATE IF ETL CHANGE
     // Select the filter
-    cy.get('[data-cy="enum-input-select-etl_param_subdataset_filter_is_thirsty"]').click();
-    cy.contains(filter).click({ force: true });
+    cy.contains('Dataset filter').click({ force: true });
+    cy.get('[data-cy="enum-input-value-tooltip-etl_sub_dataset_by_filter_boolean"]').click({ force: true });
+    // Select not-thristy
+    cy.get('[role="combobox"]').eq(1).click({ force: true });
+    cy.get('[data-cy="NOT_THIRSTY"]').click({ force: true });
+    //cy.wait(10000);
     // END OF UPTADE
 
     // Confirm the creation
