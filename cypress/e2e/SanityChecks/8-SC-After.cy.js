@@ -11,5 +11,8 @@ describe('To use after the sanity check and the manual checks', () => {
     scenario.deleteAllScenario();
     connection.navigate('dataset');
     datasetManager.deleteDataset('Reference-for-all-scenario-creation-tests');
+    datasetManager.deleteDataset('PROD-13240-Admin');
+    datasetManager.deleteDataset('PROD-13240-Editor');
+    datasetManager.deleteDataset('PROD-13240-Viewer');
   });
 });
