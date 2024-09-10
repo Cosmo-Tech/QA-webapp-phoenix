@@ -184,6 +184,44 @@ describe('Scenario View feature', () => {
     cy.get('[aria-label="Please save or discard current modifications before selecting another scenario"]').should('exist');
     cy.get('[placeholder="Scenario"]').should('be.disabled');
 
+    // Change tab then cancel
+    cy.get('[data-cy="tabs.scenariomanager.key"]').click({ force: true });
+    cy.get('[data-cy="discard-and-continue-dialog-body"]').should('have.text', 'You have unsaved parameters that will be lost if you continue.');
+    cy.get('[data-cy="discard-and-continue-button1"]').click();
+    cy.wait(2000);
+    // Check cancelation did nothing, parameters are still in edition mode
+    cy.get('[data-cy="save-button"]').should('exist');
+    cy.get('[data-cy="discard-button"]').should('exist');
+    cy.get('[data-cy="save-and-launch-label"]').should('exist');
+    cy.get('[aria-label="Please save or discard current modifications before creating a new scenario"]').should('exist');
+    cy.get('[data-cy="create-scenario-button"]').should('be.disabled');
+    cy.get('[aria-label="Please save or discard current modifications before changing the scenario access permissions"]').should('exist');
+    cy.get('[data-cy="share-scenario-button"]').should('be.disabled');
+    cy.get('[aria-label="Please save or discard current modifications before changing the scenario validation status"]').should('exist');
+    cy.get('[data-cy="validate-scenario-button"]').should('be.disabled');
+    cy.get('[data-cy="reject-scenario-button"]').should('be.disabled');
+    cy.get('[aria-label="Please save or discard current modifications before selecting another scenario"]').should('exist');
+    cy.get('[placeholder="Scenario"]').should('be.disabled');
+
+    // Change tab then confirm
+    cy.get('[data-cy="tabs.scenariomanager.key"]').click({ force: true });
+    cy.get('[data-cy="discard-and-continue-dialog-body"]').should('have.text', 'You have unsaved parameters that will be lost if you continue.');
+    cy.get('[data-cy="discard-and-continue-button2"]').click();
+    cy.wait(2000);
+    // Go back to scenario view and check the parameters are the original one, and no longer in edition mode
+    connection.navigate('scenario-view');
+    cy.get('[id="number-input-stock"]').should('have.value', '100');
+    cy.get('[id="number-input-restock_qty"]').should('have.value', '25');
+    cy.get('[id="number-input-nb_waiters"]').should('have.value', '5');
+    cy.get('[data-cy="save-button"]').should('not.exist');
+    cy.get('[data-cy="discard-button"]').should('not.exist');
+    cy.get('[data-cy="save-and-launch-label"]').should('not.exist');
+
+    //Update the three values
+    cy.get('[id="number-input-stock"]').click().clear().type('50');
+    cy.get('[id="number-input-restock_qty"]').click().clear().type('20');
+    cy.get('[id="number-input-nb_waiters"]').click().clear().type('10');
+
     //Discard, cancel and check the value are the updated ones
     cy.get('[data-cy="discard-button"]').click();
     cy.get('[data-cy="discard-changes-button1"]').click();
@@ -391,8 +429,9 @@ describe('Scenario View feature', () => {
     // Check the different steps (5 min timeout each)
     cy.get('[data-cy="running-state-label"]', { timeout: 300000 }).should('have.text', 'Running');
     cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('have.text', 'Scenario run in progress...');
-    cy.get('[data-cy="running-state-label"]', { timeout: 300000 }).should('have.text', 'Transferring results');
-    cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('have.text', 'Transfer of scenario results in progress...');
+    // Removed from the test because if the action takes less than 10s, the text doesn't display
+    //cy.get('[data-cy="running-state-label"]', { timeout: 300000 }).should('have.text', 'Transferring results');
+    //cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('have.text', 'Transfer of scenario results in progress...');
 
     // Wait until the end of the simulation (5 min timeout)
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');

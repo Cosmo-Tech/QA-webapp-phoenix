@@ -154,9 +154,9 @@ class Scenario {
       if ($ele.find('[class="rst__tree"]').length === 0) {
         cy.log('No scenario to delete');
       } else {
-        cy.get('[data-cy="scenario-delete-button"]').click({force: true, multiple: true });
+        cy.get('[data-cy="scenario-delete-button"]').click({ force: true, multiple: true });
         cy.wait(500);
-        cy.contains('Confirm', { timeout: 60000 }).click({force: true});
+        cy.contains('Confirm', { timeout: 60000 }).click({ force: true });
         cy.wait(2000);
         cy.get('[aria-label="' + scenarioName + '"]', { timeout: 60000 }).should('not.exist', { timeout: 60000 });
       }
@@ -171,7 +171,7 @@ class Scenario {
       cy.wrap($el).click();
       cy.wait(1000);
       cy.contains('Confirm', { timeout: 60000 }).click();
-      cy.wait(2000);
+      cy.wait(5000);
     });
   }
 

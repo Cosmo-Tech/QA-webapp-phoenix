@@ -129,6 +129,12 @@ describe('Scenario sharing feature and permissions', () => {
     connection.connect();
     connection.navigate('scenario-view');
 
+    // Clean in case it's a second try
+    scenario.deleteScenario('PROD-13240-Admin');
+    scenario.deleteScenario('PROD-13240-Validator');
+    scenario.deleteScenario('PROD-13240-Editor');
+    scenario.deleteScenario('PROD-13240-Viewer');
+
     // Create the scenario and share admin permissions with someone
     scenario.createScenario('PROD-13240-Admin', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
     scenario.shareScenarioWithUser('PROD-13240-Admin', config.permissionUserEmail(), config.permissionUserName(), 'admin');
