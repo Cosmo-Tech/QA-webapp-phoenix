@@ -1,14 +1,17 @@
 {
   "folders": [
-	{
-		"path": "../CypressGCP"
-	},
-	{
-		"path": "../CypressAzure/QA-asset-phoenix"
-	},
-	{
-		"path": "."
-	}
-],
-  "settings": {}
+    {
+      "name": "CypressGCP",
+      "path": "../CypressGCP",
+    },
+    {
+      "name": "QA-asset-phoenix",
+      "path": "../CypressAzure/QA-asset-phoenix",
+    },
+    {
+      "name": "QA-webapp-phoenix",
+      "path": ".",
+    },
+  ],
+  "settings": {},
 }

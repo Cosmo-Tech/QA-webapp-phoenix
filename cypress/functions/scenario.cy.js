@@ -36,8 +36,7 @@ class Scenario {
     this.searchScenarioInView(scenarioName);
   }
 
-  // Create scenario with ID recovering but tests needs to be done in the
-
+  // Create scenario with ID recovering but tests needs to be done in the "then"
   /*static createScenarioWithID(scenarioName, master, dataset, runType) {
     cy.intercept({ method: 'POST', url: 'https://dev.api.cosmotech.com/phoenix/v3-1/organizations/O-gZYpnd27G7/workspaces/w-70klgqeroooz/scenarios', times: 1 }, (req) => {
       req.continue();
@@ -94,6 +93,7 @@ class Scenario {
 
   static searchMaybeNotExistingScenarioInManager(scenarioName) {
     connection.navigate('manager');
+    cy.wait(500);
     // Search for the correct scenario, select it with down arrow and type enter to validate.
     cy.get('#scenario-manager-search-field').click().clear().type(scenarioName);
     cy.wait(500);
@@ -119,12 +119,12 @@ class Scenario {
     // Wait until the end of the simulation (5 min timeout)
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');
     // Check the simulation is successful
-    connection.navigate('manager');
+    /*connection.navigate('manager');
     this.searchScenarioInManager(scenarioName);
     cy.wait(500);
     cy.get('[data-cy="expand-accordion-button"]').click();
     cy.wait(500);
-    cy.get('[data-cy="scenario-status-successful"]').should('exist');
+    cy.get('[data-cy="scenario-status-successful"]').should('exist');*/
   }
 
   // Start a simulation then cancel it

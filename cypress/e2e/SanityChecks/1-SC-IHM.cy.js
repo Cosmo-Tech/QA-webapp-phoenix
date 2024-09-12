@@ -5,20 +5,20 @@ var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('Global IHM and menu checks', () => {
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM - Dashboards check if no scenario', () => {
+  it('PROD-13867 -> Scenario view & Scenario Manager - IHM - Dashboards check if no scenario', () => {
     connection.connect();
     connection.navigate('dashboards');
     cy.contains('Stocks Follow-up').click();
     cy.get('body').should('contain', 'No scenario. You can create a new scenario in the Scenario view.');
   });
 
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM - Digital Twin check if no scenario', () => {
+  it('PROD-13867 -> Scenario view & Scenario Manager - IHM - Digital Twin check if no scenario', () => {
     connection.connect();
     connection.navigate('digital-twin');
     cy.get('body').should('contain', 'No scenario. You can create a new scenario in the Scenario view.');
   });
 
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM Scenario View if no scenario', () => {
+  it('PROD-13867 -> Scenario view & Scenario Manager - IHM Scenario View if no scenario', () => {
     connection.connect();
     connection.navigate('scenario-view');
     // Only "Create" button and "Dashboard" section
@@ -33,10 +33,10 @@ describe('Global IHM and menu checks', () => {
     cy.get('[data-cy="scenario-params-accordion"]').should('not.exist');
   });
 
-  it('PROD-11913 -> Scenario view & Scenario Manager - IHM Scenario View and Scenario Manager', () => {
+  it('PROD-13867 -> Scenario view & Scenario Manager - IHM Scenario View and Scenario Manager', () => {
     connection.connect();
-    scenario.deleteScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
-    scenario.createScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.deleteScenario('PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
+    scenario.createScenario('PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
 
     // New buttons are available and the no scenario yet message is not anymore diplayed
     cy.get('[data-cy="create-scenario-button"]').should('exist');
@@ -49,10 +49,16 @@ describe('Global IHM and menu checks', () => {
     cy.get('[data-cy="dashboard-placeholder"]').should('not.contain', 'No scenario yet');
     cy.get('[data-cy="dashboard-placeholder"]').should('not.contain', 'You can create a scenario by clicking on the "CREATE" button');
 
+    // Run type and dataset used to create the scenario are displayed
+    cy.get('[data-cy="run-template-name"]').should('contain', 'Run type');
+    cy.get('[data-cy="run-template-name"]').should('contain', 'Run template with Brewery parameters');
+    cy.get('[data-cy="dataset-name"]').should('contain', 'Dataset');
+    cy.get('[data-cy="dataset-name"]').should('contain', 'Reference-for-all-scenario-creation-tests');
+
     // Run the scenario and check if the logs button display.
     //No check on the dashboards, as the webapp may not be connected to PowerBI.
     //A separated test will be run for that, so if the webapp is not connected, failure of these tests won't impact the whole test.
-    scenario.runScenario('PROD-11913-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
+    scenario.runScenario('PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
     connection.navigate('scenario-view');
     cy.get('[data-cy="successful-run-logs-download-button"]').should('exist');
 
@@ -82,12 +88,15 @@ describe('Global IHM and menu checks', () => {
     scenario.searchScenarioInManager('A-ValidatedScenario');
     cy.get('[data-cy="scenario-view-redirect"]').should('contain', 'A-ValidatedScenario');
     cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Run template with Brewery parameters');
+    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Reference-for-all-scenario-creation-tests');
     // Check on unfolded card for the validated scenario
     cy.get('[data-testid="ExpandMoreIcon"]').click();
     cy.get('[data-cy="scenario-owner-name"]').should('exist');
     cy.get('[data-cy="scenario-creation-date"]').should('exist');
     cy.get('[data-cy="scenario-view-redirect"]').should('contain', 'A-ValidatedScenario');
     cy.get('[data-cy="scenario-status-created"]').should('contain', 'Created');
+    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Description');
+    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Tags');
     cy.get('[data-cy="scenario-run-template"]').should('contain', 'Run template with Brewery parameters');
     cy.get('[data-cy="scenario-datasets"]').should('contain', 'Reference-for-all-scenario-creation-tests');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
@@ -96,12 +105,15 @@ describe('Global IHM and menu checks', () => {
     scenario.searchScenarioInManager('B-RejectedScenario');
     cy.get('[data-cy="scenario-view-redirect"]').should('contain', 'B-RejectedScenario');
     cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Run template with Brewery parameters');
+    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Reference-for-all-scenario-creation-tests');
     // Check on unfolded card for the rejected scenario
     cy.get('[data-testid="ExpandMoreIcon"]').click();
     cy.get('[data-cy="scenario-owner-name"]').should('exist');
     cy.get('[data-cy="scenario-creation-date"]').should('exist');
     cy.get('[data-cy="scenario-view-redirect"]').should('contain', 'B-RejectedScenario');
     cy.get('[data-cy="scenario-status-created"]').should('contain', 'Created');
+    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Description');
+    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Tags');
     cy.get('[data-cy="scenario-run-template"]').should('contain', 'Run template with Brewery parameters');
     cy.get('[data-cy="scenario-datasets"]').should('contain', 'Reference-for-all-scenario-creation-tests');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');

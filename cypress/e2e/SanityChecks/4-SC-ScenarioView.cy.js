@@ -272,7 +272,7 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="scenario-status-successful"]').should('exist');
   });
 
-  it('PROD-13396, PROD-13397 and PROD-11884: Create a master/child scenario', () => {
+  it('PROD-13885, PROD-13884 and PROD-11884: Create a master/child scenario', () => {
     connection.connect();
     // Delete all scenarios created in this test, in case it's a second try
     scenario.deleteScenario('PROD-11884-MasterLevel-1');
@@ -317,6 +317,40 @@ describe('Scenario View feature', () => {
 
     //Run a scenario (to check child scenarios can be run)
     scenario.runScenario('PROD-11884-ChildrenB-Lvl2');
+
+    // Specific test added for the description and tag fields.
+    // Create a master scenario with a description and a tag
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="create-scenario-button"]').click({ force: true });
+    cy.get('#scenarioName').click().type('PROD-13885-MasterDescriptionAndTag');
+    cy.get('[data-cy="create-scenario-dialog-master-checkbox"]').click({ force: true });
+    cy.get('[placeholder="Select a dataset"]').click().clear().type('Reference-for-all-scenario-creation-tests').type('{downarrow}{enter}');
+    cy.get('[id="scenarioType"]').click({ force: true });
+    cy.get('[id="scenarioType"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
+    cy.get('[data-cy="text-input-new-scenario-description"]').click({ force: true }).clear().type('This is a master scenario');
+    // Add the tag Master, try to add again this tag and finaly enter a tag without validation
+    cy.get('[id="new-scenario-tags"]')
+      .click({ force: true })
+      .clear()
+      .type('MasterParentScenario' + '{enter}')
+      .type('MasterParentScenario' + '{enter}')
+      .type('NotValidated');
+    // Validate the scenario creation
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
+    cy.wait(1000);
+
+    // Go to scenario manager, search the scenario, make sure there is only one tag
+    connection.navigate('manager');
+    scenario.searchScenarioInManager('PROD-13885-MasterDescriptionAndTag');
+    cy.get('[data-cy="scenario-tags-tag-1"]').should('not.exist');
+
+    // Try to create child scenario and check the description and tags from the parent are not displayed
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="create-scenario-button"]').click({ force: true });
+    cy.get('#scenarioName').click().type('PROD-13885-ChildDescriptionAndTag');
+    cy.get('[placeholder="Parent Scenario"]').click().clear().type('PROD-13885-MasterDescriptionAndTag').type('{downarrow}{enter}');
+    cy.get('[role="dialog"]').should('not.contain', 'This is a master scenario');
+    cy.get('[role="dialog"]').should('not.contain', 'MasterParentScenario');
   });
 
   it('PROD-11883 and PROD-11809: Create and run scenario', () => {
@@ -330,6 +364,8 @@ describe('Scenario View feature', () => {
     cy.get('[id="form-dialog-title"]').should('have.text', 'Create new scenario');
     cy.get('[id="scenarioName-label"]').should('have.text', 'Scenario name');
     cy.get('[id="scenarioName"]').should('exist');
+    cy.get('[data-cy="text-input-new-scenario-description"]').should('exist');
+    cy.get('[id="new-scenario-tags-label"]').should('exist');
     cy.get('[data-testid="CheckBoxOutlineBlankIcon"]').should('exist');
     cy.get('[role="dialog"]').should('contain', 'Master');
     cy.get('[id="scenarioType-label"]').should('have.text', 'Run Type');
