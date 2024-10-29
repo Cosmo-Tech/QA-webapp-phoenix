@@ -1,3 +1,5 @@
+This repository gather the automated tests for the ASSET solution.
+
 # Cypress tests
 
 ## Service account authentication with MSAL
