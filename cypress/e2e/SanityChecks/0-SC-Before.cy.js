@@ -5,6 +5,7 @@ var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('To run before any automated sanity check', () => {
+  // Clean all scenario to have the "no scenario" messages in different screens
   it('Delete All Senario | May fail if no scenario', () => {
     connection.connect();
     scenario.deleteAllScenario();
