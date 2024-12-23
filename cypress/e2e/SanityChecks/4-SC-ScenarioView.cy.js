@@ -8,34 +8,34 @@ describe('Scenario View feature', () => {
   it('PROD-11815 - Validate and Reject scenario', () => {
     // Partialy tested in the IHM check but fully rechecked in this test
     connection.connect();
-    scenario.deleteScenario('PROD-11815');
-    scenario.createScenario('PROD-11815', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.deleteScenario('DLOP-PROD-11815-ScenarioView');
+    scenario.createScenario('DLOP-PROD-11815-ScenarioView', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
 
     // Validate scenario and check parameters are disabled
-    scenario.validateScenario('PROD-11815');
+    scenario.validateScenario('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
     cy.get('[data-cy="reject-scenario-button"]').should('not.exist');
     cy.get('[data-cy="disabled-input-value"]').should('exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
 
     // Run the scenario and check the scenario is still "validated"
     connection.navigate('scenario-view');
-    scenario.runScenario('PROD-11815');
+    scenario.runScenario('DLOP-PROD-11815-ScenarioView');
     connection.navigate('scenario-view');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
     cy.get('[data-cy="reject-scenario-button"]').should('not.exist');
     cy.get('[data-cy="disabled-input-value"]').should('exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Validated');
 
     // Check searching "validated" returns the validated scenario
     connection.navigate('manager');
     cy.get('#scenario-manager-search-field').click().clear().type('Validated');
     cy.wait(500);
-    cy.get('[aria-label="PROD-11815"]').should('exist');
+    cy.get('[aria-label="DLOP-PROD-11815-ScenarioView"]').should('exist');
 
     // Remove the "Validated" status
     connection.navigate('scenario-view');
@@ -44,33 +44,33 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="reject-scenario-button"]').should('exist');
     cy.get('[data-cy="disabled-input-value"]').should('not.exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('not.exist');
 
     // Reject the scenario and check parameters are disabled
-    scenario.rejectScenario('PROD-11815');
+    scenario.rejectScenario('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
     cy.get('[data-cy="validate-scenario-button"]').should('not.exist');
     cy.get('[data-cy="disabled-input-value"]').should('exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
 
     // Run the scenario and check the scenario is still "Rejected"
-    scenario.runScenario('PROD-11815');
+    scenario.runScenario('DLOP-PROD-11815-ScenarioView');
     connection.navigate('scenario-view');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
     cy.get('[data-cy="validate-scenario-button"]').should('not.exist');
     cy.get('[data-cy="disabled-input-value"]').should('exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('contain', 'Rejected');
 
     // Check searching "rejected" returns the validated scenario
     connection.navigate('manager');
     cy.get('#scenario-manager-search-field').click().clear().type('Rejected');
     cy.wait(500);
-    cy.get('[aria-label="PROD-11815"]').should('exist');
+    cy.get('[aria-label="DLOP-PROD-11815-ScenarioView"]').should('exist');
 
     // Remove the "Rejected" status
     connection.navigate('scenario-view');
@@ -79,25 +79,25 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="reject-scenario-button"]').should('exist');
     cy.get('[data-cy="disabled-input-value"]').should('not.exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('not.exist');
 
     // Run the scenario and check the scenario has still no status
-    scenario.runScenario('PROD-11815');
+    scenario.runScenario('DLOP-PROD-11815-ScenarioView');
     connection.navigate('scenario-view');
     cy.get('[data-cy="validate-scenario-button"]').should('exist');
     cy.get('[data-cy="reject-scenario-button"]').should('exist');
     cy.get('[data-cy="disabled-input-value"]').should('not.exist');
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11815');
+    scenario.searchScenarioInManager('DLOP-PROD-11815-ScenarioView');
     cy.get('[data-cy="scenario-validation-status"]').should('not.exist');
   });
 
   it('PROD-12097 - Parameters', () => {
     connection.connect();
     connection.navigate('scenario-view');
-    scenario.deleteScenario('PROD-12097-UpdateParameters');
-    scenario.createScenario('PROD-12097-UpdateParameters', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
+    scenario.createScenario('DLOP-PROD-12097-UpdateParameters', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     cy.get('[data-cy="launch-scenario-button"]').should('exist');
     //Check if the scenario parameter tab is unfolded and, if not, unfold it.
     cy.get('[data-cy="scenario-params-accordion-summary"]')
@@ -265,7 +265,7 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');
     // Check the simulation is successful
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-12097-UpdateParameters');
+    scenario.searchScenarioInManager('DLOP-PROD-12097-UpdateParameters');
     cy.wait(500);
     cy.get('[data-cy*="scenario-accordion-"]').click();
     cy.wait(500);
@@ -275,56 +275,56 @@ describe('Scenario View feature', () => {
   it('PROD-13885, PROD-13884 and PROD-11884: Create a master/child scenario', () => {
     connection.connect();
     // Delete all scenarios created in this test, in case it's a second try
-    scenario.deleteScenario('PROD-11884-MasterLevel-1');
-    scenario.deleteScenario('PROD-11884-MasterLevel-2');
-    scenario.deleteScenario('PROD-11884-ChildrenA-Lvl2');
-    scenario.deleteScenario('PROD-11884-ChildrenB-Lvl2');
-    scenario.deleteScenario('PROD-11884-ChildrenA.A-Lvl3');
-    scenario.deleteScenario('PROD-11884-ChildrenA.B-Lvl3');
-    scenario.deleteScenario('PROD-11884-ChildrenA.C-Lvl3');
-    scenario.deleteScenario('PROD-11884-ChildrenB.A-Lvl3');
-    scenario.deleteScenario('PROD-11884-ChildrenB.B-Lvl3');
-    scenario.deleteScenario('PROD-11884-ChildrenA.B.A-Lvl4');
-    scenario.deleteScenario('PROD-11884-ChildrenA.B.B-Lvl4');
-    scenario.deleteScenario('PROD-11884-ChildrenA.C.A-Lvl4');
-    scenario.deleteScenario('PROD-11884-ChildrenB.B.A-Lvl4');
-    scenario.deleteScenario('PROD-11884-ChildrenB.B.B-Lvl4');
-    scenario.deleteScenario('PROD-11884-MasterChildrenA-Lvl2');
-    scenario.deleteScenario('PROD-11884-MasterChildrenB-Lvl2');
-    scenario.deleteScenario('PROD-11884-MasterChildrenC-Lvl2');
-    scenario.deleteScenario('PROD-11884-MasterChildrenA.A-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-1');
+    scenario.deleteScenario('DLOP-PROD-PROD-11884-MasterLevel-2');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA-Lvl2');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB-Lvl2');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.A-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.B-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.C-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.A-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.B-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.B.A-Lvl4');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.B.B-Lvl4');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.C.A-Lvl4');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.B.A-Lvl4');
+    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.B.B-Lvl4');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenA-Lvl2');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenB-Lvl2');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenC-Lvl2');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenA.A-Lvl3');
 
     // Create all scenarios
     connection.navigate('scenario-view');
-    scenario.createScenario('PROD-11884-MasterLevel-1', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-MasterLevel-2', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA-Lvl2', 'child', 'PROD-11884-MasterLevel-1', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenB-Lvl2', 'child', 'PROD-11884-MasterLevel-1', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA.A-Lvl3', 'child', 'PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA.B-Lvl3', 'child', 'PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA.C-Lvl3', 'child', 'PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenB.A-Lvl3', 'child', 'PROD-11884-ChildrenB-Lvl2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenB.B-Lvl3', 'child', 'PROD-11884-ChildrenB-Lvl2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA.B.A-Lvl4', 'child', 'PROD-11884-ChildrenA.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA.B.B-Lvl4', 'child', 'PROD-11884-ChildrenA.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenA.C.A-Lvl4', 'child', 'PROD-11884-ChildrenA.C-Lvl3', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenB.B.A-Lvl4', 'child', 'PROD-11884-ChildrenB.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-ChildrenB.B.B-Lvl4', 'child', 'PROD-11884-ChildrenB.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-MasterChildrenA-Lvl2', 'child', 'PROD-11884-MasterLevel-2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-MasterChildrenB-Lvl2', 'child', 'PROD-11884-MasterLevel-2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-MasterChildrenC-Lvl2', 'child', 'PROD-11884-MasterLevel-2', 'BreweryParameters');
-    scenario.createScenario('PROD-11884-MasterChildrenA.A-Lvl3', 'child', 'PROD-11884-MasterChildrenA-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-MasterLevel-1', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-PROD-11884-MasterLevel-2', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA-Lvl2', 'child', 'DLOP-PROD-11884-MasterLevel-1', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenB-Lvl2', 'child', 'DLOP-PROD-11884-MasterLevel-1', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA.A-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA.B-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA.C-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenB.A-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenB-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenB.B-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenB-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA.B.A-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenA.B-Lvl3', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA.B.B-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenA.B-Lvl3', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenA.C.A-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenA.C-Lvl3', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenB.B.A-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenB.B-Lvl3', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-ChildrenB.B.B-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenB.B-Lvl3', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-MasterChildrenA-Lvl2', 'child', 'DLOP-PROD-PROD-11884-MasterLevel-2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-MasterChildrenB-Lvl2', 'child', 'DLOP-PROD-PROD-11884-MasterLevel-2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-MasterChildrenC-Lvl2', 'child', 'DLOP-PROD-PROD-11884-MasterLevel-2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-MasterChildrenA.A-Lvl3', 'child', 'DLOP-PROD-11884-MasterChildrenA-Lvl2', 'BreweryParameters');
 
     //Run a scenario (to check child scenarios can be run)
-    scenario.runScenario('PROD-11884-ChildrenB-Lvl2');
+    scenario.runScenario('DLOP-PROD-11884-ChildrenB-Lvl2');
 
     // Specific test added for the description and tag fields.
     // Create a master scenario with a description and a tag
     connection.navigate('scenario-view');
     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
-    cy.get('#scenarioName').click().type('PROD-13885-MasterDescriptionAndTag');
+    cy.get('#scenarioName').click().type('DLOP-PROD-13885-MasterDescriptionAndTag');
     cy.get('[data-cy="create-scenario-dialog-master-checkbox"]').click({ force: true });
-    cy.get('[placeholder="Select a dataset"]').click().clear().type('Reference-for-all-scenario-creation-tests').type('{downarrow}{enter}');
+    cy.get('[placeholder="Select a dataset"]').click().clear().type('DLOP-Reference-for-automated-tests').type('{downarrow}{enter}');
     cy.get('[id="scenarioType"]').click({ force: true });
     cy.get('[id="scenarioType"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
     cy.get('[data-cy="text-input-new-scenario-description"]').click({ force: true }).clear().type('This is a master scenario');
@@ -341,14 +341,14 @@ describe('Scenario View feature', () => {
 
     // Go to scenario manager, search the scenario, make sure there is only one tag
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-13885-MasterDescriptionAndTag');
+    scenario.searchScenarioInManager('DLOP-PROD-13885-MasterDescriptionAndTag');
     cy.get('[data-cy="scenario-tags-tag-1"]').should('not.exist');
 
     // Try to create child scenario and check the description and tags from the parent are not displayed
     connection.navigate('scenario-view');
     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
-    cy.get('#scenarioName').click().type('PROD-13885-ChildDescriptionAndTag');
-    cy.get('[placeholder="Parent Scenario"]').click().clear().type('PROD-13885-MasterDescriptionAndTag').type('{downarrow}{enter}');
+    cy.get('#scenarioName').click().type('DLOP-PROD-13885-ChildDescriptionAndTag');
+    cy.get('[placeholder="Parent Scenario"]').click().clear().type('DLOP-PROD-13885-MasterDescriptionAndTag').type('{downarrow}{enter}');
     cy.get('[role="dialog"]').should('not.contain', 'This is a master scenario');
     cy.get('[role="dialog"]').should('not.contain', 'MasterParentScenario');
   });
@@ -356,7 +356,7 @@ describe('Scenario View feature', () => {
   it('PROD-11883 and PROD-11809: Create and run scenario', () => {
     connection.connect();
     // Delete all scenarios created in this test, in case it's a second try
-    scenario.deleteScenario('PROD-11883-CheckCreationForm');
+    scenario.deleteScenario('DLOP-PROD-11883-CheckCreationForm');
 
     // Check the creation popup elements
     connection.navigate('scenario-view');
@@ -434,7 +434,7 @@ describe('Scenario View feature', () => {
     cy.get('[role="presentation"').should('contain', 'No options');
 
     // Create scenario
-    scenario.createScenario('PROD-11883-CheckCreationForm', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11883-CheckCreationForm', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
 
     // Check if the dashboard tab is unfolded and, if not, unfold it.
     cy.get('[data-cy="dashboards-accordion-summary"]')
@@ -450,13 +450,13 @@ describe('Scenario View feature', () => {
 
     // Try to create a scenario with same name
     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
-    cy.get('#scenarioName').click().type('PROD-11883-CheckCreationForm');
+    cy.get('#scenarioName').click().type('DLOP-PROD-11883-CheckCreationForm');
     cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name already exists');
     cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
     cy.get('[data-cy="create-scenario-dialog-cancel-button"]').click();
 
     // Run the scenario and check the steps (so no use of the function, to control the intermediate messages)
-    scenario.searchScenarioInView('PROD-11883-CheckCreationForm');
+    scenario.searchScenarioInView('DLOP-PROD-11883-CheckCreationForm');
     // Run the scenario
     cy.get('[data-cy="launch-scenario-button"]').click();
     cy.wait(500);
@@ -473,7 +473,7 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');
     // Check the simulation is successful
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11883-CheckCreationForm');
+    scenario.searchScenarioInManager('DLOP-PROD-11883-CheckCreationForm');
     cy.wait(500);
     cy.get('[data-cy*="scenario-accordion-"]').click();
     cy.wait(5000);
@@ -495,16 +495,16 @@ describe('Scenario View feature', () => {
     cy.get('[type="button"]').should('contain', 'Download logs');
     // Check the simulation is failed
     connection.navigate('manager');
-    scenario.searchScenarioInManager('PROD-11883-CheckCreationForm');
+    scenario.searchScenarioInManager('DLOP-PROD-11883-CheckCreationForm');
     cy.wait(500);
     cy.get('[data-cy*="scenario-accordion-"]').click();
     cy.wait(500);
     cy.get('[data-cy="scenario-status-failed"]').should('exist');
 
     // Run again the scenario to check the previous abort did not impact the scenario
-    scenario.runScenario('PROD-11883-CheckCreationForm');
+    scenario.runScenario('DLOP-PROD-11883-CheckCreationForm');
 
     // Delete the scenario (manual tests to complete this test can be done on any other remaining scenario)
-    scenario.deleteScenario('PROD-11883-CheckCreationForm');
+    scenario.deleteScenario('DLOP-PROD-11883-CheckCreationForm');
   });
 });

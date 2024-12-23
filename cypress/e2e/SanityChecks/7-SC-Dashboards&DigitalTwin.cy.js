@@ -13,8 +13,8 @@ describe('Dashboards and Digital Twin features', () => {
 
     // Create and run the needed scenarios
     connection.navigate('scenario-view');
-    scenario.createScenario('PROD-13750-DashboardsChecks-NoRun', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
-    scenario.createScenario('PROD-13750-DashboardsChecks-Run', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('PROD-13750-DashboardsChecks-NoRun', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.createScenario('PROD-13750-DashboardsChecks-Run', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.runScenario('PROD-13750-DashboardsChecks-Run');
 
     // Select the scenario that has not run
@@ -43,7 +43,7 @@ describe('Dashboards and Digital Twin features', () => {
 
     // Create the needed scenarios
     connection.navigate('scenario-view');
-    scenario.createScenario('PROD-13751-DigitalTwin', 'master', 'Reference-for-all-scenario-creation-tests', 'BreweryParameters');
+    scenario.createScenario('PROD-13751-DigitalTwin', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
 
     // Go to Digital Twin section
     connection.navigate('digital-twin');

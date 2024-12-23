@@ -15,7 +15,7 @@ describe('To run before any automated sanity check', () => {
     //Create a dataset that will be needed during all test that create scenarios with no specific dataset required. This dataset will be removed at the end of the tests in the After.cy.js tests.
     connection.connect();
     connection.navigate('dataset');
-    var datasetName = 'Reference-for-all-scenario-creation-tests';
+    var datasetName = 'DLOP-Reference-for-automated-tests';
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
   });
 });

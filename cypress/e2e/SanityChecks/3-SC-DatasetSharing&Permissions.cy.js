@@ -8,7 +8,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
   it('PROD-13233 -> Share a dataset', () => {
     connection.connect();
     connection.navigate('dataset');
-    var datasetName = 'PROD-13233-Reference';
+    var datasetName = 'DLOP-PROD-13233-Reference';
     // Create the dataset
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
     datasetManager.selectDataset(datasetName);
@@ -119,18 +119,18 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
 
   it('PROD-13240 -> Check permissions, need to be completed manually', () => {
     connection.connect();
-    var datasetNameAdmin = 'PROD-13240-Admin';
-    var datasetNameEditor = 'PROD-13240-Editor';
-    var datasetNameViewer = 'PROD-13240-Viewer';
+    var datasetNameAdmin = 'DLOP-PROD-13240-Admin';
+    var datasetNameEditor = 'DLOP-PROD-13240-Editor';
+    var datasetNameViewer = 'DLOP-PROD-13240-Viewer';
 
     // Clean in case it's a second try
     scenario.deleteScenario(datasetNameAdmin);
     scenario.deleteScenario(datasetNameEditor);
     scenario.deleteScenario(datasetNameViewer);
-    
+
     connection.navigate('dataset');
 
-     // Create the dataset Admin
+    // Create the dataset Admin
     datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference_dataset');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameAdmin, config.permissionUserEmail(), config.permissionUserName(), 'admin');

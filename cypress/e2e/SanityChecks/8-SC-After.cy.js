@@ -10,9 +10,9 @@ describe('To use after the sanity check and the manual checks', () => {
     connection.navigate('manager');
     scenario.deleteAllScenario();
     connection.navigate('dataset');
-    datasetManager.deleteDataset('Reference-for-all-scenario-creation-tests');
-    datasetManager.deleteDataset('PROD-13240-Admin');
-    datasetManager.deleteDataset('PROD-13240-Editor');
-    datasetManager.deleteDataset('PROD-13240-Viewer');
+    datasetManager.deleteDataset('DLOP-Reference-for-automated-tests');
+    datasetManager.deleteDataset('DLOP-PROD-13240-Admin');
+    datasetManager.deleteDataset('DLOP-PROD-13240-Editor');
+    datasetManager.deleteDataset('DLOP-PROD-13240-Viewer');
   });
 });
