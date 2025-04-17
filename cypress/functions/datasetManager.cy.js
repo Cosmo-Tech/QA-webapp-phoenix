@@ -1,10 +1,13 @@
 const { UsernamePasswordClient } = require('@azure/msal-node');
 const { da } = require('date-fns/locale');
 
+var connection = require('../functions/connect.cy.js');
+
 class datasetManager {
   //This function create a dataset with the source "Local File". It requires the local file to be in the Fixtures > Datasets folder.
 
   static createDatasetLocalFile(datasetName, description, fileName) {
+    connection.navigate('dataset');
     this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
@@ -58,6 +61,7 @@ class datasetManager {
   }
 
   static createDatasetAzureStorage(datasetName, description, accountName, containerName, datasetPath) {
+    connection.navigate('dataset');
     this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
@@ -110,6 +114,7 @@ class datasetManager {
   }
 
   static createDatasetADT(datasetName, description, datasetPath) {
+    connection.navigate('dataset');
     this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
@@ -161,6 +166,7 @@ class datasetManager {
   // Only working with the example ETL done by Tristan. If the ETL is updated, the test will need to be updated after the "TO UPDATE IF ETL CHANGE" section.
   // Filter can currently accept only two options: "Thirsty" and "Not thirsty"
   static createSubDataset(parentName, datasetName, description) {
+    connection.navigate('dataset');
     // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
     this.deleteDataset(datasetName);
     this.selectDataset(parentName);
@@ -208,17 +214,20 @@ class datasetManager {
   }
 
   static searchDataset(datasetName) {
+    connection.navigate('dataset');
     this.clearSearch();
     cy.get('#dataset-search-bar', { timeout: 60000 }).click().type(datasetName);
     cy.wait(500);
   }
 
   static clearSearch() {
+    connection.navigate('dataset');
     cy.get('#dataset-search-bar', { timeout: 60000 }).clear();
     cy.wait(500);
   }
 
   static selectDataset(datasetName) {
+    connection.navigate('dataset');
     this.searchDataset(datasetName);
     cy.get('[data-cy="datasets-list"]').then(($ele) => {
       cy.wait(500);
@@ -232,6 +241,7 @@ class datasetManager {
   }
 
   static deleteDataset(datasetName) {
+    connection.navigate('dataset');
     this.searchDataset(datasetName);
     cy.wait(1000);
     cy.get('[data-cy="datasets-list"]').then(($ele) => {
@@ -249,6 +259,7 @@ class datasetManager {
 
   // Only available if the user is admin of the dataset
   static overviewDataset(datasetName) {
+    connection.navigate('dataset');
     this.selectDataset(datasetName);
     // Wait 5s to be sure the values are displayed
     cy.wait(5000);
@@ -291,40 +302,11 @@ class datasetManager {
     this.clearSearch();
   }
 
-  // NOT WORKING
-  static checkIfUserAlreadyInPermissions(datasetName, user) {
-    var isPresent = false;
-    this.selectDataset(datasetName);
-    cy.wait(1000);
-    // Click on share button
-    cy.get('[data-testid="ShareIcon"]').click();
-    // Pass each user listed in the sharing wizard and check if the name is already here
-    cy.get('[role="dialog"]')
-      .find('[data-cy="role-editor-agent-name"]')
-      .then(($el) => {
-        cy.get($el).each(($txt) => {
-          // Recover the text of the user names listed
-          var userName = $txt.text();
-          cy.log('username = ' + userName);
-          if (userName === user) {
-            // If user already in the list, the access is updated by clicking the role dropdown menu and select the new role
-            isPresent = true;
-            cy.log('Je suis dans le cas où l utilisateur est déjà là donc isPreset = ' + isPresent);
-            return cy.wrap(isPresent);
-          }
-        });
-        cy.log('Sortie de la boucle donc isPresent =' + isPresent);
-        return isPresent;
-      });
-    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click();
-    cy.log('Fin de la fonction donc isPresent = ' + isPresent);
-    return isPresent;
-  }
-
   // User has to be an email address.
   // Name is fist and second name aglomerated (ie. john doe => johndoe)
   // Only accepted values for permissions are viewer, editor or admin
   static shareDatasetUser(datasetName, user, name, permission) {
+    connection.navigate('dataset');
     this.selectDataset(datasetName);
     cy.wait(1000);
     // Click on share button
@@ -355,6 +337,7 @@ class datasetManager {
   // Name is fist and second name aglomerated (ie. john doe => johndoe)
   // Only accepted values for permissions are viewer, editor or admin
   static updateDatasetUser(datasetName, user, name, permission) {
+    connection.navigate('dataset');
     this.selectDataset(datasetName);
     cy.wait(1000);
     // Click on share button
@@ -396,6 +379,7 @@ class datasetManager {
 
   // Only accepted values for permissions are viewer, editor or admin
   static updateDatasetGlobal(datasetName, permission) {
+    connection.navigate('dataset');
     this.selectDataset(datasetName);
     cy.wait(1000);
     // Click on share button
@@ -436,6 +420,7 @@ class datasetManager {
   // User has to be an email address.
   // Name is fist and second name aglomerated (ie. john doe => johndoe)
   static removeDatasetPermissionsUser(datasetName, user, name) {
+    connection.navigate('dataset');
     this.selectDataset(datasetName);
     cy.wait(1000);
     // Click on share button
@@ -481,6 +466,7 @@ class datasetManager {
   }
 
   static removeDatasetPermissionsGlobal(datasetName) {
+    connection.navigate('dataset');
     this.selectDataset(datasetName);
     cy.wait(1000);
     // Click on share button

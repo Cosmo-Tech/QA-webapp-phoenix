@@ -9,6 +9,10 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     connection.connect();
     connection.navigate('dataset');
     var datasetName = 'DLOP-PROD-13233-Reference';
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13233-Reference');
+
     // Create the dataset
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
     datasetManager.selectDataset(datasetName);
@@ -124,6 +128,9 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     var datasetNameViewer = 'DLOP-PROD-13240-Viewer';
 
     // Clean in case it's a second try
+    datasetManager.deleteDataset(datasetNameAdmin);
+    datasetManager.deleteDataset(datasetNameEditor);
+    datasetManager.deleteDataset(datasetNameViewer);
     scenario.deleteScenario(datasetNameAdmin);
     scenario.deleteScenario(datasetNameEditor);
     scenario.deleteScenario(datasetNameViewer);
@@ -154,10 +161,15 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     connection.navigate('scenario-view');
     scenario.createScenario(datasetNameAdmin, 'master', datasetNameAdmin, 'NoParameters');
     scenario.runScenario(datasetNameAdmin);
+    scenario.shareScenarioWithUser(datasetNameAdmin, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
     scenario.createScenario(datasetNameEditor, 'master', datasetNameEditor, 'NoParameters');
     scenario.runScenario(datasetNameEditor);
+    scenario.shareScenarioWithUser(datasetNameEditor, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
     scenario.createScenario(datasetNameViewer, 'master', datasetNameViewer, 'NoParameters');
     scenario.runScenario(datasetNameViewer);
+    scenario.shareScenarioWithUser(datasetNameViewer, config.permissionUserEmail(), config.permissionUserName(), 'admin');
     // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
   });
 });

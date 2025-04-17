@@ -36,46 +36,6 @@ class Scenario {
     this.searchScenarioInView(scenarioName);
   }
 
-  // Create scenario with ID recovering but tests needs to be done in the "then"
-  /*static createScenarioWithID(scenarioName, master, dataset, runType) {
-    cy.intercept({ method: 'POST', url: 'https://dev.api.cosmotech.com/phoenix/v3-1/organizations/O-gZYpnd27G7/workspaces/w-70klgqeroooz/scenarios', times: 1 }, (req) => {
-      req.continue();
-    }).as('requeteScenario');
-
-     // Go to the scenario view page and click on create
-     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
-     // Enter the provided values
-     cy.get('#scenarioName').click().type(scenarioName);
-     // Master or child scenario, choose dataset or parent
-     if (master === 'master') {
-       cy.get('[data-cy="create-scenario-dialog-master-checkbox"]').click({ force: true });
-       cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}{enter}');
-     } else if (master === 'child') {
-       // No need to do uncheck the box, by default the box is not checked
-       cy.get('[placeholder="Parent Scenario"]').click().clear().type(dataset);
-     } else {
-       cy.log('Unknown value. This function accepts only "master" or "child" as values.');
-     }
-     // Choose run type. Currently accepts "BreweryParameters" and "NoParameters"
-     if (runType === 'BreweryParameters') {
-       cy.get('[data-cy="create-scenario-dialog-type-select"]').click({ force: true });
-       cy.get('[placeholder="Select a dataset"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
-     } else if (runType === 'NoParameters') {
-       cy.get('[data-cy="create-scenario-dialog-type-select"]').click({ force: true });
-       cy.get('[placeholder="Select a dataset"]').click().clear().type('Run template without parameters').type('{downarrow}{enter}');
-     } else {
-       cy.log('Unknown value. This function accepts only "BreweryParameters" or "NoParameters" as values.');
-     }
-     // Validate the scenario creation
-     cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
-
-    cy.wait('@requeteScenario').then((intercept) => {
-      cy.wrap(intercept.response.body.id).as('interceptId');
-    });
-    // do all actions needing the id here
-    cy.get('@interceptId').then((id) => console.log(id));
-  }*/
-
   // WARNING: for now, the function only manage unique names,
   // if the search function find two scenarios, it may cause an error
   // example: scenario 1 is named "Toto", scenario 2 is named "Toto2"
@@ -210,6 +170,7 @@ class Scenario {
   // Name is fist and second name aglomerated (ie. john doe => johndoe)
   // Only accepted values for permissions are viewer, editor, validator or admin
   static shareScenarioWithUser(scenarioName, user, name, permission) {
+    connection.navigate('scenario-view');
     this.searchScenarioInView(scenarioName);
     cy.wait(1000);
     // Click on share button
@@ -240,6 +201,7 @@ class Scenario {
   // Name is fist and second name aglomerated (ie. john doe => johndoe)
   // Only accepted values for permissions are viewer, editor, validator or admin
   static updateScenarioPermissionsUser(scenarioName, user, name, permission) {
+    connection.navigate('scenario-view');
     this.searchScenarioInView(scenarioName);
     cy.wait(1000);
     // Click on share button
@@ -281,6 +243,7 @@ class Scenario {
 
   // Only accepted values for permissions are viewer, editor, validator or admin
   static updateScenarioGlobalSharing(scenarioName, permission) {
+    connection.navigate('scenario-view');
     this.searchScenarioInView(scenarioName);
     cy.wait(1000);
     // Click on share button
@@ -321,6 +284,7 @@ class Scenario {
   // User has to be an email address.
   // Name is fist and second name aglomerated (ie. john doe => johndoe)
   static removeScenarioPermissionsUser(scenarioName, user, name) {
+    connection.navigate('scenario-view');
     this.searchScenarioInView(scenarioName);
     cy.wait(1000);
     // Click on share button
@@ -366,6 +330,7 @@ class Scenario {
   }
 
   static removeScenarioPermissionsGlobal(scenarioName) {
+    connection.navigate('scenario-view');
     this.searchScenarioInView(scenarioName);
     cy.wait(1000);
     // Click on share button

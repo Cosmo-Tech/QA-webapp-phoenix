@@ -16,6 +16,7 @@ describe('Dashboards and Digital Twin features', () => {
     scenario.createScenario('PROD-13750-DashboardsChecks-NoRun', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.createScenario('PROD-13750-DashboardsChecks-Run', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.runScenario('PROD-13750-DashboardsChecks-Run');
+    scenario.shareScenarioWithUser('PROD-13750-DashboardsChecks-Run', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Select the scenario that has not run
     scenario.searchScenarioInView('PROD-13750-DashboardsChecks-NoRun');
@@ -25,7 +26,6 @@ describe('Dashboards and Digital Twin features', () => {
     cy.get('[aria-label="Dashboards list"]').should('contain', 'Digital Twin Structure');
     cy.get('[aria-label="Dashboards list"]').should('contain', 'Stocks Follow-up');
     cy.get('[aria-label="Dashboards list"]').should('contain', 'Customer Satisfaction');
-    cy.get('[aria-label="Dashboards list"]').should('contain', 'Scenario comparison');
     cy.contains('Stocks Follow-up').click();
 
     // Check the "no scenario" message displays and no graph displays
@@ -44,6 +44,7 @@ describe('Dashboards and Digital Twin features', () => {
     // Create the needed scenarios
     connection.navigate('scenario-view');
     scenario.createScenario('PROD-13751-DigitalTwin', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('PROD-13751-DigitalTwin', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Go to Digital Twin section
     connection.navigate('digital-twin');

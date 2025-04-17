@@ -10,6 +10,7 @@ describe('Scenario View feature', () => {
     connection.connect();
     scenario.deleteScenario('DLOP-PROD-11815-ScenarioView');
     scenario.createScenario('DLOP-PROD-11815-ScenarioView', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('DLOP-PROD-11815-ScenarioView', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Validate scenario and check parameters are disabled
     scenario.validateScenario('DLOP-PROD-11815-ScenarioView');
@@ -98,6 +99,8 @@ describe('Scenario View feature', () => {
     connection.navigate('scenario-view');
     scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
     scenario.createScenario('DLOP-PROD-12097-UpdateParameters', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('DLOP-PROD-12097-UpdateParameters', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
     cy.get('[data-cy="launch-scenario-button"]').should('exist');
     //Check if the scenario parameter tab is unfolded and, if not, unfold it.
     cy.get('[data-cy="scenario-params-accordion-summary"]')
@@ -275,50 +278,41 @@ describe('Scenario View feature', () => {
   it('PROD-13885, PROD-13884 and PROD-11884: Create a master/child scenario', () => {
     connection.connect();
     // Delete all scenarios created in this test, in case it's a second try
-    scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-1');
-    scenario.deleteScenario('DLOP-PROD-PROD-11884-MasterLevel-2');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA-Lvl2');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB-Lvl2');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.A-Lvl3');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.B-Lvl3');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.C-Lvl3');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.A-Lvl3');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.B-Lvl3');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.B.A-Lvl4');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.B.B-Lvl4');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenA.C.A-Lvl4');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.B.A-Lvl4');
-    scenario.deleteScenario('DLOP-PROD-11884-ChildrenB.B.B-Lvl4');
-    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenA-Lvl2');
-    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenB-Lvl2');
-    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenC-Lvl2');
-    scenario.deleteScenario('DLOP-PROD-11884-MasterChildrenA.A-Lvl3');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-A');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-B');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-A');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-B');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-B-A');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-A-A');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-A-B');
+    scenario.deleteScenario('DLOP-PROD-13885-ChildDescriptionAndTag');
+    scenario.deleteScenario('DLOP-PROD-13885-MasterDescriptionAndTag');
 
     // Create all scenarios
     connection.navigate('scenario-view');
-    scenario.createScenario('DLOP-PROD-11884-MasterLevel-1', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-PROD-11884-MasterLevel-2', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA-Lvl2', 'child', 'DLOP-PROD-11884-MasterLevel-1', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenB-Lvl2', 'child', 'DLOP-PROD-11884-MasterLevel-1', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA.A-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA.B-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA.C-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenA-Lvl2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenB.A-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenB-Lvl2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenB.B-Lvl3', 'child', 'DLOP-PROD-11884-ChildrenB-Lvl2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA.B.A-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenA.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA.B.B-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenA.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenA.C.A-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenA.C-Lvl3', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenB.B.A-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenB.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-ChildrenB.B.B-Lvl4', 'child', 'DLOP-PROD-11884-ChildrenB.B-Lvl3', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-MasterChildrenA-Lvl2', 'child', 'DLOP-PROD-PROD-11884-MasterLevel-2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-MasterChildrenB-Lvl2', 'child', 'DLOP-PROD-PROD-11884-MasterLevel-2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-MasterChildrenC-Lvl2', 'child', 'DLOP-PROD-PROD-11884-MasterLevel-2', 'BreweryParameters');
-    scenario.createScenario('DLOP-PROD-11884-MasterChildrenA.A-Lvl3', 'child', 'DLOP-PROD-11884-MasterChildrenA-Lvl2', 'BreweryParameters');
+    scenario.createScenario('DLOP-PROD-11884-MasterLevel-A', 'master', 'DLOP-Reference-for-automated-tests', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-MasterLevel-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.createScenario('DLOP-PROD-11884-MasterLevel-B', 'master', 'DLOP-Reference-for-automated-tests', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-MasterLevel-B', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
-    //Run a scenario (to check child scenarios can be run)
-    scenario.runScenario('DLOP-PROD-11884-ChildrenB-Lvl2');
+    scenario.createScenario('DLOP-PROD-11884-Children-A-A', 'child', 'DLOP-PROD-11884-MasterLevel-A', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.createScenario('DLOP-PROD-11884-Children-A-B', 'child', 'DLOP-PROD-11884-MasterLevel-A', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-B', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.createScenario('DLOP-PROD-11884-Children-B-A', 'child', 'DLOP-PROD-11884-MasterLevel-B', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-B-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
-    // Specific test added for the description and tag fields.
+    scenario.createScenario('DLOP-PROD-11884-Children-A-A-A', 'child', 'DLOP-PROD-11884-Children-A-A', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-A-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.createScenario('DLOP-PROD-11884-Children-A-A-B', 'child', 'DLOP-PROD-11884-Children-A-A', 'Run');
+    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-A-B', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
+    //Run scenarios (to check parent or child scenarios can be run)
+    scenario.runScenario('DLOP-PROD-11884-MasterLevel-A');
+    scenario.runScenario('DLOP-PROD-11884-Children-A-A-A');
+    scenario.runScenario('DLOP-PROD-11884-Children-B-A');
+
+    // Specific test added for the description and tag fields
     // Create a master scenario with a description and a tag
     connection.navigate('scenario-view');
     cy.get('[data-cy="create-scenario-button"]').click({ force: true });
@@ -351,6 +345,12 @@ describe('Scenario View feature', () => {
     cy.get('[placeholder="Parent Scenario"]').click().clear().type('DLOP-PROD-13885-MasterDescriptionAndTag').type('{downarrow}{enter}');
     cy.get('[role="dialog"]').should('not.contain', 'This is a master scenario');
     cy.get('[role="dialog"]').should('not.contain', 'MasterParentScenario');
+    // Validate the scenario creation
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
+    cy.wait(1000);
+
+    scenario.shareScenarioWithUser('DLOP-PROD-13885-ChildDescriptionAndTag', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithUser('DLOP-PROD-13885-MasterDescriptionAndTag', config.permissionUserEmail(), config.permissionUserName(), 'admin');
   });
 
   it('PROD-11883 and PROD-11809: Create and run scenario', () => {
@@ -381,41 +381,29 @@ describe('Scenario View feature', () => {
 
     //Try different special characters and check warning message + create button disabled for each
     cy.get('[id="scenarioName"]').click().clear().type('?');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('$');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('%');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('é');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('#');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('€');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('@');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('(');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('&');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('+');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('ç');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
     cy.get('[id="scenarioName"]').click().clear().type('"');
-    cy.get('[id="scenarioName-helper-text"]').should('have.text', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
-    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
+    cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('not.be.disabled');
 
     // Enter a valid name
     cy.get('[id="scenarioName"]').click().clear().type('3e-.Z90 RTE_FR');

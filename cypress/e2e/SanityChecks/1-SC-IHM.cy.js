@@ -9,7 +9,7 @@ describe('Global IHM and menu checks', () => {
     connection.connect();
     connection.navigate('dashboards');
     cy.contains('Stocks Follow-up').click();
-    cy.get('body').should('contain', 'No scenario. You can create a new scenario in the Scenario view.');
+    cy.get('[data-cy="dashboard-placeholder"]').should('contain', 'You can create scenarios in the Scenario view');
   });
 
   it('PROD-13867 -> Scenario view & Scenario Manager - IHM - Digital Twin check if no scenario', () => {
@@ -21,12 +21,12 @@ describe('Global IHM and menu checks', () => {
   it('PROD-13867 -> Scenario view & Scenario Manager - IHM Scenario View if no scenario', () => {
     connection.connect();
     connection.navigate('scenario-view');
-    // Only "Create" button and "Dashboard" section
+    // Only "Create" button, share button and "Dashboard" section
     cy.get('[data-cy="create-scenario-button"]').should('exist');
     cy.get('[data-cy="dashboards-accordion"]').click();
     cy.get('body').should('contain', 'No scenario yet');
     cy.get('[data-cy="dashboard-placeholder"]').should('contain', 'You can create a scenario by clicking on the "CREATE" button');
-    cy.get('[data-cy="share-scenario-button"]').should('not.exist');
+    cy.get('[data-cy="share-scenario-button"]').should('exist');
     cy.get('[data-cy="validate-scenario-button"]').should('not.exist');
     cy.get('[data-cy="reject-scenario-button"]').should('not.exist');
     cy.get('[data-cy="launch-scenario-button"]').should('not.exist');
@@ -35,8 +35,14 @@ describe('Global IHM and menu checks', () => {
 
   it('PROD-13867 -> Scenario view & Scenario Manager - IHM Scenario View and Scenario Manager', () => {
     connection.connect();
-    scenario.deleteScenario('DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
-    scenario.createScenario('DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    var scenarioName = 'DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs';
+
+    // Clean in case it's a second try
+    scenario.deleteScenario(scenarioName);
+
+    // Create the scenario and share for manual checks
+    scenario.createScenario(scenarioName, 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser(scenarioName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // New buttons are available and the no scenario yet message is not anymore diplayed
     cy.get('[data-cy="create-scenario-button"]').should('exist');
@@ -58,7 +64,7 @@ describe('Global IHM and menu checks', () => {
     // Run the scenario and check if the logs button display.
     //No check on the dashboards, as the webapp may not be connected to PowerBI.
     //A separated test will be run for that, so if the webapp is not connected, failure of these tests won't impact the whole test.
-    scenario.runScenario('DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
+    scenario.runScenario(scenarioName);
     connection.navigate('scenario-view');
     cy.get('[data-cy="successful-run-logs-download-button"]').should('exist');
 
@@ -67,8 +73,10 @@ describe('Global IHM and menu checks', () => {
     scenario.deleteScenario('B-RejectedScenario');
     scenario.createScenario('A-ValidatedScenario', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.validateScenario('A-ValidatedScenario');
+    scenario.shareScenarioWithUser('A-ValidatedScenario', config.permissionUserEmail(), config.permissionUserName(), 'admin');
     scenario.createScenario('B-RejectedScenario', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.rejectScenario('B-RejectedScenario');
+    scenario.shareScenarioWithUser('B-RejectedScenario', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Check the scenario manager IHM
     connection.navigate('manager');

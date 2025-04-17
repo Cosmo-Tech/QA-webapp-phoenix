@@ -41,34 +41,35 @@ describe('Scenario Manager feature', () => {
 
     // Check the new name is persistant
     scenario.searchScenarioInManager('Updated-DLOP-PROD-13878');
+    scenario.shareScenarioWithUser('Updated-DLOP-PROD-13878', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
-    // Try forbiden character and check the error message display
+    // Try special character and check there is no error message display
     cy.get('[data-testid="EditIcon"]').click();
     cy.wait(1000);
     cy.get('[placeholder="Scenario name"]').click().clear().type('?');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('$');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('%');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('é');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('#');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('€');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('@');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('(');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('&');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('+');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('ç');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('"');
-    cy.get('[data-cy^="scenario-accordion-"]').should('contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
+    cy.get('[data-cy^="scenario-accordion-"]').should('not.contain', 'Scenario name has to start with a letter or a digit, and can only contain letters, digits, spaces, underscores, hyphens and dots.');
     cy.get('[placeholder="Scenario name"]').click().clear().type('{enter}');
 
     // Check the name has not been updated after validation
@@ -122,22 +123,7 @@ describe('Scenario Manager feature', () => {
     cy.get('[data-cy="scenario-tags-tags"]').should('not.contain', 'FirstTag');
   });
 
-  // NOT WORKING DUE TO "data-cy="add-tag"" hidden, and so not found. Test added to manual checks
-  /*it('PROD-13878: Edit a scenario - duplicate tags part, will fail due to a known issue PROD-12777', () => {
-    connection.connect();
-    scenario.searchScenarioInManager('Updated-DLOP-PROD-13878');
-    // Unfold the card
-    cy.get('[data-testid="UnfoldMoreIcon"]').click();
-    // Create new tag with same name than the one created in previous test
-    cy.get('[data-cy="add-tag"]').click({ force: true });
-    cy.get('[id="new-tag-input"]')
-      .click()
-      .type('EditedTag' + '{enter}');
-    // New tag should not exist. Can't check the text so check there is no second tag at all
-    cy.get('[data-cy="scenario-tags-tag-1"]').should('not.exist');
-  });*/
-
-  /*it('PROD-11817: Delete a scenario', () => {
+  it('PROD-11817: Delete a scenario', () => {
     //Create a dataset that will be needed during all test that create scenarios with no specific dataset required. This dataset will be removed at the end of the tests in the After.cy.js tests.
     connection.connect();
     // Remove the created scenario in case it's a second try
@@ -172,7 +158,7 @@ describe('Scenario Manager feature', () => {
 
     // Clean the scenario used for the test
     scenario.deleteScenario('DLOP-PROD-1187-DeleteScenario');
-  });*/
+  });
 
   it('PROD-13879: Search scenarios', () => {
     connection.connect();
