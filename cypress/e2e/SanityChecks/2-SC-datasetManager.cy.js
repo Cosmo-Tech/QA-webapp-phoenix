@@ -248,4 +248,94 @@ describe('Dataset Manager Sanity Checks', () => {
     // Check there is no "Edit" button
     cy.get('[data-testid="EditIcon"]').should('not.exist');
   });
+
+  it('PROD-14373: Edit ETL dataset', () => {
+    connection.connect();
+    var datasetName = 'DLOP-PROD-14373';
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset(datasetName);
+    scenario.deleteScenario(datasetName);
+
+    connection.navigate('dataset');
+
+    // Create a dataset will be done manually, as there is no function to create dataset using an ETL and it depends too much on the environment.
+    cy.get('body').then(($createButton) => {
+      // If no dataset yet, button is different.
+      if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
+        cy.get('[data-cy="create-dataset-button"]').click();
+      } else {
+        cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+      }
+    });
+
+    // Enter the name of the dataset
+    cy.get('[data-cy="text-input-new-dataset-title"]').click().type(datasetName);
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+    // Select the source
+
+    // /!\ THIS MAY NEED TO BE UPDATED IF BREWERY SOLUTION IS UPDATED /!\
+    cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
+    cy.get('[data-cy="enum-input-value-tooltip-etl_with_local_file"]').click();
+    // End of what may need to be updated
+
+    // Check the browse button is available
+    cy.get('[data-cy=browse-button]').should('exist');
+    // Browse the dataset (for this ETL, only zip files named reference are accepted)
+    cy.get('[data-cy=browse-button]').selectFile('cypress/fixtures/datasets/reference.zip', { force: true });
+    cy.wait(1000);
+    // Confirm the creation
+    cy.get('[data-cy="confirm-dataset-creation"]').click();
+    // Check dataset is created
+    cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
+    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+
+    // Create the scenario and run it
+    scenario.createScenario(datasetName, 'master', datasetName, 'NoParameters');
+    scenario.runScenario(datasetName);
+
+    // Go back to dataset overview and edit the dataset
+    connection.navigate('dataset');
+    datasetManager.searchDataset(datasetName);
+    cy.get('[data-testid="EditIcon"]').click();
+
+    // Check the popup
+    cy.get('[role="dialog"]').should('contain.text', 'Update dataset');
+    cy.get('[role="dialog"]').should('contain.text', "Update your data source's information");
+    // May need to be updated, as it depend on the configuration of the webapp
+    cy.get('[data-cy="selected-runner-source-type"]').should('contain.text', 'Source: Brewery (.zip) from Local File');
+    cy.get('[id="text-input-etl_param_stock-label"]').should('contain.text', 'Stock');
+    cy.get('[id="text-input-etl_param_stock"]').should('have.value', '100');
+    cy.get('[id="text-input-etl_param_restock_quantity-label"]').should('contain.text', 'Restock');
+    cy.get('[id="text-input-etl_param_restock_quantity"]').should('have.value', '25');
+    cy.get('[id="text-input-etl_param_num_waiters-label"]').should('contain.text', 'Waiters');
+    cy.get('[id="text-input-etl_param_num_waiters"]').should('have.value', '5');
+    cy.get('[data-cy="browse-button"]').should('exist');
+    cy.get('[aria-label="reference.zip"]').should('exist');
+    cy.get('[data-testid="DeleteForeverIcon"]').should('exist');
+    cy.get('[data-cy="close-update-dataset-parameters-dialog-button"]').should('exist');
+    cy.get('[data-cy="update-dataset-parameters-button"]').should('be.disabled');
+
+    // Update the file
+    cy.get('[data-cy=browse-button]').selectFile('cypress/fixtures/datasets/PROD-14373/reference.zip', { force: true });
+    cy.wait(1000);
+
+    // Confirm update
+    cy.get('[data-cy="update-dataset-parameters-button"]').should('not.be.disabled');
+    cy.get('[data-cy="update-dataset-parameters-button"]').click();
+
+    // Wait for the end of the reupload
+    cy.get('[data-cy="dataset-overview-abort-button"]', { timeout: 60000 }).should('not.exist', { timeout: 60000 });
+    cy.wait(5000);
+
+    // Check updated values
+    cy.get('[data-cy="indicator-card-customers_count"]', { timeout: 60000 }).should('contain', '3');
+    cy.get('[data-cy="category-kpi-avg_satisfaction"]').should('contain', '5');
+
+    // Run the scenario with the updated values
+    scenario.runScenario(datasetName);
+
+    // Don't delete the scenario, manual checks are needed
+  });
 });

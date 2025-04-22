@@ -20,5 +20,6 @@ describe('To use after the sanity check and the manual checks', () => {
     datasetManager.deleteDataset('DLOP-PROD-13240-Admin');
     datasetManager.deleteDataset('DLOP-PROD-13240-Editor');
     datasetManager.deleteDataset('DLOP-PROD-13240-Viewer');
+    datasetManager.deleteDataset('DLOP-PROD-14373');
   });
 });
