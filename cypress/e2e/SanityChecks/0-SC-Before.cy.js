@@ -12,7 +12,7 @@ describe('To run before any automated sanity check', () => {
     var datasetName = 'DLOP-Reference-for-automated-tests';
     // Remove in case it's a second try
     datasetManager.deleteDataset(datasetName);
-    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
     datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
   });
 

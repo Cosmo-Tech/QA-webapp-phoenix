@@ -14,7 +14,7 @@ describe('Dataset Manager Sanity Checks', () => {
 
     connection.navigate('dataset');
     // Create the dataset
-    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
     // Check the information
     datasetManager.selectDataset(datasetName);
     cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Author');
@@ -195,7 +195,7 @@ describe('Dataset Manager Sanity Checks', () => {
     scenario.deleteScenario('DLOP-PROD-14371');
 
     connection.navigate('dataset');
-    datasetManager.createDatasetLocalFile('DLOP-PROD-14371', 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile('DLOP-PROD-14371', 'A basic reference dataset for brewery model', 'reference');
     cy.wait(1000);
     scenario.createScenario('DLOP-PROD-14371', 'master', 'DLOP-PROD-14371', 'BreweryParameters');
     cy.get('[data-cy="dataset-name"]').should('contain', 'DLOP-PROD-14371');
@@ -237,5 +237,15 @@ describe('Dataset Manager Sanity Checks', () => {
     // Delete scenario and dataset (no longer needed, no manual checks)
     datasetManager.deleteDataset('DLOP-Updated-PROD-14371');
     scenario.deleteScenario('DLOP-PROD-14371');
+  });
+
+  it('PROD-14372: Edit non-ETL dataset', () => {
+    connection.connect();
+    connection.navigate('dataset');
+    // Select a dataset created without ETL (file)
+    datasetManager.searchDataset('DLOP-Reference-for-automated-tests');
+    cy.wait(1000);
+    // Check there is no "Edit" button
+    cy.get('[data-testid="EditIcon"]').should('not.exist');
   });
 });

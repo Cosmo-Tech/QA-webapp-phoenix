@@ -14,7 +14,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     datasetManager.deleteDataset('DLOP-PROD-13233-Reference');
 
     // Create the dataset
-    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
     datasetManager.selectDataset(datasetName);
     cy.wait(1000);
 
@@ -138,21 +138,21 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     connection.navigate('dataset');
 
     // Create the dataset Admin
-    datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameAdmin, config.permissionUserEmail(), config.permissionUserName(), 'admin');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
     datasetManager.overviewDataset(datasetNameAdmin);
 
     // Create the dataset Editor
-    datasetManager.createDatasetLocalFile(datasetNameEditor, 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile(datasetNameEditor, 'A basic reference dataset for brewery model', 'reference');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameEditor, config.permissionUserEmail(), config.permissionUserName(), 'editor');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
     datasetManager.overviewDataset(datasetNameEditor);
 
     // Create the dataset Viewer
-    datasetManager.createDatasetLocalFile(datasetNameViewer, 'A basic reference dataset for brewery model', 'reference_dataset');
+    datasetManager.createDatasetLocalFile(datasetNameViewer, 'A basic reference dataset for brewery model', 'reference');
     // Share the "admin" permissions with someone
     datasetManager.shareDatasetUser(datasetNameViewer, config.permissionUserEmail(), config.permissionUserName(), 'viewer');
     // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
