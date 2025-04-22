@@ -185,4 +185,57 @@ describe('Dataset Manager Sanity Checks', () => {
     scenario.deleteScenario('PROD-12909');
     scenario.deleteScenario('PROD-12910');
   });
+
+  it('PROD-14371: Edit dataset name', () => {
+    connection.connect();
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-14371');
+    datasetManager.deleteDataset('DLOP-Updated-PROD-14371');
+    scenario.deleteScenario('DLOP-PROD-14371');
+
+    connection.navigate('dataset');
+    datasetManager.createDatasetLocalFile('DLOP-PROD-14371', 'A basic reference dataset for brewery model', 'reference_dataset');
+    cy.wait(1000);
+    scenario.createScenario('DLOP-PROD-14371', 'master', 'DLOP-PROD-14371', 'BreweryParameters');
+    cy.get('[data-cy="dataset-name"]').should('contain', 'DLOP-PROD-14371');
+    connection.navigate('dataset');
+    datasetManager.searchDataset('DLOP-PROD-14371');
+    cy.get('[data-cy="dataset-name"]').click({ force: true });
+    cy.get('[data-cy="dataset-name-editable-text-field"]').find('input').clear().type('DLOP-Updated-PROD-14371').type('{enter}');
+
+    // Check the old name is no longer in the dataset list
+    datasetManager.searchDataset('DLOP-PROD-14371');
+    cy.wait(1000);
+    cy.get('[data-cy^="datasets-list-item-button-"]').should('not.exist');
+    datasetManager.searchDataset('DLOP-Updated-PROD-14371');
+    cy.get('[data-cy^="datasets-list-item-button-"]').should('have.length', 1);
+
+    // Check the new name displays in scenario view
+    scenario.searchScenarioInView('DLOP-PROD-14371');
+    cy.get('[data-cy="dataset-name"]').should('contain', 'DLOP-Updated-PROD-14371');
+
+    // Check the new name displays in the creation form
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="create-scenario-button"]').click({ force: true });
+    cy.get('#scenarioName').click().type('DLOP-Updated-PROD-14371');
+    cy.get('[data-cy="create-scenario-dialog-master-checkbox"]').click({ force: true });
+    cy.wait(500);
+    cy.get('[placeholder="Select a dataset"]').click().clear().type('DLOP-PROD-14371');
+    cy.wait(500);
+    cy.get('[role="presentation"]').should('contain.text', 'No options');
+    cy.wait(500);
+    cy.get('[placeholder="Select a dataset"]').click().clear().type('DLOP-Updated-PROD-14371').type('{downarrow}').type('{enter}');
+    cy.wait(500);
+    cy.get('[placeholder="Select a dataset"]').should('have.value', 'DLOP-Updated-PROD-14371');
+    cy.get('[data-cy="create-scenario-dialog-cancel-button"]').click({ force: true });
+
+    // Run the scenario to check the updated name does not cause error
+    scenario.runScenario('DLOP-PROD-14371');
+    cy.get('[data-cy="scenario-datasets"]').should('have.text', 'DLOP-Updated-PROD-14371');
+
+    // Delete scenario and dataset (no longer needed, no manual checks)
+    datasetManager.deleteDataset('DLOP-Updated-PROD-14371');
+    scenario.deleteScenario('DLOP-PROD-14371');
+  });
 });

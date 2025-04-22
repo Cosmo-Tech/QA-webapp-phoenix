@@ -295,6 +295,16 @@ class datasetManager {
     cy.get('[data-cy="dataset-overview-card"').contains('Customers are basic entities in the Brewery model. They are used to simulate beverage consumption inside Bar entities, with an influence graph between customers');
     cy.get('[data-cy="dataset-overview-card"').contains('Average satisfaction');
     cy.get('[data-cy="dataset-overview-card"').contains('Satisfaction, SurroundingSatisfaction, Thirsty');
+
+    // Check the overview details
+    cy.get('[data-cy="category-details-dialog-open-button"]').first().click();
+    cy.get('[data-cy="indicator-card-average_stock"]').should('exist');
+    cy.get('[data-cy="indicator-card-average_waiters"]').should('exist');
+    cy.get('[data-cy="indicator-card-min_waiters"]').should('exist');
+    cy.get('[data-cy="indicator-card-max_waiters"]').should('exist');
+    cy.get('[data-cy="table-bars"]').should('exist');
+    cy.get('[data-cy="category-details-dialog-close-button"]').click();
+
     // Check the details can be folded again
     cy.get('[data-testid="ExpandMoreIcon"]').click({ multiple: true });
     cy.get('[class*="MuiCollapse-hidden"]').should('exist');

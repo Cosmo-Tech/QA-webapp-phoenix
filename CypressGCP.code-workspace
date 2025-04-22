@@ -1,10 +1,6 @@
 {
   "folders": [
     {
-      "name": "CypressGCP",
-      "path": "../CypressGCP",
-    },
-    {
       "name": "QA-asset-phoenix",
       "path": "../CypressAzure/QA-asset-phoenix",
     },

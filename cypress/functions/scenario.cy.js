@@ -12,10 +12,33 @@ class Scenario {
     // Master or child scenario, choose dataset or parent
     if (master === 'master') {
       cy.get('[data-cy="create-scenario-dialog-master-checkbox"]').click({ force: true });
-      cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}{enter}');
+      cy.wait(1000);
+      cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}').type('{enter}');
+      cy.wait(1000);
+
+      cy.log('Dataset value : ' + cy.get('[placeholder="Select a dataset"]').invoke('val'));
+      // Check value is the correct one, otherwise retry
+      if (cy.get('[placeholder="Select a dataset"]').invoke('attr', 'value') == dataset) {
+        cy.log('Correct dataset selected');
+      } else {
+        cy.log('Dataset not found, second try');
+        cy.wait(1000);
+        cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}').type('{enter}');
+        cy.wait(1000);
+      }
+      // Check value is the correct one, otherwise retry
+      if (cy.get('[placeholder="Select a dataset"]').invoke('attr', 'value') == dataset) {
+        cy.log('Correct dataset selected');
+      } else {
+        cy.log('Dataset not found, third try');
+        cy.wait(1000);
+        cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}').type('{enter}');
+        cy.wait(1000);
+      }
     } else if (master === 'child') {
       // No need to do uncheck the box, by default the box is not checked
       cy.get('[placeholder="Parent Scenario"]').click().clear().type(dataset).type('{downarrow}{enter}');
+      cy.wait(500);
     } else {
       cy.log('Unknown value. This function accepts only "master" or "child" as values.');
     }
@@ -79,12 +102,12 @@ class Scenario {
     // Wait until the end of the simulation (5 min timeout)
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');
     // Check the simulation is successful
-    /*connection.navigate('manager');
+    connection.navigate('manager');
     this.searchScenarioInManager(scenarioName);
     cy.wait(500);
     cy.get('[data-cy="expand-accordion-button"]').click();
     cy.wait(500);
-    cy.get('[data-cy="scenario-status-successful"]').should('exist');*/
+    cy.get('[data-cy="scenario-status-successful"]').should('exist');
   }
 
   // Start a simulation then cancel it
