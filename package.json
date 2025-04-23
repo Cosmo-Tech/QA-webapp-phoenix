@@ -47,6 +47,7 @@
     "test": "jest",
     "eject": "react-app-rewired eject",
     "cypress": "node_modules/.bin/cypress open",
+    "cypress_run": "node_modules/.bin/cypress run",
     "eslint": "eslint",
     "prettier": "npx prettier -w",
     "link:ui": "yalc add @cosmotech/ui && yalc link @cosmotech/ui && yarn install",
