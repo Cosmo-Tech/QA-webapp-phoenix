@@ -57,7 +57,10 @@ class datasetManager {
     cy.get('[data-cy="confirm-dataset-creation"]').click();
     // Check dataset is created
     cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
+    cy.wait(1000);
     cy.get('[data-cy*="dataset-reupload-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+    cy.get('[data-cy="dataset-overview-title"]', { timeout: 60000 }).should('not.exist');
+    cy.wait(1000);
   }
 
   static createDatasetAzureStorage(datasetName, description, accountName, containerName, datasetPath) {

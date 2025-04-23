@@ -290,9 +290,11 @@ describe('Dataset Manager Sanity Checks', () => {
     // Check dataset is created
     cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
     cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+    datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Create the scenario and run it
     scenario.createScenario(datasetName, 'master', datasetName, 'NoParameters');
+    scenario.shareScenarioWithUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
     scenario.runScenario(datasetName);
 
     // Go back to dataset overview and edit the dataset

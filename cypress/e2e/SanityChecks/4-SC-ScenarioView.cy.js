@@ -495,4 +495,51 @@ describe('Scenario View feature', () => {
     // Delete the scenario (manual tests to complete this test can be done on any other remaining scenario)
     scenario.deleteScenario('DLOP-PROD-11883-CheckCreationForm');
   });
+
+  it('PROD-14374: Launch impossible if dataset in error', () => {
+    connection.connect();
+    var datasetName = 'DLOP-PROD-14374';
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset(datasetName);
+    scenario.deleteScenario(datasetName);
+
+    connection.navigate('dataset');
+    // Create the dataset
+    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
+    datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
+    // Create the scenario and run it
+    scenario.createScenario(datasetName, 'master', datasetName, 'BreweryParameters');
+    scenario.runScenario(datasetName);
+
+    // Go back to dataset overview and refresh the dataset with wrong data
+    connection.navigate('dataset');
+    datasetManager.searchDataset(datasetName);
+    cy.get('[id^="dataset-reupload-input"]').selectFile('cypress/fixtures/datasets/PROD-14374/FalseDataset.zip', { force: true });
+    cy.wait(1000);
+
+    // Confirm update failed
+    cy.get('[data-cy="dataset-overview-title"]').should('have.text', 'An error occurred during import of your data');
+    cy.get('[data-cy*="dataset-reupload-button"]').should('exist');
+
+    // Go back to scenario and check the launch button is disabled
+    scenario.searchScenarioInView(datasetName);
+    cy.get('[data-cy="launch-scenario-button"]').should('be.disabled');
+    // Check the tooltip display the correct message
+    cy.get('[aria-label="The scenario cannot be run because its dataset isn\'t found or its data ingestion has failed"]').should('exist');
+
+    // Update the value of a parameter
+    cy.get('[id="number-input-stock"]').click().clear().type('50');
+
+    // Check you can only save or discard, not launch
+    cy.get('[data-cy="save-button"]').should('exist');
+    cy.get('[data-cy="discard-button"]').should('exist');
+    cy.get('[aria-label="The scenario cannot be run because its dataset isn\'t found or its data ingestion has failed"]').should('exist');
+    cy.get('[data-cy="launch-scenario-button"]').should('be.disabled');
+
+    // Click on discard to avoid later issue
+    cy.get('[data-cy="discard-button"]').click();
+    cy.get('[data-cy="discard-changes-button2"]').click();
+  });
 });
