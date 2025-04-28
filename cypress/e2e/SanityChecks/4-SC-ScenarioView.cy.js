@@ -275,7 +275,7 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="scenario-status-successful"]').should('exist');
   });
 
-  it('PROD-13885, PROD-13884 and PROD-11884: Create a master/child scenario', () => {
+  it('PROD-13885, PROD-13883, PROD-13884 and PROD-11884: Create a master/child scenario', () => {
     connection.connect();
     // Delete all scenarios created in this test, in case it's a second try
     scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-A');

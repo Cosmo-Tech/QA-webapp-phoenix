@@ -131,7 +131,7 @@ describe('Scenario sharing feature and permissions', () => {
 
     // Clean in case it's a second try
     scenario.deleteScenario('DLOP-PROD-13240-Admin');
-    scenario.deleteScenario('PROD-13240-Validator');
+    scenario.deleteScenario('DLOP-PROD-13240-Validator');
     scenario.deleteScenario('DLOP-PROD-13240-Editor');
     scenario.deleteScenario('DLOP-PROD-13240-Viewer');
 

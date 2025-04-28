@@ -5,7 +5,7 @@ var config = require('../../../variables.cy.js');
 var scenario = require('../../functions/scenario.cy.js');
 
 describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
-  it('PROD-13233 -> Share a dataset', () => {
+  it('PROD-13233 and PROD-13238 -> Share a dataset', () => {
     connection.connect();
     connection.navigate('dataset');
     var datasetName = 'DLOP-PROD-13233-Reference';
