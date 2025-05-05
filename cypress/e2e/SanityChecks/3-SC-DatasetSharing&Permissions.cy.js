@@ -121,7 +121,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     datasetManager.deleteDataset(datasetName);
   });
 
-  it('PROD-13240 -> Check permissions, need to be completed manually', () => {
+  it('PROD-13240, PROD-13235 -> Check permissions, need to be completed manually', () => {
     connection.connect();
     var datasetNameAdmin = 'DLOP-PROD-13240-Admin';
     var datasetNameEditor = 'DLOP-PROD-13240-Editor';
