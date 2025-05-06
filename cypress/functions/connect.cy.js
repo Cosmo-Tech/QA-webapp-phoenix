@@ -1,7 +1,7 @@
 import { Login } from '../commons/actions/generic';
 import { GENERIC_SELECTORS } from '../commons/constants/generic/IdConstants';
 import { apiUtils as api } from '../commons/utils';
-var config = require('../../variables.cy');
+const config = require('../../variables.cy');
 
 class ConnectToWebApp {
   //This function connect a generic user so it is possible to navigate in the solution for other tests
@@ -27,7 +27,7 @@ class ConnectToWebApp {
   }
 
   static connectWorkspace() {
-    var workspaceID = config.workspace();
+    let workspaceID = config.workspace();
     const queries = api.interceptSelectWorkspaceQueries(workspaceID);
     this.getWorkspaceCardById(workspaceID).should('be.visible').find(GENERIC_SELECTORS.workspace.openButton).click();
     api.waitAliases(queries, { timeout: 60 * 1000 });

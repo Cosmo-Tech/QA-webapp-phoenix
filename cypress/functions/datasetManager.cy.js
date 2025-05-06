@@ -1,9 +1,9 @@
 const { UsernamePasswordClient } = require('@azure/msal-node');
 const { da } = require('date-fns/locale');
 
-var connection = require('../functions/connect.cy.js');
+const connection = require('../functions/connect.cy.js');
 
-class datasetManager {
+class DatasetManager {
   //This function create a dataset with the source "Local File". It requires the local file to be in the Fixtures > Datasets folder.
 
   static createDatasetLocalFile(datasetName, description, fileName) {
@@ -50,7 +50,7 @@ class datasetManager {
     // Check the browse button is available
     cy.get('[data-cy=browse-button]').should('exist');
     // Browse the dataset
-    var datasetPath = 'cypress/fixtures/datasets/' + fileName + '.zip';
+    const datasetPath = 'cypress/fixtures/datasets/' + fileName + '.zip';
     cy.get('[data-cy=browse-button]').selectFile(datasetPath, { force: true });
     cy.wait(1000);
     // Confirm the creation
@@ -178,7 +178,6 @@ class datasetManager {
     // Check the creation wizard text
     cy.get('[role="dialog"]').should('contain', 'Create sub dataset');
     cy.get('[role="dialog"]').should('contain', 'Metadata');
-    //cy.get('[role="dialog"]').should('contain', 'Filter');
     cy.get('[role="dialog"]').should('contain', 'Please provide some metadata regarding your new dataset');
     cy.get('[role="dialog"]').should('contain', 'Parent dataset');
     cy.get('[role="dialog"]').should('contain', parentName);
@@ -369,7 +368,7 @@ class datasetManager {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === user) {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-' + name + '"]')
@@ -411,7 +410,7 @@ class datasetManager {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === 'Workspace') {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-Workspace"]').find('[aria-haspopup="listbox"]').click({ force: true });
@@ -452,7 +451,7 @@ class datasetManager {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === user) {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-' + name + '"]')
@@ -498,7 +497,7 @@ class datasetManager {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === 'Workspace') {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-Workspace"]').find('[aria-haspopup="listbox"]').click({ force: true });
@@ -518,4 +517,4 @@ class datasetManager {
   }
 }
 
-module.exports = datasetManager;
+module.exports = DatasetManager;

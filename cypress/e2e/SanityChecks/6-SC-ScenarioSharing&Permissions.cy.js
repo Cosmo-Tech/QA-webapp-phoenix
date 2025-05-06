@@ -1,13 +1,13 @@
 import 'cypress-file-upload';
-var connection = require('../../functions/connect.cy.js');
-var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy.js');
-var scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
 
 describe('Scenario sharing feature and permissions', () => {
   it('PROD-13738 -> Share a scenario', () => {
     connection.connect();
-    var scenarioName = 'DLOP-PROD-13738-ShareScenario';
+    const scenarioName = 'DLOP-PROD-13738-ShareScenario';
 
     // Delete scenario in case it's a retry
     scenario.deleteScenario(scenarioName);
@@ -34,7 +34,7 @@ describe('Scenario sharing feature and permissions', () => {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === config.permissionUserEmail()) {
             // Once the user is found, the access is removed by clicking the role dropdown menu and remove the role
             cy.get('[data-cy*="role-editor-' + config.permissionUserName() + '"]')
@@ -106,7 +106,7 @@ describe('Scenario sharing feature and permissions', () => {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === 'dev.sample.webapp@example.com') {
             // Once the owner is found, the access is removed by clicking the role dropdown menu and remove the role
             cy.get('[data-cy="role-editor-devsamplewebappexamplecom"]').find('[aria-haspopup="listbox"]').click({ force: true });

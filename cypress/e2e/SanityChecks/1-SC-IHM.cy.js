@@ -1,8 +1,8 @@
 import 'cypress-file-upload';
-var connection = require('../../functions/connect.cy.js');
-var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy.js');
-var scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
 
 describe('Global IHM and menu checks', () => {
   it('PROD-13867 -> Scenario view & Scenario Manager - IHM - Dashboards check if no scenario', () => {
@@ -35,7 +35,7 @@ describe('Global IHM and menu checks', () => {
 
   it('PROD-13867 -> Scenario view & Scenario Manager - IHM Scenario View and Scenario Manager', () => {
     connection.connect();
-    var scenarioName = 'DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs';
+    const scenarioName = 'DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs';
 
     // Clean in case it's a second try
     scenario.deleteScenario(scenarioName);

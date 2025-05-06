@@ -1,14 +1,14 @@
 import 'cypress-file-upload';
-var connection = require('../../functions/connect.cy.js');
-var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy.js');
-var scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
 
 describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
   it('PROD-13233 and PROD-13238 -> Share a dataset', () => {
     connection.connect();
     connection.navigate('dataset');
-    var datasetName = 'DLOP-PROD-13233-Reference';
+    const datasetName = 'DLOP-PROD-13233-Reference';
 
     // Clean in case it's a second try
     datasetManager.deleteDataset('DLOP-PROD-13233-Reference');
@@ -40,7 +40,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === config.permissionUserEmail()) {
             // Once the user is found, the access is removed by clicking the role dropdown menu and remove the role
             cy.get('[data-cy*="role-editor-' + config.permissionUserName() + '"]')
@@ -103,7 +103,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === 'dev.sample.webapp@example.com') {
             // Once the owner is found, the access is removed by clicking the role dropdown menu and remove the role
             cy.get('[data-cy="role-editor-devsamplewebappexamplecom"]').find('[aria-haspopup="listbox"]').click({ force: true });
@@ -123,9 +123,9 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
 
   it('PROD-13240, PROD-13235 -> Check permissions, need to be completed manually', () => {
     connection.connect();
-    var datasetNameAdmin = 'DLOP-PROD-13240-Admin';
-    var datasetNameEditor = 'DLOP-PROD-13240-Editor';
-    var datasetNameViewer = 'DLOP-PROD-13240-Viewer';
+    const datasetNameAdmin = 'DLOP-PROD-13240-Admin';
+    const datasetNameEditor = 'DLOP-PROD-13240-Editor';
+    const datasetNameViewer = 'DLOP-PROD-13240-Viewer';
 
     // Clean in case it's a second try
     datasetManager.deleteDataset(datasetNameAdmin);

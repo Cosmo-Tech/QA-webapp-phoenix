@@ -1,8 +1,8 @@
 import 'cypress-file-upload';
-var connection = require('../../functions/connect.cy.js');
-var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy.js');
-var scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
 
 describe('Scenario View feature', () => {
   it('PROD-11815 - Validate and Reject scenario', () => {
@@ -453,9 +453,6 @@ describe('Scenario View feature', () => {
     // Check the different steps (5 min timeout each)
     cy.get('[data-cy="running-state-label"]', { timeout: 300000 }).should('have.text', 'Running');
     cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('have.text', 'Scenario run in progress...');
-    // Removed from the test because if the action takes less than 10s, the text doesn't display
-    //cy.get('[data-cy="running-state-label"]', { timeout: 300000 }).should('have.text', 'Transferring results');
-    //cy.get('[data-cy="dashboard-placeholder"]', { timeout: 300000 }).should('have.text', 'Transfer of scenario results in progress...');
 
     // Wait until the end of the simulation (5 min timeout)
     cy.get('[data-cy="stop-scenario-run-button"]', { timeout: 300000 }).should('not.exist');
@@ -498,7 +495,7 @@ describe('Scenario View feature', () => {
 
   it('PROD-14374: Launch impossible if dataset in error', () => {
     connection.connect();
-    var datasetName = 'DLOP-PROD-14374';
+    const datasetName = 'DLOP-PROD-14374';
 
     // Clean in case it's a second try
     datasetManager.deleteDataset(datasetName);

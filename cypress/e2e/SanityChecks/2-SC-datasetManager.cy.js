@@ -1,13 +1,13 @@
 import 'cypress-file-upload';
-var connection = require('../../functions/connect.cy.js');
-var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy.js');
-var scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
 
 describe('Dataset Manager Sanity Checks', () => {
   it('PROD-12905, PROD-12908, PROD-12909 & PROD-12979 -> Create from Local File and check Overview', () => {
     connection.connect();
-    var datasetName = 'PROD-12909';
+    const datasetName = 'PROD-12909';
     // Clean in case of another try
     scenario.deleteScenario(datasetName);
     datasetManager.deleteDataset(datasetName);
@@ -51,7 +51,7 @@ describe('Dataset Manager Sanity Checks', () => {
 
   it('PROD-12905, PROD-12908, PROD-12910 & PROD-12979 -> Create from Azure Storage and check Overview', () => {
     connection.connect();
-    var datasetName = 'PROD-12910';
+    const datasetName = 'PROD-12910';
     // Clean in case of another try
     scenario.deleteScenario(datasetName);
     datasetManager.deleteDataset(datasetName);
@@ -103,7 +103,7 @@ describe('Dataset Manager Sanity Checks', () => {
 
     connection.navigate('dataset');
     // Create a subdataset from a Local File dataset
-    var datasetNameLocalFile = 'PROD-12909-sub';
+    const datasetNameLocalFile = 'PROD-12909-sub';
     // Create the subdataset
     datasetManager.createSubDataset('PROD-12909', datasetNameLocalFile, 'This is a subdataset from a local file dataset');
     // Check the information
@@ -134,7 +134,7 @@ describe('Dataset Manager Sanity Checks', () => {
     datasetManager.overviewDataset(datasetNameLocalFile);
 
     // Create a subdataset from a Azure Storage dataset
-    var datasetNameAzureStorage = 'PROD-12910-sub';
+    const datasetNameAzureStorage = 'PROD-12910-sub';
     // Create the subdataset
     datasetManager.createSubDataset('PROD-12910', datasetNameAzureStorage, 'This is a subdataset from a local file dataset');
     // Check the information
@@ -251,7 +251,7 @@ describe('Dataset Manager Sanity Checks', () => {
 
   it('PROD-14373: Edit ETL dataset', () => {
     connection.connect();
-    var datasetName = 'DLOP-PROD-14373';
+    const datasetName = 'DLOP-PROD-14373';
 
     // Clean in case it's a second try
     datasetManager.deleteDataset(datasetName);

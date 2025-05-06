@@ -1,8 +1,8 @@
 import 'cypress-file-upload';
-var connection = require('../../functions/connect.cy.js');
-var datasetManager = require('../../functions/datasetManager.cy.js');
-var config = require('../../../variables.cy.js');
-var scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
 
 describe('Scenario Manager feature', () => {
   it('PROD-13878: Edit a scenario', () => {
@@ -130,7 +130,7 @@ describe('Scenario Manager feature', () => {
     scenario.deleteScenario('DLOP-PROD-1187-DeleteScenario');
     // Create and run the scenario that will be used for the deletion tests
     scenario.createScenario('DLOP-PROD-1187-DeleteScenario', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    //scenario.runScenario('DLOP-PROD-1187-DeleteScenario');
+    scenario.runScenario('DLOP-PROD-1187-DeleteScenario');
 
     // Delete the scenario
     connection.navigate('manager');

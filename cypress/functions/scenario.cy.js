@@ -1,4 +1,4 @@
-var connection = require('../functions/connect.cy.js');
+const connection = require('../functions/connect.cy.js');
 
 class Scenario {
   //This function create a scenario. Accepted values for the master argument are "master" or "child",
@@ -243,7 +243,7 @@ class Scenario {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === user) {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-' + name + '"]')
@@ -285,7 +285,7 @@ class Scenario {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === 'Workspace') {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-Workspace"]').find('[aria-haspopup="listbox"]').click({ force: true });
@@ -326,7 +326,7 @@ class Scenario {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === user) {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-' + name + '"]')
@@ -372,7 +372,7 @@ class Scenario {
       .then(($el) => {
         cy.get($el).each(($txt) => {
           // Recover the text of the user names listed
-          var userName = $txt.text();
+          let userName = $txt.text();
           if (userName === 'Workspace') {
             // Once the user is found, the access is updated by clicking the role dropdown menu and select the new role
             cy.get('[data-cy*="role-editor-Workspace"]').find('[aria-haspopup="listbox"]').click({ force: true });
