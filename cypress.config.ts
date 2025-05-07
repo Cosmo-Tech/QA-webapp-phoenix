@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-var config = require('./variables.cy');
+const config = require('./variables.cy');
 
 export default defineConfig({
   experimentalMemoryManagement: true,
