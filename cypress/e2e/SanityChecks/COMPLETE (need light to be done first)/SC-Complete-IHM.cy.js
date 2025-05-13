@@ -1,8 +1,8 @@
 import 'cypress-file-upload';
-const connection = require('../../functions/connect.cy.js');
-const datasetManager = require('../../functions/datasetManager.cy.js');
-const config = require('../../../variables.cy.js');
-const scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../../functions/connect.cy.js');
+const datasetManager = require('../../../functions/datasetManager.cy.js');
+const config = require('../../../../variables.cy.js');
+const scenario = require('../../../functions/scenario.cy.js');
 
 describe('Global IHM and menu checks', () => {
   it('PROD-13867 -> Scenario view & Scenario Manager - IHM - Dashboards check if no scenario', () => {

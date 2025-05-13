@@ -1,0 +1,46 @@
+import 'cypress-file-upload';
+const connection = require('../../functions/connect.cy.js');
+const datasetManager = require('../../functions/datasetManager.cy.js');
+const config = require('../../../variables.cy.js');
+const scenario = require('../../functions/scenario.cy.js');
+
+describe('To use after the sanity check and the manual checks', () => {
+  it('Clean all scenarios resulting of the sanity check (fail if no scenario)', () => {
+    connection.connect();
+    // Delete scenarios
+    connection.navigate('manager');
+    scenario.deleteScenario('DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
+    scenario.deleteScenario('A-ValidatedScenario');
+    scenario.deleteScenario('B-RejectedScenario');
+    scenario.deleteScenario('DLOP-PROD-14373');
+    scenario.deleteScenario('DLOP-PROD-13240-Admin');
+    scenario.deleteScenario('DLOP-PROD-13240-Editor');
+    scenario.deleteScenario('DLOP-PROD-13240-Viewer');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-A');
+    scenario.deleteScenario('DLOP-PROD-11884-MasterLevel-B');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-A');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-B');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-B-A');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-A-A');
+    scenario.deleteScenario('DLOP-PROD-11884-Children-A-A-B');
+    scenario.deleteScenario('DLOP-PROD-13885-ChildDescriptionAndTag');
+    scenario.deleteScenario('DLOP-PROD-13885-MasterDescriptionAndTag');
+    scenario.deleteScenario('Updated-DLOP-PROD-13878');
+    scenario.deleteScenario('DLOP-PROD-13240-Admin');
+    scenario.deleteScenario('DLOP-PROD-13240-Validator');
+    scenario.deleteScenario('DLOP-PROD-13240-Editor');
+    scenario.deleteScenario('DLOP-PROD-13240-Viewer');
+    scenario.deleteAllScenario();
+  });
+
+  it('Clean all datasets resulting of the sanity check', () => {
+    connection.connect();
+    // Delete datasets
+    connection.navigate('dataset');
+    datasetManager.deleteDataset('DLOP-Reference-for-automated-tests');
+    datasetManager.deleteDataset('DLOP-PROD-13240-Admin');
+    datasetManager.deleteDataset('DLOP-PROD-13240-Editor');
+    datasetManager.deleteDataset('DLOP-PROD-13240-Viewer');
+    datasetManager.deleteDataset('DLOP-PROD-14373');
+  });
+});
