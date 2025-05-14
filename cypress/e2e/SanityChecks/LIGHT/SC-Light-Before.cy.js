@@ -16,8 +16,19 @@ describe('To run before any automated sanity check', () => {
     datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
   });
 
+  it('Create another dataset with more data for some data tests', () => {
+    //Create a dataset with more data (500 customers) for the parameters checks.
+    connection.connect();
+    connection.navigate('dataset');
+    const datasetName = 'DLOP-Barcelona-for-automated-tests';
+    // Remove in case it's a second try
+    datasetManager.deleteDataset(datasetName);
+    datasetManager.createDatasetLocalFile(datasetName, 'A dataset with 500 customers for brewery model', 'barcelona');
+    datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+  });
+
   // Clean all scenario to have the "no scenario" messages in different screens
-  it('Delete All Senario | May fail if no scenario', () => {
+  it('Delete All Senario', () => {
     connection.connect();
     // Create a fake scenario so it won't fail due to "no scenario issue"
     scenario.createScenario('DLOP-ScenarioForDeletion', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
