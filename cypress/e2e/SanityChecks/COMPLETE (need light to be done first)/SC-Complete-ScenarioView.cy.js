@@ -281,7 +281,7 @@ describe('Scenario View feature', () => {
     scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
   });
 
-  it('PROD-14374: Launch impossible if dataset in error', () => {
+  it('PROD-13345 and PROD-14374: Launch impossible if dataset in error', () => {
     connection.connect();
     const datasetName = 'DLOP-PROD-14374';
 

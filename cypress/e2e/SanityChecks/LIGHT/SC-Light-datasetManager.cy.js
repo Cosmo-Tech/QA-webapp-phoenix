@@ -249,7 +249,7 @@ describe('Dataset Manager Sanity Checks', () => {
     cy.get('[data-testid="EditIcon"]').should('not.exist');
   });
 
-  it('PROD-14373: Edit ETL dataset', () => {
+  it('PROD-13335 and PROD-14373: Edit ETL dataset', () => {
     connection.connect();
     const datasetName = 'DLOP-PROD-14373';
 

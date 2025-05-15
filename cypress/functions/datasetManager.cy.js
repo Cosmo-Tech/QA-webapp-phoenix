@@ -8,7 +8,6 @@ class DatasetManager {
 
   static createDatasetLocalFile(datasetName, description, fileName) {
     connection.navigate('dataset');
-    this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
       if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
@@ -65,7 +64,6 @@ class DatasetManager {
 
   static createDatasetAzureStorage(datasetName, description, accountName, containerName, datasetPath) {
     connection.navigate('dataset');
-    this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
       if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
@@ -118,7 +116,6 @@ class DatasetManager {
 
   static createDatasetADT(datasetName, description, datasetPath) {
     connection.navigate('dataset');
-    this.deleteDataset(datasetName);
     // Create a new dataset
     cy.get('body').then(($createButton) => {
       if ($createButton.find('[data-cy="create-dataset-button"]').length > 0) {
@@ -298,13 +295,18 @@ class DatasetManager {
     cy.get('[data-cy="dataset-overview-card"').contains('Average satisfaction');
     cy.get('[data-cy="dataset-overview-card"').contains('Satisfaction, SurroundingSatisfaction, Thirsty');
 
-    // Check the overview details
+    // Check the overview details (table with the data)
     cy.get('[data-cy="category-details-dialog-open-button"]').first().click();
     cy.get('[data-cy="indicator-card-average_stock"]').should('exist');
     cy.get('[data-cy="indicator-card-average_waiters"]').should('exist');
     cy.get('[data-cy="indicator-card-min_waiters"]').should('exist');
     cy.get('[data-cy="indicator-card-max_waiters"]').should('exist');
     cy.get('[data-cy="table-bars"]').should('exist');
+    // Check the columns -> If error in the table, the columns won't display, so no need to check the data that may change, only the headers
+    cy.get('[col-id="nbWaiters"]').should('exist');
+    cy.get('[col-id="restockQty"]').should('exist');
+    cy.get('[col-id="stock"]').should('exist');
+    //Close the details
     cy.get('[data-cy="category-details-dialog-close-button"]').click();
 
     // Check the details can be folded again
@@ -312,6 +314,18 @@ class DatasetManager {
     cy.get('[class*="MuiCollapse-hidden"]').should('exist');
     // Clear the search to have all the dataset list back
     this.clearSearch();
+  }
+
+  static refreshDatasetFromFile(datasetName, datasetPath) {
+    connection.navigate('dataset');
+    this.selectDataset(datasetName);
+    cy.get('[data-cy^="dataset-reupload-button-"]').click();
+    cy.get('[data-cy="refresh-dataset-dialog-confirm-button"]').click();
+    cy.get('[id^="dataset-reupload-input-"]').selectFile(datasetPath, { force: true });
+    cy.wait(1000);
+    cy.get('[data-cy*="dataset-reupload-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+    cy.get('[data-cy="dataset-overview-title"]', { timeout: 60000 }).should('not.exist');
+    cy.wait(1000);
   }
 
   // User has to be an email address.
