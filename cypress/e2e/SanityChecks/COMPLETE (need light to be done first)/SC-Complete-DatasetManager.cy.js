@@ -286,4 +286,177 @@ describe('Editable Tables Parameters', () => {
     // Delete the datasets
     datasetManager.deleteDataset('DLOP-PROD-13201-Logs');
   });
+
+  it('PROD-13321: MultiSelector in ETL', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Create manually a dataset from Barcelona, because the test checks the creation form
+    datasetManager.selectDataset('DLOP-Barcelona-for-automated-tests');
+    // Create a new dataset
+    cy.get('[data-cy="create-subdataset-button"]').click();
+    // Enter the name of the subdataset
+    cy.get('input[id^="mui-"]').clear({ force: true }).type('DLOP-PROD-13321-MultiSelector', { force: true });
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+
+    // Select the filter
+    cy.contains('Dataset filter').click({ force: true });
+    cy.get('[data-value=".//etl_sub_dataset_by_filter"]').click({ force: true });
+
+    // Check the available options
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect"]').click({ force: true });
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('contain', 'Thirsty');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').should('contain', 'Not thirsty');
+
+    // Check values returned with the input text
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect"]').type('false');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('not.exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').should('not.exist');
+
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect"]').clear().type('thirsty');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').should('exist');
+
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect"]').clear().type('no');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('contain', 'Not thirsty');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').should('not.exist');
+
+    // Select the "Not Thirsty" option
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').click();
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[data-cy="confirm-dataset-creation"]').should('not.be.disabled');
+
+    // Remove the selected option
+    cy.get('[data-tag-index="0"]').find('[data-testid="CancelIcon"]').click();
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').find('[type="checkbox"]').should('not.be.checked');
+    cy.get('[data-cy="confirm-dataset-creation"]').should('be.disabled');
+
+    // Check the two options displays and are not checked
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').find('[type="checkbox"]').should('not.be.checked');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').find('[type="checkbox"]').should('not.be.checked');
+
+    // Select both options
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').click();
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').click();
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[data-cy="confirm-dataset-creation"]').should('not.be.disabled');
+
+    // Remove the option "not thirsty"
+    cy.get('[data-tag-index="1"]').find('[data-testid="CancelIcon"]').click();
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-0"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_thirsty_multiselect-option-1"]').find('[type="checkbox"]').should('not.be.checked');
+
+    // Click on previous then next. Previous selection is persistent
+    cy.get('[data-cy="dataset-creation-previous-step"]').click({ force: true });
+    cy.get('[data-cy="dataset-creation-next-step"]').click({ force: true });
+    cy.contains('Dataset filter').click({ force: true });
+    cy.get('[data-value=".//etl_sub_dataset_by_filter"]').click({ force: true });
+    cy.get('[data-tag-index="0"]').should('contain', 'Thirsty');
+    cy.get('[data-cy="confirm-dataset-creation"]').should('not.be.disabled');
+
+    // Cancel the subdataset creation. As nothing has been created, no need for deletion
+    cy.get('[data-cy="cancel-dataset-creation"]').click();
+  });
+
+  it('PROD-13323: Dynamic MultiSelector in ETL', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13323-DynamicMultiSelector');
+
+    // Create a dataset with Barcelona
+    datasetManager.createDatasetLocalFile('DLOP-PROD-13323-DynamicMultiSelector', 'Dynamic Selector Check Test', 'barcelona');
+
+    // Create manually a subdataset, because the test checks the creation form
+    cy.get('[data-cy="create-subdataset-button"]').click();
+    // Enter the name of the subdataset
+    cy.get('input[id^="mui-"]').clear({ force: true }).type('DLOP-PROD-13323-DynamicMultiSelector', { force: true });
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+
+    // Select the filter
+    cy.contains('Dataset filter').click({ force: true });
+    cy.get('[data-cy=".///etl_sub_dataset_by_filter"]').click({ force: true });
+
+    // Check there is 500 options listed and randomly check one of the opation
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list"]').click({ force: true });
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-499"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-500"]').should('not.exist');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-142"]').should('contain', 'Rosalina_Silva');
+
+    // Check search returns the 6 expected values only
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list"]').type('Rosa');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-5"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-6"]').should('not.exist');
+
+    // Select "Rosalina_Silva" and "Ruy_Rosales"
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-1"]').click();
+    // Selection removed the filter, so filtering again and selecting the second name
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list"]').type('Rosa');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-4"]').click();
+
+    // Click on previous then next. Previous selection is persistent
+    cy.get('[data-cy="dataset-creation-previous-step"]').click({ force: true });
+    cy.get('[data-cy="dataset-creation-next-step"]').click({ force: true });
+    cy.contains('Dataset filter').click({ force: true });
+    cy.get('[data-cy=".///etl_sub_dataset_by_filter"]').click({ force: true });
+    cy.get('[data-tag-index="0"]').should('contain', 'Rosalina_Silva');
+    cy.get('[data-tag-index="1"]').should('contain', 'Ruy_Rosales');
+    cy.get('[data-cy="confirm-dataset-creation"]').should('not.be.disabled');
+
+    // Cancel the subdataset creation, then refresh the dataset to have the Reference dataset values
+    cy.get('[data-cy="cancel-dataset-creation"]').click();
+    cy.get('[data-cy^="dataset-reupload-button-"]').click();
+    cy.get('[data-cy="refresh-dataset-dialog-confirm-button"]').click();
+    cy.get('[id^="dataset-reupload-input-"]').selectFile('cypress/fixtures/datasets/reference.zip', { force: true });
+    // Wait for the end of the refresh
+    cy.wait(1000);
+    cy.get('[data-cy*="dataset-reupload-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+    cy.get('[data-cy="dataset-overview-title"]', { timeout: 60000 }).should('not.exist');
+    cy.wait(1000);
+
+    // Create manually a subdataset, because the test checks the creation form
+    cy.get('[data-cy="create-subdataset-button"]').click();
+    // Enter the name of the subdataset
+    cy.get('input[id^="mui-"]').clear({ force: true }).type('DLOP-PROD-13323-DynamicMultiSelector', { force: true });
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+
+    // Select the filter
+    cy.contains('Dataset filter').click({ force: true });
+    cy.get('[data-cy=".///etl_sub_dataset_by_filter"]').click({ force: true });
+
+    // Check there is only 4 options listed and randomly check one of the option
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list"]').click({ force: true });
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-3"]').should('exist');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-4"]').should('not.exist');
+
+    // Tick and untick values to check the selector is working properly
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-0"]').click();
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-2"]').click();
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-0"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-1"]').find('[type="checkbox"]').should('not.be.checked');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-2"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-3"]').find('[type="checkbox"]').should('not.be.checked');
+    cy.get('[data-tag-index="0"]').find('[data-testid="CancelIcon"]').click();
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-0"]').find('[type="checkbox"]').should('not.be.checked');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-1"]').find('[type="checkbox"]').should('not.be.checked');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-2"]').find('[type="checkbox"]').should('be.checked');
+    cy.get('[id="etl_param_subdataset_filter_dynamic_customers_list-option-3"]').find('[type="checkbox"]').should('not.be.checked');
+
+    // Cancel the creation form.
+    cy.get('[data-cy="cancel-dataset-creation"]').click({ force: true });
+
+    // Delete the dataset, no manual tests needed.
+    datasetManager.deleteDataset('DLOP-PROD-13323-DynamicMultiSelector');
+  });
 });
