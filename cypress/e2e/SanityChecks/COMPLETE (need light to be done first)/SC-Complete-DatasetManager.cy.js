@@ -77,7 +77,7 @@ describe('Editable Tables Parameters', () => {
     // No clean of the dataset, as it will be manually checked for wrong query request (require postman action, can't be automated)
   });
 
-  it('PROD-13261: Check subdataset in error', () => {
+  it('PROD-13297 and PROD-13261: Check subdataset in error', () => {
     connection.connect();
     connection.navigate('dataset');
 
@@ -366,7 +366,7 @@ describe('Editable Tables Parameters', () => {
     cy.get('[data-cy="cancel-dataset-creation"]').click();
   });
 
-  it('PROD-13323: Dynamic MultiSelector in ETL', () => {
+  it('PROD-13312 and PROD-13323: Dynamic MultiSelector in ETL', () => {
     connection.connect();
     connection.navigate('dataset');
 

@@ -172,4 +172,44 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     scenario.shareScenarioWithUser(datasetNameViewer, config.permissionUserEmail(), config.permissionUserName(), 'admin');
     // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
   });
+
+  it('PROD-13235 -> Overwrite Permissions', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13235-OverwritePermissions');
+
+    // Create a dataset with Reference
+    datasetManager.createDatasetLocalFile('DLOP-PROD-13235-OverwritePermissions', 'Check overwrite permissions', 'reference');
+    // Create and run a scenario
+    scenario.createScenario('DLOP-PROD-13235-OverwritePermissions', 'master', 'DLOP-PROD-13235-OverwritePermissions', 'NoParameters');
+    scenario.runScenario('DLOP-PROD-13235-OverwritePermissions');
+    scenario.shareScenarioWithUser('DLOP-PROD-13235-OverwritePermissions', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
+    // Update global permissions to "viewer" while the permissions for the tester are set to "Admin"
+    datasetManager.updateDatasetGlobal('DLOP-PROD-13235-OverwritePermissions', 'viewer');
+    cy.wait(1000);
+    datasetManager.shareDatasetUser('DLOP-PROD-13235-OverwritePermissions', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
+    // No deletion of the dataset, as manually checks are needed
+  });
+
+  it("PROD-13236 -> Check user with no permission can't see a dataset", () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13236-NoPermissions');
+
+    // Create a dataset with Reference
+    datasetManager.createDatasetLocalFile('DLOP-PROD-13236-NoPermissions', 'Check user can not see a non shared dataset', 'reference');
+
+    // Set permissions for the tester to "Admin" then remove the permissions
+    datasetManager.shareDatasetUser('DLOP-PROD-13236-NoPermissions', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    cy.wait(1000);
+    datasetManager.removeDatasetPermissionsUser('DLOP-PROD-13236-NoPermissions', config.permissionUserEmail(), config.permissionUserName());
+
+    // No deletion of the dataset, as manually checks are needed
+  });
 });

@@ -42,15 +42,18 @@ class Scenario {
     } else {
       cy.log('Unknown value. This function accepts only "master" or "child" as values.');
     }
-    // Choose run type. Currently accepts "BreweryParameters" and "NoParameters"
+    // Choose run type. Currently accepts "BreweryParameters", "MultipleParameters" and "NoParameters"
     if (runType === 'BreweryParameters') {
       cy.get('[id="scenarioType"]').click({ force: true });
       cy.get('[id="scenarioType"]').click().clear().type('Run template with Brewery parameters').type('{downarrow}{enter}');
     } else if (runType === 'NoParameters') {
       cy.get('[id="scenarioType"]').click({ force: true });
       cy.get('[id="scenarioType"]').click().clear().type('Run template without parameters').type('{downarrow}{enter}');
+    } else if (runType === 'MultipleParameters') {
+      cy.get('[id="scenarioType"]').click({ force: true });
+      cy.get('[id="scenarioType"]').click().clear().type('Run template with mock basic types parameters').type('{downarrow}{enter}');
     } else {
-      cy.log('Unknown value. This function accepts only "BreweryParameters" or "NoParameters" as values.');
+      cy.log('Unknown value. This function accepts only "BreweryParameters", "MultipleParameters" or "NoParameters" as values.');
     }
     // Validate the scenario creation
     cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
