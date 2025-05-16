@@ -366,7 +366,7 @@ describe('Editable Tables Parameters', () => {
     cy.get('[data-cy="cancel-dataset-creation"]').click();
   });
 
-  it('PROD-13312 and PROD-13323: Dynamic MultiSelector in ETL', () => {
+  it('PROD-13192, PROD-13312 and PROD-13323: Dynamic MultiSelector in ETL', () => {
     connection.connect();
     connection.navigate('dataset');
 
@@ -536,5 +536,146 @@ describe('Editable Tables Parameters', () => {
 
     // Clean the datasets and the scenario, as no manually checks are needed
     datasetManager.deleteDataset('DLOP-PROD-13188-ErrorFromFile');
+  });
+
+  it('PROD-13191: Search bar check', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Check the two dataset used for this test are displayed before research.
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-Barcelona-for-automated-tests');
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-Reference-for-automated-tests');
+
+    // Search for a word only in the title of one dataset
+    cy.get('[id="dataset-search-bar"]').type('Reference');
+    cy.get('[data-cy="datasets-list"]').should('not.contain', 'DLOP-Barcelona-for-automated-tests');
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-Reference-for-automated-tests');
+
+    // Search for the tag, which is set for the two dataset
+    cy.get('[id="dataset-search-bar"]').clear().type('localFile');
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-Barcelona-for-automated-tests');
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-Reference-for-automated-tests');
+
+    // Search for a word that is in the description of one of the dataset, and it returns no dataset because search is not on description field.
+    cy.get('[id="dataset-search-bar"]').clear().type('basic');
+    cy.get('[data-cy="datasets-list"]').should('not.contain', 'DLOP-Barcelona-for-automated-tests');
+    cy.get('[data-cy="datasets-list"]').should('not.contain', 'DLOP-Reference-for-automated-tests');
+
+    datasetManager.clearSearch();
+    // No need to clean, as no dataset as been created
+  });
+
+  it('PROD-13187: Edition of metadata and deletion', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile');
+    datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage');
+    datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+
+    // Create a dataset from file
+    datasetManager.createDatasetLocalFile('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile', 'A basic reference dataset for brewery model', 'reference');
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile');
+    // Remove the original tag and create a new one
+    cy.get('[data-cy="tags-container"]').find('[data-testid="CancelIcon"]').click();
+    cy.get('[data-cy="add-tag"]').click({ force: true });
+    cy.get('[id="new-tag-input"]').type('NewTag').type('{enter}');
+
+    // Remove the original description and create a new one
+    cy.get('[data-cy="dataset-metadata-description"]').contains('A basic reference dataset for brewery model').click();
+    cy.get('[id="description-input"]').type('Updated description: ');
+    cy.get('[data-cy="dataset-metadata-source-type"]').click();
+
+    // Check the new tag and the new description are saved and persistent
+    cy.reload();
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile');
+    cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'NewTag');
+    cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Updated description: A basic reference dataset for brewery model');
+
+    // Delete the dataset, cancel the deletion, check the dataset is still here
+    cy.get('[data-cy^="dataset-actions-dataset-delete-button"]').click();
+    cy.get('[id="delete-datasetid-button1"]').click();
+    datasetManager.clearSearch();
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile');
+
+    // Delete the dataset, and confirm
+    datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile');
+
+    // Create a dataset from Azure Storage
+    datasetManager.createDatasetAzureStorage('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage', 'A basic reference dataset for brewery model', config.accountName(), config.containerName(), config.storagePath());
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage');
+
+    // Remove the original tag and create a new one
+    cy.get('[data-cy="tags-container"]').find('[data-testid="CancelIcon"]').click();
+    cy.get('[data-cy="add-tag"]').click({ force: true });
+    cy.get('[id="new-tag-input"]').type('NewTag').type('{enter}');
+
+    // Remove the original description and create a new one
+    cy.get('[data-cy="dataset-metadata-description"]').contains('A basic reference dataset for brewery model').click();
+    cy.get('[id="description-input"]').type('Updated description: ');
+    cy.get('[data-cy="dataset-metadata-source-type"]').click();
+
+    // Check the new tag and the new description are saved and persistent
+    cy.reload();
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage');
+    cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'NewTag');
+    cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Updated description: A basic reference dataset for brewery model');
+
+    // Delete the dataset, cancel the deletion, check the dataset is still here
+    cy.get('[data-cy^="dataset-actions-dataset-delete-button"]').click();
+    cy.get('[id="delete-datasetid-button1"]').click();
+    datasetManager.clearSearch();
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage');
+
+    // Delete the dataset, and confirm
+    datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage');
+
+    // Create a dataset from Empty (no function created, as it's only used in uncommon tests)
+    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    // Enter the name of the dataset
+    cy.get('[data-cy="text-input-new-dataset-title"]').click().type('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+    // Enter the tags
+    cy.get('#new-dataset-tags').click().type('empty').type('{enter}');
+    // Enter the description
+    cy.get('[data-cy="text-input-new-dataset-description"]').click().type('A basic reference dataset for brewery model');
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+    // Select the source
+    cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
+    cy.get('[data-cy="None"]').click();
+    // Confirm the creation
+    cy.get('[data-cy="confirm-dataset-creation"]').click();
+    // Check dataset is created
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+    cy.wait(1000);
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+
+    // Remove the original tag and create a new one
+    cy.get('[data-cy="tags-container"]').find('[data-testid="CancelIcon"]').click();
+    cy.get('[data-cy="add-tag"]').click({ force: true });
+    cy.get('[id="new-tag-input"]').type('NewTag').type('{enter}');
+
+    // Remove the original description and create a new one
+    cy.get('[data-cy="dataset-metadata-description"]').contains('A basic reference dataset for brewery model').click();
+    cy.get('[id="description-input"]').type('Updated description: ');
+    cy.get('[data-cy="dataset-metadata-source-type"]').click();
+
+    // Check the new tag and the new description are saved and persistent
+    cy.reload();
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+    cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'NewTag');
+    cy.get('[data-cy="dataset-metadata-card"]').should('contain', 'Updated description: A basic reference dataset for brewery model');
+
+    // Delete the dataset, cancel the deletion, check the dataset is still here
+    cy.get('[data-cy^="dataset-actions-dataset-delete-button"]').click();
+    cy.get('[id="delete-datasetid-button1"]').click();
+    datasetManager.clearSearch();
+    datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+
+    // Delete the dataset, and confirm
+    datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
+
+    // Clean the created datasets is not needed, they have been deleted within the test
   });
 });
