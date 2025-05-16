@@ -5,7 +5,7 @@ const config = require('../../../variables.cy.js');
 const scenario = require('../../functions/scenario.cy.js');
 
 describe('Scenario View feature', () => {
-  it('PROD-11815 - Validate and Reject scenario', () => {
+  it('PROD-11815 -> Validate and Reject scenario', () => {
     // Partialy tested in the IHM check but fully rechecked in this test
     connection.connect();
     scenario.deleteScenario('DLOP-PROD-11815-ScenarioView');
@@ -97,7 +97,7 @@ describe('Scenario View feature', () => {
     scenario.deleteScenario('DLOP-PROD-11815-ScenarioView');
   });
 
-  it('PROD-12097 - Parameters', () => {
+  it('PROD-12097 -> Parameters', () => {
     connection.connect();
     connection.navigate('scenario-view');
     scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
@@ -281,7 +281,7 @@ describe('Scenario View feature', () => {
     scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
   });
 
-  it('PROD-13345 and PROD-14374: Launch impossible if dataset in error', () => {
+  it('PROD-13345 and PROD-14374 -> Launch impossible if dataset in error', () => {
     connection.connect();
     const datasetName = 'DLOP-PROD-14374';
 

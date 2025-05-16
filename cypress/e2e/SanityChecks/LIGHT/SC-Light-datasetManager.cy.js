@@ -5,7 +5,7 @@ const config = require('../../../../variables.cy.js');
 const scenario = require('../../../functions/scenario.cy.js');
 
 describe('Dataset Manager Sanity Checks', () => {
-  it('PROD-12905, PROD-12908, PROD-12909 & PROD-12979 -> Create from Local File and check Overview', () => {
+  it('PROD-12926, PROD-12905, PROD-12908, PROD-12909 & PROD-12979 -> Create from Local File and check Overview', () => {
     connection.connect();
     const datasetName = 'PROD-12909';
     // Clean in case of another try
@@ -49,7 +49,7 @@ describe('Dataset Manager Sanity Checks', () => {
     scenario.runScenario(datasetName);
   });
 
-  it('PROD-12905, PROD-12908, PROD-12910 & PROD-12979 -> Create from Azure Storage and check Overview', () => {
+  it('PROD-12926, PROD-12905, PROD-12908, PROD-12910 & PROD-12979 -> Create from Azure Storage and check Overview', () => {
     connection.connect();
     const datasetName = 'PROD-12910';
     // Clean in case of another try

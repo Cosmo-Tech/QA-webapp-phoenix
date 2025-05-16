@@ -465,6 +465,7 @@ describe('Editable Tables Parameters', () => {
     connection.navigate('dataset');
 
     // Clean in case it's a second try
+    scenario.deleteScenario('DLOP-PROD-13260-SubFromSub');
     datasetManager.deleteDataset('DLOP-PROD-13260-SubFromSub');
     datasetManager.deleteDataset('DLOP-PROD-13260-Sub');
 
@@ -487,5 +488,53 @@ describe('Editable Tables Parameters', () => {
     scenario.deleteScenario('DLOP-PROD-13260-SubFromSub');
     datasetManager.deleteDataset('DLOP-PROD-13260-SubFromSub');
     datasetManager.deleteDataset('DLOP-PROD-13260-Sub');
+  });
+
+  it('PROD-13188: Check error management in dataset manager', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13188-ErrorFromFile');
+
+    // Create a dataset in error, the function can't be used as it checks the dataset is well created and the objective here is to create a dataset in error
+    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    // Enter the name of the dataset
+    cy.get('[data-cy="text-input-new-dataset-title"]').click().type('DLOP-PROD-13188-ErrorFromFile');
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+    // Select the source
+    cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
+    cy.get('[data-cy=enum-input-value-tooltip-File]').click();
+    // Browse the dataset
+    cy.get('[data-cy=browse-button]').selectFile('cypress/fixtures/datasets/FalseDataset.zip', { force: true });
+    cy.wait(1000);
+    // Confirm the creation
+    cy.get('[data-cy="confirm-dataset-creation"]').click();
+    // Check dataset is created
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-PROD-13188-ErrorFromFile');
+    cy.wait(1000);
+
+    // Check behavior
+    datasetManager.selectDataset('DLOP-PROD-13188-ErrorFromFile');
+    cy.get('[data-testid="ErrorIcon"]').should('exist');
+    cy.get('[data-cy="dataset-overview-title"]').should('have.text', 'An error occurred during import of your data');
+    cy.get('[data-cy^="dataset-reupload-button-"]').should('not.be.disabled');
+    cy.get('[data-cy="create-subdataset-button"]').should('be.disabled');
+    cy.get('[data-cy="share-scenario-button"]').should('not.be.disabled');
+    cy.get('[data-cy^="dataset-actions-dataset-delete-button-"]').should('not.be.disabled');
+
+    // Refresh the webapp and check the error is still persistent
+    cy.reload();
+    datasetManager.selectDataset('DLOP-PROD-13188-ErrorFromFile');
+    cy.get('[data-testid="ErrorIcon"]').should('exist');
+    cy.get('[data-cy="dataset-overview-title"]').should('have.text', 'An error occurred during import of your data');
+    cy.get('[data-cy^="dataset-reupload-button-"]').should('not.be.disabled');
+    cy.get('[data-cy="create-subdataset-button"]').should('be.disabled');
+    cy.get('[data-cy="share-scenario-button"]').should('not.be.disabled');
+    cy.get('[data-cy^="dataset-actions-dataset-delete-button-"]').should('not.be.disabled');
+
+    // Clean the datasets and the scenario, as no manually checks are needed
+    datasetManager.deleteDataset('DLOP-PROD-13188-ErrorFromFile');
   });
 });
