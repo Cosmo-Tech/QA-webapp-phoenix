@@ -170,6 +170,7 @@ class DatasetManager {
     // Before creation, check if there is no dataset yet existing with the same name, and if so, delete the existing dataset
     this.deleteDataset(datasetName);
     this.selectDataset(parentName);
+    cy.wait(1000);
     // Create a new dataset
     cy.get('[data-cy="create-subdataset-button"]').click();
     // Check the creation wizard text
@@ -207,9 +208,9 @@ class DatasetManager {
     cy.get('[data-cy="confirm-dataset-creation"]').click({ force: true });
     cy.wait(5000);
     // Check dataset is created
+    this.clearSearch();
     cy.get('[data-cy="datasets-list"]').should('contain', datasetName);
     cy.get('[data-cy="dataset-overview-abort-button"]', { timeout: 60000 }).should('not.exist', { timeout: 60000 });
-    this.clearSearch();
   }
 
   static searchDataset(datasetName) {

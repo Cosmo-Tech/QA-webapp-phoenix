@@ -459,4 +459,33 @@ describe('Editable Tables Parameters', () => {
     // Delete the dataset, no manual tests needed.
     datasetManager.deleteDataset('DLOP-PROD-13323-DynamicMultiSelector');
   });
+
+  it('PROD-13260: Subdataset of subdataset', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-13260-SubFromSub');
+    datasetManager.deleteDataset('DLOP-PROD-13260-Sub');
+
+    // Create a subdataset from Reference
+    datasetManager.createSubDataset('DLOP-Reference-for-automated-tests', 'DLOP-PROD-13260-Sub', 'Subdataset of the parent "Reference"');
+
+    // Refresh the webapp because if there is an error in the subdataset, then the "create subdataset" button will be disabled
+    // and the test will fail (which is expected, no error should result from the subdataset creation). It prevent later failure
+    // when the error is in the previous step.
+    cy.reload();
+
+    // Create a subdataset from the previous subdataset
+    datasetManager.createSubDataset('DLOP-PROD-13260-Sub', 'DLOP-PROD-13260-SubFromSub', 'Subdataset of a subdataset');
+
+    // Create and run a scenario from the second dataset
+    scenario.createScenario('DLOP-PROD-13260-SubFromSub', 'master', 'DLOP-PROD-13260-SubFromSub', 'NoParameters');
+    scenario.runScenario('DLOP-PROD-13260-SubFromSub');
+
+    // Clean the datasets and the scenario, as no manually checks are needed
+    scenario.deleteScenario('DLOP-PROD-13260-SubFromSub');
+    datasetManager.deleteDataset('DLOP-PROD-13260-SubFromSub');
+    datasetManager.deleteDataset('DLOP-PROD-13260-Sub');
+  });
 });
