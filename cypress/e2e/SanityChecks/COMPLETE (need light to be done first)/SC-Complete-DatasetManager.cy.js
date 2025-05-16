@@ -565,7 +565,7 @@ describe('Editable Tables Parameters', () => {
     // No need to clean, as no dataset as been created
   });
 
-  it('PROD-13187: Edition of metadata and deletion', () => {
+  it('PROD-13189, PROD-13187: Edition of metadata and deletion', () => {
     connection.connect();
     connection.navigate('dataset');
 
@@ -577,6 +577,11 @@ describe('Editable Tables Parameters', () => {
     // Create a dataset from file
     datasetManager.createDatasetLocalFile('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile', 'A basic reference dataset for brewery model', 'reference');
     datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromLocalFile');
+
+    // Check the URL has been generated and can be copied
+    cy.get('[data-cy="dataset-metadata-api-url"]').should('contain', 'datasets/d-');
+    cy.get('[data-cy="dataset-metadata-copy-api-url-button"]').should('exist');
+
     // Remove the original tag and create a new one
     cy.get('[data-cy="tags-container"]').find('[data-testid="CancelIcon"]').click();
     cy.get('[data-cy="add-tag"]').click({ force: true });
@@ -605,6 +610,10 @@ describe('Editable Tables Parameters', () => {
     // Create a dataset from Azure Storage
     datasetManager.createDatasetAzureStorage('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage', 'A basic reference dataset for brewery model', config.accountName(), config.containerName(), config.storagePath());
     datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromAzureStorage');
+
+    // Check the URL has been generated and can be copied
+    cy.get('[data-cy="dataset-metadata-api-url"]').should('contain', 'datasets/d-');
+    cy.get('[data-cy="dataset-metadata-copy-api-url-button"]').should('exist');
 
     // Remove the original tag and create a new one
     cy.get('[data-cy="tags-container"]').find('[data-testid="CancelIcon"]').click();
@@ -651,6 +660,10 @@ describe('Editable Tables Parameters', () => {
     cy.wait(1000);
     datasetManager.selectDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
 
+    // Check the URL has been generated and can be copied
+    cy.get('[data-cy="dataset-metadata-api-url"]').should('contain', 'datasets/d-');
+    cy.get('[data-cy="dataset-metadata-copy-api-url-button"]').should('exist');
+
     // Remove the original tag and create a new one
     cy.get('[data-cy="tags-container"]').find('[data-testid="CancelIcon"]').click();
     cy.get('[data-cy="add-tag"]').click({ force: true });
@@ -677,5 +690,107 @@ describe('Editable Tables Parameters', () => {
     datasetManager.deleteDataset('DLOP-PROD-13187-EditionAndDeletion-FromEmpty');
 
     // Clean the created datasets is not needed, they have been deleted within the test
+  });
+
+  it('PROD-14423: Check fields for ETL dataset creation', () => {
+    connection.connect();
+    connection.navigate('dataset');
+
+    // Clean in case it's a second try
+    datasetManager.deleteDataset('DLOP-PROD-14423-ETLFieldsCheck');
+
+    // Check ETL with tag "datasource" are not in the run types. So create a scenario and try to search for the ETL. No returns.
+    connection.navigate('scenario-view');
+    cy.get('[data-cy="create-scenario-button"]').click({ force: true });
+    cy.get('[id="scenarioType"]').click({ force: true });
+    cy.get('[id="scenarioType"]').click().clear().type('Brewery (.zip)');
+    cy.get('[role="presentation"]').should('contain.text', 'No options');
+    cy.get('[data-cy="create-scenario-dialog-cancel-button"]').click();
+
+    // Set the language to French
+    // Navigate through the menu to reach the language parameters
+    cy.get('[data-cy="user-profile-menu"]').click({ force: true });
+    cy.get('[data-cy="change-language"]').click({ force: true });
+    // Set language
+    cy.get('[data-cy="set-lang-fr"]').click({ force: true });
+
+    // Open the dataset creation popup and check the name of the ETL is in French,
+    // as defined in the Solution.json file (may change if webapp configuration is updated)
+    connection.navigate('dataset');
+    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    // Enter the name of the dataset
+    cy.get('[data-cy="text-input-new-dataset-title"]').click().type('DLOP-PROD-14423-ETLFieldsCheck');
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+    // Select the source
+    cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
+    // Check the names for the ETL
+    cy.get('[data-cy="enum-input-value-tooltip-etl_with_local_file"]').should('have.text', 'Brewery (.zip) depuis un fichier local');
+    cy.get('[data-cy="enum-input-value-tooltip-etl_with_azure_storage"]').should('have.text', 'Brewery (.zip) depuis Azure Storage');
+    // Cancel creation
+    cy.get('[data-cy="cancel-dataset-creation"]').click({ force: true });
+
+    // Set the language back to English
+    // Navigate through the menu to reach the language parameters
+    cy.get('[data-cy="user-profile-menu"]').click({ force: true });
+    cy.get('[data-cy="change-language"]').click({ force: true });
+    // Set language
+    cy.get('[data-cy="set-lang-en"]').click({ force: true });
+
+    // Open the dataset creation popup and check the name of the ETL are back in English,
+    // as defined in the Solution.json file (may change if webapp configuration is updated)
+    connection.navigate('dataset');
+    cy.get('[data-testid="AddIcon"]', { timeout: 60000 }).click();
+    // Enter the name of the dataset
+    cy.get('[data-cy="text-input-new-dataset-title"]').click().type('DLOP-PROD-14423-ETLFieldsCheck');
+    // Go to next step
+    cy.get('[data-cy=dataset-creation-next-step]').click();
+    // Select the source
+    cy.get('[data-cy="enum-input-select-new-dataset-sourceType"]').click();
+    // Check the names for the ETL
+    cy.get('[data-cy="enum-input-value-tooltip-etl_with_local_file"]').should('have.text', 'Brewery (.zip) from Local File');
+    cy.get('[data-cy="enum-input-value-tooltip-etl_with_azure_storage"]').should('have.text', 'Brewery (.zip) from Azure Storage');
+    // Choose the source
+    cy.get('[data-cy="enum-input-value-tooltip-etl_with_local_file"]').click();
+    // Update the stock and restock values
+    cy.get('[id="text-input-etl_param_stock"]').click().clear().type('50');
+    cy.get('[id="text-input-etl_param_restock_quantity"]').click().clear().type('15');
+    // Upload the Reference.zip file
+    cy.get('[data-cy=browse-button]').selectFile('cypress/fixtures/datasets/reference.zip', { force: true });
+    cy.wait(1000);
+    // Confirm the creation
+    cy.get('[data-cy="confirm-dataset-creation"]').click();
+    // Check dataset is created
+    cy.get('[data-cy="datasets-list"]').should('contain', 'DLOP-PROD-14423-ETLFieldsCheck');
+    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+
+    // Edit the dataset and check values are those defined during the creation
+    cy.get('[data-cy="edit-dataset-parameters-button"]').click();
+    cy.get('[id="text-input-etl_param_stock"]').should('have.value', '50');
+    cy.get('[id="text-input-etl_param_restock_quantity"]').should('have.value', '15');
+    cy.get('[id="text-input-etl_param_num_waiters"]').should('have.value', '5');
+
+    // Edit the values
+    cy.get('[id="text-input-etl_param_stock"]').click().clear().type('200');
+    cy.get('[id="text-input-etl_param_num_waiters"]').click().clear().type('20');
+
+    // Save the edition, then wait for the update of the data
+    cy.get('[data-cy="update-dataset-parameters-button"]').click();
+    cy.wait(1000);
+    cy.get('[data-cy*="dataset-refresh-button-"]', { timeout: 60000 }).should('not.be.disabled', { timeout: 60000 });
+    cy.wait(1000);
+
+    // Reopen the edition and check values are those updated
+    cy.get('[data-cy="edit-dataset-parameters-button"]').click();
+    cy.get('[id="text-input-etl_param_stock"]').should('have.value', '200');
+    cy.get('[id="text-input-etl_param_restock_quantity"]').should('have.value', '15');
+    cy.get('[id="text-input-etl_param_num_waiters"]').should('have.value', '20');
+
+    // Cancel the edition
+    cy.get('[data-cy="close-update-dataset-parameters-dialog-button"]').click();
+    cy.wait(1000);
+
+    // Clean the dataset, as no manual check is needed
+    datasetManager.deleteDataset('DLOP-PROD-14423-ETLFieldsCheck');
   });
 });
