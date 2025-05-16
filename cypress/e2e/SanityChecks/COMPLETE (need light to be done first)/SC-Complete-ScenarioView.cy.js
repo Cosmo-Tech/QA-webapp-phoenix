@@ -301,7 +301,7 @@ describe('Scenario View feature', () => {
     // Go back to dataset overview and refresh the dataset with wrong data
     connection.navigate('dataset');
     datasetManager.searchDataset(datasetName);
-    cy.get('[id^="dataset-reupload-input"]').selectFile('cypress/fixtures/datasets/PROD-14374/FalseDataset.zip', { force: true });
+    cy.get('[id^="dataset-reupload-input"]').selectFile('cypress/fixtures/datasets/FalseDataset.zip', { force: true });
     cy.wait(1000);
 
     // Confirm update failed
