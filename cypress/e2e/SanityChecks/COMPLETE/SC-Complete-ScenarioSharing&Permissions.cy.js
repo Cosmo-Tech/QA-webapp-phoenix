@@ -130,26 +130,26 @@ describe('Scenario sharing feature and permissions', () => {
     connection.navigate('scenario-view');
 
     // Clean in case it's a second try
-    scenario.deleteScenario('DLOP-PROD-13240-Admin');
-    scenario.deleteScenario('DLOP-PROD-13240-Validator');
-    scenario.deleteScenario('DLOP-PROD-13240-Editor');
-    scenario.deleteScenario('DLOP-PROD-13240-Viewer');
+    scenario.deleteScenario('DLOP-PROD-13739-Admin');
+    scenario.deleteScenario('DLOP-PROD-13739-Validator');
+    scenario.deleteScenario('DLOP-PROD-13739-Editor');
+    scenario.deleteScenario('DLOP-PROD-13739-Viewer');
 
     // Create the scenario and share admin permissions with someone
-    scenario.createScenario('DLOP-PROD-13240-Admin', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('DLOP-PROD-13240-Admin', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.createScenario('DLOP-PROD-13739-Admin', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('DLOP-PROD-13739-Admin', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Create the scenario and share validator permissions with someone
-    scenario.createScenario('PROD-13240-Validator', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('PROD-13240-Validator', config.permissionUserEmail(), config.permissionUserName(), 'validator');
+    scenario.createScenario('DLOP-PROD-13739-Validator', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('DLOP-PROD-13739-Validator', config.permissionUserEmail(), config.permissionUserName(), 'validator');
 
     // Create the scenario and share editor permissions with someone
-    scenario.createScenario('DLOP-PROD-13240-Editor', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('DLOP-PROD-13240-Editor', config.permissionUserEmail(), config.permissionUserName(), 'editor');
+    scenario.createScenario('DLOP-PROD-13739-Editor', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('DLOP-PROD-13739-Editor', config.permissionUserEmail(), config.permissionUserName(), 'editor');
 
     // Create the scenario and share viewer permissions with someone
-    scenario.createScenario('DLOP-PROD-13240-Viewer', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('DLOP-PROD-13240-Viewer', config.permissionUserEmail(), config.permissionUserName(), 'viewer');
+    scenario.createScenario('DLOP-PROD-13739-Viewer', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
+    scenario.shareScenarioWithUser('DLOP-PROD-13739-Viewer', config.permissionUserEmail(), config.permissionUserName(), 'viewer');
 
     // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
   });
