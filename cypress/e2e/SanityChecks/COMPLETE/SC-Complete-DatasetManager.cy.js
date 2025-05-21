@@ -4,7 +4,7 @@ const datasetManager = require('../../../functions/datasetManager.cy.js');
 const config = require('../../../../variables.cy.js');
 const scenario = require('../../../functions/scenario.cy.js');
 
-describe('Editable Tables Parameters', () => {
+describe('Dataset Manager feature', () => {
   it('PROD-13888: Check overview detail table', () => {
     connection.connect();
 
