@@ -30,7 +30,7 @@ describe('To use after the sanity check and the manual checks', () => {
     scenario.deleteScenario('DLOP-PROD-13240-Validator');
     scenario.deleteScenario('DLOP-PROD-13240-Editor');
     scenario.deleteScenario('DLOP-PROD-13240-Viewer');
-    scenario.deleteAllScenario();
+    scenario.deleteScenario('DLOP-EditableTables');
   });
 
   it('Clean all datasets resulting of the sanity check', () => {

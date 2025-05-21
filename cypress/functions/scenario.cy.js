@@ -15,8 +15,6 @@ class Scenario {
       cy.wait(1000);
       cy.get('[placeholder="Select a dataset"]').click().clear().type(dataset).type('{downarrow}').type('{enter}');
       cy.wait(1000);
-
-      cy.log('Dataset value : ' + cy.get('[placeholder="Select a dataset"]').invoke('val'));
       // Check value is the correct one, otherwise retry
       if (cy.get('[placeholder="Select a dataset"]').invoke('attr', 'value') == dataset) {
         cy.log('Correct dataset selected');

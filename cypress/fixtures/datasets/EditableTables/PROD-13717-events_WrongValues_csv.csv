@@ -1,0 +1,6 @@
+theme,date,timeOfDay,eventType,reservationsNumber,online
+complex systems,06/06/1800,WrongValue,,-4,
+IoT,02/10/3000,,conference,350,WrongValue
+supply chain,,evening,workshop,,true
+asset Management,13/08/2022,morning,conference,220,false
+industry processes,18/09/2022,evening,workshop,150,false
