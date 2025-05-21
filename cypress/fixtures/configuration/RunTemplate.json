@@ -1,0 +1,10 @@
+  {"id": "3",
+     "parameterGroups": [
+                "basic_types",
+                "customers",
+                "events",
+                "cyphersatisfaction",
+                "dataset_parts",
+                "additional_parameters"
+            ]
+  }
