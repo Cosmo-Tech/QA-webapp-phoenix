@@ -1,8 +1,8 @@
 import 'cypress-file-upload';
-const connection = require('../../functions/connect.cy.js');
-const datasetManager = require('../../functions/datasetManager.cy.js');
-const config = require('../../../variables.cy.js');
-const scenario = require('../../functions/scenario.cy.js');
+const connection = require('../../../functions/connect.cy.js');
+const datasetManager = require('../../../functions/datasetManager.cy.js');
+const config = require('../../../../variables.cy.js');
+const scenario = require('../../../functions/scenario.cy.js');
 
 describe('Scenario View feature', () => {
   it('PROD-11815 -> Validate and Reject scenario', () => {
