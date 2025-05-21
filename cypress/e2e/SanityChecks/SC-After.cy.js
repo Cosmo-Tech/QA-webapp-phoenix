@@ -26,11 +26,15 @@ describe('To use after the sanity check and the manual checks', () => {
     scenario.deleteScenario('DLOP-PROD-13885-ChildDescriptionAndTag');
     scenario.deleteScenario('DLOP-PROD-13885-MasterDescriptionAndTag');
     scenario.deleteScenario('Updated-DLOP-PROD-13878');
-    scenario.deleteScenario('DLOP-PROD-13240-Admin');
-    scenario.deleteScenario('DLOP-PROD-13240-Validator');
-    scenario.deleteScenario('DLOP-PROD-13240-Editor');
-    scenario.deleteScenario('DLOP-PROD-13240-Viewer');
+    scenario.deleteScenario('DLOP-PROD-13739-Admin');
+    scenario.deleteScenario('DLOP-PROD-13739-Validator');
+    scenario.deleteScenario('DLOP-PROD-13739-Editor');
+    scenario.deleteScenario('DLOP-PROD-13739-Viewer');
     scenario.deleteScenario('DLOP-EditableTables');
+    scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
+    scenario.deleteScenario('DLOP-PROD-13235-OverwritePermissions');
+    scenario.deleteScenario('PROD-13750-DashboardsChecks-Run');
+    scenario.deleteScenario('PROD-13751-DigitalTwin');
   });
 
   it('Clean all datasets resulting of the sanity check', () => {
