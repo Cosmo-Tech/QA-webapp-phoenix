@@ -172,9 +172,12 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="launch-scenario-button"]').should('be.disabled');
 
     //Update the three values
-    cy.get('[id="number-input-stock"]').click().clear().type('50');
-    cy.get('[id="number-input-restock_qty"]').click().clear().type('20');
-    cy.get('[id="number-input-nb_waiters"]').click().clear().type('10');
+    cy.get('[id="number-input-stock"]').click().clear();
+    cy.get('[id="number-input-stock"]').click().type('50');
+    cy.get('[id="number-input-restock_qty"]').click().clear();
+    cy.get('[id="number-input-restock_qty"]').click().type('20');
+    cy.get('[id="number-input-nb_waiters"]').click().clear();
+    cy.get('[id="number-input-nb_waiters"]').click().type('10');
 
     // The three buttons are now available and the create, share, validate and reject buttons are disabled
     cy.get('[data-cy="save-button"]').should('exist');
@@ -218,15 +221,18 @@ describe('Scenario View feature', () => {
     connection.navigate('scenario-view');
     cy.get('[id="number-input-stock"]').should('have.value', '100');
     cy.get('[id="number-input-restock_qty"]').should('have.value', '25');
-    cy.get('[id="number-input-nb_waiters"]').should('have.value', '5');
+    cy.get('[id="number-input-nb_waiters"]').should('have.value', '10');
     cy.get('[data-cy="save-button"]').should('not.exist');
     cy.get('[data-cy="discard-button"]').should('not.exist');
     cy.get('[data-cy="save-and-launch-label"]').should('not.exist');
 
     //Update the three values
-    cy.get('[id="number-input-stock"]').click().clear().type('50');
-    cy.get('[id="number-input-restock_qty"]').click().clear().type('20');
-    cy.get('[id="number-input-nb_waiters"]').click().clear().type('10');
+    cy.get('[id="number-input-stock"]').click().clear();
+    cy.get('[id="number-input-stock"]').click().type('50');
+    cy.get('[id="number-input-restock_qty"]').click().clear();
+    cy.get('[id="number-input-restock_qty"]').click().type('20');
+    cy.get('[id="number-input-nb_waiters"]').click().clear();
+    cy.get('[id="number-input-nb_waiters"]').click().type('10');
 
     //Discard, cancel and check the value are the updated ones
     cy.get('[data-cy="discard-button"]').click();
@@ -244,26 +250,33 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="discard-changes-button2"]').click();
     cy.get('[id="number-input-stock"]').should('have.value', '100');
     cy.get('[id="number-input-restock_qty"]').should('have.value', '25');
-    cy.get('[id="number-input-nb_waiters"]').should('have.value', '5');
+    cy.get('[id="number-input-nb_waiters"]').should('have.value', '10');
     // No save or discard buttons
     cy.get('[data-cy="save-button"]').should('not.exist');
     cy.get('[data-cy="discard-button"]').should('not.exist');
     cy.get('[data-cy="save-and-launch-label"]').should('not.exist');
 
     //Update values and save
-    cy.get('[id="number-input-stock"]').click().clear().type('50');
-    cy.get('[id="number-input-restock_qty"]').click().clear().type('20');
-    cy.get('[id="number-input-nb_waiters"]').click().clear().type('10');
+    cy.get('[id="number-input-stock"]').click().clear();
+    cy.get('[id="number-input-stock"]').click().type('50');
+    cy.get('[id="number-input-restock_qty"]').click().clear();
+    cy.get('[id="number-input-restock_qty"]').click().type('20');
+    cy.get('[id="number-input-nb_waiters"]').click().clear();
+    cy.get('[id="number-input-nb_waiters"]').click().type('5');
     cy.get('[data-cy="save-button"]').click();
+
     // No more save or discard buttons
     cy.get('[data-cy="save-button"]').should('not.exist');
     cy.get('[data-cy="discard-button"]').should('not.exist');
     cy.get('[data-cy="save-and-launch-label"]').should('not.exist');
 
     //Update values and save & launch
-    cy.get('[id="number-input-stock"]').click().clear().type('20');
-    cy.get('[id="number-input-restock_qty"]').click().clear().type('2');
-    cy.get('[id="number-input-nb_waiters"]').click().clear().type('1');
+    cy.get('[id="number-input-stock"]').click().clear();
+    cy.get('[id="number-input-stock"]').click().type('20');
+    cy.get('[id="number-input-restock_qty"]').click().clear();
+    cy.get('[id="number-input-restock_qty"]').click().type('2');
+    cy.get('[id="number-input-nb_waiters"]').click().clear();
+    cy.get('[id="number-input-nb_waiters"]').click().type('1');
     cy.get('[data-cy="launch-scenario-button"]').click();
     // Check the scenario has run
     cy.wait(5000);

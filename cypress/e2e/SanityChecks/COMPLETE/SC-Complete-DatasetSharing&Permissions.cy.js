@@ -173,12 +173,13 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
   });
 
-  it('PROD-13235 -> Overwrite Permissions', () => {
+  it.only('PROD-13235 -> Overwrite Permissions', () => {
     connection.connect();
     connection.navigate('dataset');
 
     // Clean in case it's a second try
     datasetManager.deleteDataset('DLOP-PROD-13235-OverwritePermissions');
+    scenario.deleteScenario('DLOP-PROD-13235-OverwritePermissions');
 
     // Create a dataset with Reference
     datasetManager.createDatasetLocalFile('DLOP-PROD-13235-OverwritePermissions', 'Check overwrite permissions', 'reference');
@@ -191,6 +192,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     datasetManager.updateDatasetGlobal('DLOP-PROD-13235-OverwritePermissions', 'viewer');
     cy.wait(1000);
     datasetManager.shareDatasetUser('DLOP-PROD-13235-OverwritePermissions', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    cy.wait(3000);
 
     // No deletion of the dataset, as manually checks are needed
   });

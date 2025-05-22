@@ -39,9 +39,10 @@ describe('Scenario Manager feature', () => {
       .clear()
       .type('Updated-DLOP-PROD-13878' + '{enter}');
 
+    scenario.shareScenarioWithUser('Updated-DLOP-PROD-13878', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+
     // Check the new name is persistant
     scenario.searchScenarioInManager('Updated-DLOP-PROD-13878');
-    scenario.shareScenarioWithUser('Updated-DLOP-PROD-13878', config.permissionUserEmail(), config.permissionUserName(), 'admin');
 
     // Try special character and check there is no error message display
     cy.get('[data-testid="EditIcon"]').click();
