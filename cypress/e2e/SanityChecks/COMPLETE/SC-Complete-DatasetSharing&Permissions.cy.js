@@ -173,7 +173,7 @@ describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
     // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
   });
 
-  it.only('PROD-13235 -> Overwrite Permissions', () => {
+  it('PROD-13235 -> Overwrite Permissions', () => {
     connection.connect();
     connection.navigate('dataset');
 
