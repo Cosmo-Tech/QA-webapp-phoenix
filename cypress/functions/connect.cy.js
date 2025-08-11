@@ -22,10 +22,12 @@ class ConnectToWebApp {
     cy.get('[data-cy="logout"]').click({ force: true });
   }
 
+  // DEV function
   static getWorkspaceCardById(workspaceId) {
     return cy.get(GENERIC_SELECTORS.workspace.workspaceCard.replace('$WORKSPACEID', workspaceId));
   }
 
+  // DEV function
   static connectWorkspace() {
     let workspaceID = config.workspace();
     const queries = api.interceptSelectWorkspaceQueries(workspaceID);

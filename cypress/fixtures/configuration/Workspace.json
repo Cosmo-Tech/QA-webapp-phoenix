@@ -1,651 +1,599 @@
 {
-    "key": "warpworkbreweryendadxqa",
-    "name": "Brewery warp eng adx qa workspace",
-    "solution": {
-        "solutionId": "sol-5zqgl616jqj",
-        "runTemplateFilter": [
-            "1",
-            "2",
-            "3",
-            "dynamic_values_customers"
+  "key": "warpworkbreweryendadxqa",
+  "name": "Brewery warp eng adx qa workspace",
+  "solution": {
+    "solutionId": "sol-5zqgl616jqj",
+    "runTemplateFilter": ["1", "2", "3", "dynamic_values_customers"],
+    "defaultRunTemplateDataset": null
+  },
+  "id": "w-qkj3nn44z4r",
+  "organizationId": "o-7yn4gn7er7j",
+  "description": "Espace de travail Brewery warp engineering adx qa",
+  "linkedDatasetIdList": ["d-nlk4q4ew86o", "d-1rko22lw4gy", "d-w7gl8r5pr16n", "d-14e59zzgm32", "d-oekpyl6xpgr", "d-jz1m2qyk4p5", "d-pj7wwxd95zm", "d-nxrd36rom43", "d-6m3wgk14mzk", "d-x13xoymv7oyz", "d-gp72myr3o32y", "d-58gmwoqpl165", "d-g0j49913lrl3", "d-1g50rneleg6", "d-l8m6yyl8yd6", "d-p6kg5rm131p", "d-rrzv0lmkzmo", "d-zvomeygev0k", "d-znz5ozd18lv", "d-r88qej76k29", "d-81px2ym7omy", "d-4q4w73k64mv"],
+  "version": null,
+  "tags": ["brewery", "dev"],
+  "ownerId": "111b200b-9120-41b9-a18c-14cacbdd669f",
+  "webApp": {
+    "url": "https://delightful-pebble-0d58cb803.4.azurestaticapps.net",
+    "iframes": null,
+    "options": {
+      "charts": {
+        "workspaceId": "3e0fec41-0645-407e-8a19-fdd4b5e2a68e",
+        "logInWithUserCredentials": false,
+        "scenarioViewIframeDisplayRatio": 4.514285714,
+        "dashboardsViewIframeDisplayRatio": 1.610062893,
+        "dashboardsView": [
+          {
+            "settings": {
+              "navContentPaneEnabled": false,
+              "panes": {
+                "filters": {
+                  "expanded": false,
+                  "visible": false
+                }
+              }
+            },
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "title": {
+              "en": "Digital Twin Structure",
+              "fr": "Structure du jumeau numérique"
+            },
+            "pageName": {
+              "en": "ReportSectionf3ef30b8ad34c9c2e8c4",
+              "fr": "ReportSectionf3ef30b8ad34c9c2e8c4"
+            }
+          },
+          {
+            "settings": {
+              "navContentPaneEnabled": false,
+              "panes": {
+                "filters": {
+                  "expanded": true,
+                  "visible": true
+                }
+              }
+            },
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "title": {
+              "en": "Stocks Follow-up",
+              "fr": "Suivi de stock"
+            },
+            "dynamicFilters": [
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "StockProbe"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "Bar"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "parameters"
+              },
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "CustomerSatisfactionProbe"
+              }
+            ],
+            "pageName": {
+              "en": "ReportSectionca125957a3f5ea936a30",
+              "fr": "ReportSectionca125957a3f5ea936a30"
+            }
+          },
+          {
+            "settings": {
+              "navContentPaneEnabled": true,
+              "panes": {
+                "filters": {
+                  "expanded": false,
+                  "visible": true
+                }
+              }
+            },
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "title": {
+              "en": "Customer Satisfaction",
+              "fr": "Satisfaction client"
+            },
+            "dynamicFilters": [
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "StockProbe"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "Bar"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "parameters"
+              },
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "CustomerSatisfactionProbe"
+              }
+            ],
+            "pageName": {
+              "en": "ReportSectiond5265d03b73060af4244",
+              "fr": "ReportSectiond5265d03b73060af4244"
+            }
+          },
+          {
+            "settings": {
+              "navContentPaneEnabled": false,
+              "panes": {
+                "filters": {
+                  "expanded": false,
+                  "visible": true
+                }
+              }
+            },
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "title": {
+              "en": "Scenario comparison",
+              "fr": "Comparaison de scénarios"
+            },
+            "dynamicFilters": [
+              {
+                "values": "visibleScenariosCsmSimulationRunsIds",
+                "column": "SimulationRun",
+                "table": "StockProbe"
+              }
+            ],
+            "pageName": {
+              "en": "ReportSection99fca3e46d5107c9ddea",
+              "fr": "ReportSection99fca3e46d5107c9ddea"
+            }
+          }
         ],
-        "defaultRunTemplateDataset": null
-    },
-    "id": "w-qkj3nn44z4r",
-    "organizationId": "o-7yn4gn7er7j",
-    "description": "Espace de travail Brewery warp engineering adx qa",
-    "linkedDatasetIdList": [
-        "d-nlk4q4ew86o",
-        "d-1rko22lw4gy",
-        "d-w7gl8r5pr16n",
-        "d-14e59zzgm32",
-        "d-oekpyl6xpgr",
-        "d-jz1m2qyk4p5",
-        "d-pj7wwxd95zm",
-        "d-nxrd36rom43",
-        "d-xlljmrx6w5y",
-        "d-6m3wgk14mzk",
-        "d-p10j90p5gzr0",
-        "d-x13xoymv7oyz",
-        "d-gp72myr3o32y",
-        "d-58gmwoqpl165",
-        "d-g0j49913lrl3"
-    ],
-    "version": null,
-    "tags": [
-        "brewery",
-        "dev"
-    ],
-    "ownerId": "111b200b-9120-41b9-a18c-14cacbdd669f",
-    "webApp": {
-        "url": "https://delightful-pebble-0d58cb803.4.azurestaticapps.net",
-        "iframes": null,
-        "options": {
-            "charts": {
-                "workspaceId": "3e0fec41-0645-407e-8a19-fdd4b5e2a68e",
-                "logInWithUserCredentials": false,
-                "scenarioViewIframeDisplayRatio": 4.514285714,
-                "dashboardsViewIframeDisplayRatio": 1.610062893,
-                "dashboardsView": [
-                    {
-                        "settings": {
-                            "navContentPaneEnabled": false,
-                            "panes": {
-                                "filters": {
-                                    "expanded": false,
-                                    "visible": false
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "title": {
-                            "en": "Digital Twin Structure",
-                            "fr": "Structure du jumeau numérique"
-                        },
-                        "pageName": {
-                            "en": "ReportSectionf3ef30b8ad34c9c2e8c4",
-                            "fr": "ReportSectionf3ef30b8ad34c9c2e8c4"
-                        }
-                    },
-                    {
-                        "settings": {
-                            "navContentPaneEnabled": false,
-                            "panes": {
-                                "filters": {
-                                    "expanded": true,
-                                    "visible": true
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "title": {
-                            "en": "Stocks Follow-up",
-                            "fr": "Suivi de stock"
-                        },
-                        "dynamicFilters": [
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "StockProbe"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "Bar"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "parameters"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "CustomerSatisfactionProbe"
-                            }
-                        ],
-                        "pageName": {
-                            "en": "ReportSectionca125957a3f5ea936a30",
-                            "fr": "ReportSectionca125957a3f5ea936a30"
-                        }
-                    },
-                    {
-                        "settings": {
-                            "navContentPaneEnabled": true,
-                            "panes": {
-                                "filters": {
-                                    "expanded": false,
-                                    "visible": true
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "title": {
-                            "en": "Customer Satisfaction",
-                            "fr": "Satisfaction client"
-                        },
-                        "dynamicFilters": [
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "StockProbe"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "Bar"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "parameters"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "CustomerSatisfactionProbe"
-                            }
-                        ],
-                        "pageName": {
-                            "en": "ReportSectiond5265d03b73060af4244",
-                            "fr": "ReportSectiond5265d03b73060af4244"
-                        }
-                    },
-                    {
-                        "settings": {
-                            "navContentPaneEnabled": false,
-                            "panes": {
-                                "filters": {
-                                    "expanded": false,
-                                    "visible": true
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "title": {
-                            "en": "Scenario comparison",
-                            "fr": "Comparaison de scénarios"
-                        },
-                        "dynamicFilters": [
-                            {
-                                "values": "visibleScenariosCsmSimulationRunsIds",
-                                "column": "SimulationRun",
-                                "table": "StockProbe"
-                            }
-                        ],
-                        "pageName": {
-                            "en": "ReportSection99fca3e46d5107c9ddea",
-                            "fr": "ReportSection99fca3e46d5107c9ddea"
-                        }
-                    }
-                ],
-                "scenarioView": {
-                    "1": {
-                        "settings": {
-                            "navContentPaneEnabled": false,
-                            "panes": {
-                                "filters": {
-                                    "expanded": true,
-                                    "visible": true
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "staticFilters": [
-                            {
-                                "values": [
-                                    "MyBar",
-                                    "MyBar2"
-                                ],
-                                "column": "Bar",
-                                "table": "Bar"
-                            }
-                        ],
-                        "title": {
-                            "en": "Scenario dashboard for run type 1",
-                            "fr": "Rapport de scénario du run type 1"
-                        },
-                        "dynamicFilters": [
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "StockProbe"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "contains_Customer"
-                            }
-                        ],
-                        "pageName": {
-                            "en": "ReportSection937f9c72cc8f1062aa88",
-                            "fr": "ReportSection937f9c72cc8f1062aa88"
-                        }
-                    },
-                    "2": {
-                        "settings": {
-                            "navContentPaneEnabled": false,
-                            "panes": {
-                                "filters": {
-                                    "expanded": true,
-                                    "visible": true
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "staticFilters": [
-                            {
-                                "values": [
-                                    "MyBar",
-                                    "MyBar2"
-                                ],
-                                "column": "Bar",
-                                "table": "Bar"
-                            }
-                        ],
-                        "title": {
-                            "en": "Scenario dashboard",
-                            "fr": "Rapport du scenario"
-                        },
-                        "dynamicFilters": [
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "StockProbe"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "Bar"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "parameters"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "CustomerSatisfactionProbe"
-                            }
-                        ],
-                        "pageName": {
-                            "en": "ReportSection",
-                            "fr": "ReportSection"
-                        }
-                    },
-                    "3": {
-                        "settings": {
-                            "navContentPaneEnabled": false,
-                            "panes": {
-                                "filters": {
-                                    "expanded": true,
-                                    "visible": true
-                                }
-                            }
-                        },
-                        "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
-                        "staticFilters": [
-                            {
-                                "values": [
-                                    "MyBar",
-                                    "MyBar2"
-                                ],
-                                "column": "Bar",
-                                "table": "Bar"
-                            }
-                        ],
-                        "title": {
-                            "en": "Scenario dashboard",
-                            "fr": "Rapport du scenario"
-                        },
-                        "dynamicFilters": [
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "StockProbe"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "Bar"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "simulationrun",
-                                "table": "parameters"
-                            },
-                            {
-                                "values": "lastRunId",
-                                "column": "SimulationRun",
-                                "table": "CustomerSatisfactionProbe"
-                            }
-                        ],
-                        "pageName": {
-                            "en": "ReportSection",
-                            "fr": "ReportSection"
-                        }
-                    }
+        "scenarioView": {
+          "1": {
+            "settings": {
+              "navContentPaneEnabled": false,
+              "panes": {
+                "filters": {
+                  "expanded": true,
+                  "visible": true
                 }
+              }
             },
-            "instanceView": {
-                "dataContent": {
-                    "compounds": {
-                        "Bar_vertex": {}
-                    },
-                    "edges": {
-                        "arc_Satisfaction": {
-                            "style": {},
-                            "selectable": false
-                        }
-                    },
-                    "nodes": {
-                        "Bar": {
-                            "style": {
-                                "shape": "rectangle",
-                                "background-color": "#466282",
-                                "background-opacity": 0.2,
-                                "border-width": 0.0
-                            },
-                            "pannable": true,
-                            "selectable": true,
-                            "grabbable": false
-                        },
-                        "Customer": {
-                            "style": {
-                                "background-color": "#005A31",
-                                "shape": "ellipse"
-                            }
-                        }
-                    }
-                },
-                "dataSource": {
-                    "type": "azure_function",
-                    "functionUrl": "https://o-7yn4gn7er7j-warpworkbreweryendadxqa.azurewebsites.net/api/ScenarioDownload",
-                    "functionKey": "VhRiGHsYkWgnli5cACrrkJ1LJCO1GMNx_GhRHjvrljTWAzFuLo8_yg=="
-                }
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "staticFilters": [
+              {
+                "values": ["MyBar", "MyBar2"],
+                "column": "Bar",
+                "table": "Bar"
+              }
+            ],
+            "title": {
+              "en": "Scenario dashboard for run type 1",
+              "fr": "Rapport de scénario du run type 1"
             },
-            "menu": {
-                "supportUrl": "https://portal.cosmotech.com/resources/platform-resources/web-app-user-guide",
-                "organizationUrl": "https://cosmotech.com",
-                "documentationUrl": "https://portal.cosmotech.com/resources/platform-resources/web-app-user-guide"
-            },
-            "datasetManager": {
-                "graphIndicators": [
-                    {
-                        "id": "bars_count",
-                        "name": {
-                            "en": "Bars",
-                            "fr": "Bars"
-                        },
-                        "queryId": "bars"
-                    },
-                    {
-                        "id": "customers_count",
-                        "name": {
-                            "en": "Customers",
-                            "fr": "Clients"
-                        },
-                        "queryId": "customers"
-                    },
-                    {
-                        "id": "satisfaction_links_count",
-                        "name": {
-                            "en": "Customers interactions",
-                            "fr": "Interactions clients"
-                        },
-                        "queryId": "satisfaction_graph"
-                    },
-                    {
-                        "id": "relationships_count",
-                        "name": {
-                            "en": "All relationships",
-                            "fr": "Tous les liens"
-                        },
-                        "queryId": "relationships"
-                    }
-                ],
-                "categories": [
-                    {
-                        "id": "bars",
-                        "name": {
-                            "en": "Bars",
-                            "fr": "Bars"
-                        },
-                        "type": "entity",
-                        "description": {
-                            "en": "Bars are compound entities in the Brewery model. They are responsible of the stock management and the number of waiters. An entity of type Bar is the parent entity of Customers inside this bar.",
-                            "fr": "Les bars sont des entités composées du modèle Brewery. Ils sont responsables de la gestion du stock et du nombre de serveurs.\nUne entité de type Bar est l'entité parente des entités Customer présentes dans ce bar."
-                        },
-                        "kpis": [
-                            {
-                                "id": "average_stock",
-                                "name": {
-                                    "en": "Average stock",
-                                    "fr": "Moyenne stock"
-                                },
-                                "queryId": "bars"
-                            },
-                            {
-                                "id": "average_waiters",
-                                "name": {
-                                    "en": "Average waiters",
-                                    "fr": "Moyenne serveurs"
-                                },
-                                "queryId": "bars"
-                            },
-                            {
-                                "id": "min_waiters",
-                                "name": {
-                                    "en": "Min. waiters",
-                                    "fr": "Min. serveurs"
-                                },
-                                "queryId": "bars"
-                            },
-                            {
-                                "id": "max_waiters",
-                                "name": {
-                                    "en": "Max. waiters",
-                                    "fr": "Max. serveurs"
-                                },
-                                "queryId": "bars"
-                            }
-                        ],
-                        "attributes": [
-                            "NbWaiters",
-                            "RestockQty",
-                            "Stock"
-                        ],
-                        "previewTable": {
-                            "columns": [
-                                {
-                                    "field": "nbWaiters",
-                                    "type": [
-                                        "int"
-                                    ],
-                                    "headerName": "Number of waiters"
-                                },
-                                {
-                                    "field": "restockQty",
-                                    "type": [
-                                        "int"
-                                    ],
-                                    "headerName": "Restock quantity"
-                                },
-                                {
-                                    "field": "stock",
-                                    "type": [
-                                        "int"
-                                    ],
-                                    "headerName": "Stock"
-                                }
-                            ],
-                            "queryId": "bars_attributes",
-                            "resultKey": "fields"
-                        }
-                    },
-                    {
-                        "id": "customers",
-                        "description": {
-                            "en": "Customers are basic entities in the Brewery model. They are used to simulate beverage consumption inside Bar entities, with an influence graph between customers.",
-                            "fr": "Les clients sont des entités basiques du modèle Brewery. Ces entités permettent de simuler la consommation de boisson pour chaque entité de type Bar liée, et implémentent un graphe permettant d'influencer le comportement d'autres clients."
-                        },
-                        "name": {
-                            "en": "Customers",
-                            "fr": "Clients"
-                        },
-                        "type": "entity",
-                        "kpis": [
-                            {
-                                "id": "avg_satisfaction",
-                                "name": {
-                                    "en": "Average satisfaction",
-                                    "fr": "Satisfaction moyenne"
-                                },
-                                "queryId": "customers"
-                            }
-                        ],
-                        "attributes": [
-                            "Name",
-                            "Satisfaction",
-                            "SurroundingSatisfaction",
-                            "Thirsty"
-                        ],
-                        "previewTable": {
-                            "columns": [
-                                {
-                                    "field": "name",
-                                    "headerName": "Name",
-                                    "type": [
-                                        "string"
-                                    ]
-                                },
-                                {
-                                    "field": "satisfaction",
-                                    "headerName": "Satisfaction",
-                                    "type": [
-                                        "int"
-                                    ]
-                                },
-                                {
-                                    "field": "surroundingSatisfaction",
-                                    "headerName": "Surrounding satisfaction",
-                                    "type": [
-                                        "int"
-                                    ]
-                                },
-                                {
-                                    "field": "thirsty",
-                                    "headerName": "Thirsty",
-                                    "type": [
-                                        "bool"
-                                    ]
-                                }
-                            ],
-                            "queryId": "customers_attributes",
-                            "resultKey": "fields"
-                        }
-                    },
-                    {
-                        "id": "fakeEntityType",
-                        "description": {
-                            "en": "Fake category without data",
-                            "fr": "Catégorie factice sans aucune donnée"
-                        },
-                        "name": {
-                            "en": "Fake entity",
-                            "fr": "Entité factice"
-                        },
-                        "type": "entity"
-                    }
-                ],
-                "queries": [
-                    {
-                        "id": "bars_attributes",
-                        "query": "MATCH(bar: Bar) WITH {name: bar.id, nbWaiters: bar.NbWaiters, stock: bar.Stock, restockQty: bar.RestockQty} as fields RETURN fields"
-                    },
-                    {
-                        "id": "bars",
-                        "query": "OPTIONAL MATCH (b:Bar) RETURN COUNT(b) AS bars_count, AVG(b.Stock) AS average_stock, MIN(b.NbWaiters) AS min_waiters, MAX(b.NbWaiters) AS max_waiters, AVG(b.NbWaiters) AS average_waiters"
-                    },
-                    {
-                        "id": "customers",
-                        "query": "OPTIONAL MATCH (c:Customer) RETURN COUNT(c) AS customers_count, AVG(c.Satisfaction) AS avg_satisfaction"
-                    },
-                    {
-                        "id": "satisfaction_graph",
-                        "query": "OPTIONAL MATCH (:Customer)-[r]->(:Customer) RETURN COUNT(r) AS satisfaction_links_count"
-                    },
-                    {
-                        "id": "customers_attributes",
-                        "query": "MATCH(customer: Customer) WITH {name: customer.id, satisfaction: customer.Satisfaction, surroundingSatisfaction: customer.SurroundingSatisfaction, thirsty: customer.Thirsty} as fields RETURN fields"
-                    },
-                    {
-                        "id": "relationships",
-                        "query": "OPTIONAL MATCH ()-[r]->() RETURN COUNT(r) AS relationships_count"
-                    }
-                ]
+            "dynamicFilters": [
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "StockProbe"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "contains_Customer"
+              }
+            ],
+            "pageName": {
+              "en": "ReportSection937f9c72cc8f1062aa88",
+              "fr": "ReportSection937f9c72cc8f1062aa88"
             }
+          },
+          "2": {
+            "settings": {
+              "navContentPaneEnabled": false,
+              "panes": {
+                "filters": {
+                  "expanded": true,
+                  "visible": true
+                }
+              }
+            },
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "staticFilters": [
+              {
+                "values": ["MyBar", "MyBar2"],
+                "column": "Bar",
+                "table": "Bar"
+              }
+            ],
+            "title": {
+              "en": "Scenario dashboard",
+              "fr": "Rapport du scenario"
+            },
+            "dynamicFilters": [
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "StockProbe"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "Bar"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "parameters"
+              },
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "CustomerSatisfactionProbe"
+              }
+            ],
+            "pageName": {
+              "en": "ReportSection",
+              "fr": "ReportSection"
+            }
+          },
+          "3": {
+            "settings": {
+              "navContentPaneEnabled": false,
+              "panes": {
+                "filters": {
+                  "expanded": true,
+                  "visible": true
+                }
+              }
+            },
+            "reportId": "94bedaa2-2d4f-4713-80cf-546bc7db08fc",
+            "staticFilters": [
+              {
+                "values": ["MyBar", "MyBar2"],
+                "column": "Bar",
+                "table": "Bar"
+              }
+            ],
+            "title": {
+              "en": "Scenario dashboard",
+              "fr": "Rapport du scenario"
+            },
+            "dynamicFilters": [
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "StockProbe"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "Bar"
+              },
+              {
+                "values": "lastRunId",
+                "column": "simulationrun",
+                "table": "parameters"
+              },
+              {
+                "values": "lastRunId",
+                "column": "SimulationRun",
+                "table": "CustomerSatisfactionProbe"
+              }
+            ],
+            "pageName": {
+              "en": "ReportSection",
+              "fr": "ReportSection"
+            }
+          }
         }
-    },
-    "sendInputToDataWarehouse": true,
-    "useDedicatedEventHubNamespace": true,
-    "dedicatedEventHubSasKeyName": null,
-    "dedicatedEventHubAuthenticationStrategy": null,
-    "sendScenarioRunToEventHub": true,
-    "sendScenarioMetadataToEventHub": true,
-    "datasetCopy": false,
-    "security": {
-        "default": "none",
-        "accessControlList": [
-            {
-                "id": "mohcine.tor@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "adrian.stanciu@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "micheline.guiserix@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "diamantis.sellis@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "fanny.silencieux@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "raphael.durville@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "jeremy.reynard@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "sylvain.joubert@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "leopold.cramer@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "vincent.carluer@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "dev.sample.webapp@example.com",
-                "role": "editor"
-            },
-            {
-                "id": "tristan.huet@cosmotech.com",
-                "role": "admin"
+      },
+      "instanceView": {
+        "dataContent": {
+          "compounds": {
+            "Bar_vertex": {}
+          },
+          "edges": {
+            "arc_Satisfaction": {
+              "style": {},
+              "selectable": false
             }
+          },
+          "nodes": {
+            "Bar": {
+              "style": {
+                "shape": "rectangle",
+                "background-color": "#466282",
+                "background-opacity": 0.2,
+                "border-width": 0.0
+              },
+              "pannable": true,
+              "selectable": true,
+              "grabbable": false
+            },
+            "Customer": {
+              "style": {
+                "background-color": "#005A31",
+                "shape": "ellipse"
+              }
+            }
+          }
+        },
+        "dataSource": {
+          "type": "azure_function",
+          "functionUrl": "https://o-7yn4gn7er7j-warpworkbreweryendadxqa.azurewebsites.net/api/ScenarioDownload",
+          "functionKey": "VhRiGHsYkWgnli5cACrrkJ1LJCO1GMNx_GhRHjvrljTWAzFuLo8_yg=="
+        }
+      },
+      "menu": {
+        "supportUrl": "https://portal.cosmotech.com/resources/platform-resources/web-app-user-guide",
+        "organizationUrl": "https://cosmotech.com",
+        "documentationUrl": "https://portal.cosmotech.com/resources/platform-resources/web-app-user-guide"
+      },
+      "datasetManager": {
+        "graphIndicators": [
+          {
+            "id": "bars_count",
+            "name": {
+              "en": "Bars",
+              "fr": "Bars"
+            },
+            "queryId": "bars"
+          },
+          {
+            "id": "customers_count",
+            "name": {
+              "en": "Customers",
+              "fr": "Clients"
+            },
+            "queryId": "customers"
+          },
+          {
+            "id": "satisfaction_links_count",
+            "name": {
+              "en": "Customers interactions",
+              "fr": "Interactions clients"
+            },
+            "queryId": "satisfaction_graph"
+          },
+          {
+            "id": "relationships_count",
+            "name": {
+              "en": "All relationships",
+              "fr": "Tous les liens"
+            },
+            "queryId": "relationships"
+          }
+        ],
+        "categories": [
+          {
+            "id": "bars",
+            "name": {
+              "en": "Bars",
+              "fr": "Bars"
+            },
+            "type": "entity",
+            "description": {
+              "en": "Bars are compound entities in the Brewery model. They are responsible of the stock management and the number of waiters. An entity of type Bar is the parent entity of Customers inside this bar.",
+              "fr": "Les bars sont des entités composées du modèle Brewery. Ils sont responsables de la gestion du stock et du nombre de serveurs.\nUne entité de type Bar est l'entité parente des entités Customer présentes dans ce bar."
+            },
+            "kpis": [
+              {
+                "id": "average_stock",
+                "name": {
+                  "en": "Average stock",
+                  "fr": "Moyenne stock"
+                },
+                "queryId": "bars"
+              },
+              {
+                "id": "average_waiters",
+                "name": {
+                  "en": "Average waiters",
+                  "fr": "Moyenne serveurs"
+                },
+                "queryId": "bars"
+              },
+              {
+                "id": "min_waiters",
+                "name": {
+                  "en": "Min. waiters",
+                  "fr": "Min. serveurs"
+                },
+                "queryId": "bars"
+              },
+              {
+                "id": "max_waiters",
+                "name": {
+                  "en": "Max. waiters",
+                  "fr": "Max. serveurs"
+                },
+                "queryId": "bars"
+              }
+            ],
+            "attributes": ["NbWaiters", "RestockQty", "Stock"],
+            "previewTable": {
+              "columns": [
+                {
+                  "field": "nbWaiters",
+                  "type": ["int"],
+                  "headerName": "Number of waiters"
+                },
+                {
+                  "field": "restockQty",
+                  "type": ["int"],
+                  "headerName": "Restock quantity"
+                },
+                {
+                  "field": "stock",
+                  "type": ["int"],
+                  "headerName": "Stock"
+                }
+              ],
+              "queryId": "bars_attributes",
+              "resultKey": "fields"
+            }
+          },
+          {
+            "id": "customers",
+            "description": {
+              "en": "Customers are basic entities in the Brewery model. They are used to simulate beverage consumption inside Bar entities, with an influence graph between customers.",
+              "fr": "Les clients sont des entités basiques du modèle Brewery. Ces entités permettent de simuler la consommation de boisson pour chaque entité de type Bar liée, et implémentent un graphe permettant d'influencer le comportement d'autres clients."
+            },
+            "name": {
+              "en": "Customers",
+              "fr": "Clients"
+            },
+            "type": "entity",
+            "kpis": [
+              {
+                "id": "avg_satisfaction",
+                "name": {
+                  "en": "Average satisfaction",
+                  "fr": "Satisfaction moyenne"
+                },
+                "queryId": "customers"
+              }
+            ],
+            "attributes": ["Name", "Satisfaction", "SurroundingSatisfaction", "Thirsty"],
+            "previewTable": {
+              "columns": [
+                {
+                  "field": "name",
+                  "headerName": "Name",
+                  "type": ["string"]
+                },
+                {
+                  "field": "satisfaction",
+                  "headerName": "Satisfaction",
+                  "type": ["int"]
+                },
+                {
+                  "field": "surroundingSatisfaction",
+                  "headerName": "Surrounding satisfaction",
+                  "type": ["int"]
+                },
+                {
+                  "field": "thirsty",
+                  "headerName": "Thirsty",
+                  "type": ["bool"]
+                }
+              ],
+              "queryId": "customers_attributes",
+              "resultKey": "fields"
+            }
+          },
+          {
+            "id": "fakeEntityType",
+            "description": {
+              "en": "Fake category without data",
+              "fr": "Catégorie factice sans aucune donnée"
+            },
+            "name": {
+              "en": "Fake entity",
+              "fr": "Entité factice"
+            },
+            "type": "entity"
+          }
+        ],
+        "queries": [
+          {
+            "id": "bars_attributes",
+            "query": "MATCH(bar: Bar) WITH {name: bar.id, nbWaiters: bar.NbWaiters, stock: bar.Stock, restockQty: bar.RestockQty} as fields RETURN fields"
+          },
+          {
+            "id": "bars",
+            "query": "OPTIONAL MATCH (b:Bar) RETURN COUNT(b) AS bars_count, AVG(b.Stock) AS average_stock, MIN(b.NbWaiters) AS min_waiters, MAX(b.NbWaiters) AS max_waiters, AVG(b.NbWaiters) AS average_waiters"
+          },
+          {
+            "id": "customers",
+            "query": "OPTIONAL MATCH (c:Customer) RETURN COUNT(c) AS customers_count, AVG(c.Satisfaction) AS avg_satisfaction"
+          },
+          {
+            "id": "satisfaction_graph",
+            "query": "OPTIONAL MATCH (:Customer)-[r]->(:Customer) RETURN COUNT(r) AS satisfaction_links_count"
+          },
+          {
+            "id": "customers_attributes",
+            "query": "MATCH(customer: Customer) WITH {name: customer.id, satisfaction: customer.Satisfaction, surroundingSatisfaction: customer.SurroundingSatisfaction, thirsty: customer.Thirsty} as fields RETURN fields"
+          },
+          {
+            "id": "relationships",
+            "query": "OPTIONAL MATCH ()-[r]->() RETURN COUNT(r) AS relationships_count"
+          }
         ]
+      }
     }
+  },
+  "sendInputToDataWarehouse": true,
+  "useDedicatedEventHubNamespace": true,
+  "dedicatedEventHubSasKeyName": null,
+  "dedicatedEventHubAuthenticationStrategy": null,
+  "sendScenarioRunToEventHub": true,
+  "sendScenarioMetadataToEventHub": true,
+  "datasetCopy": false,
+  "security": {
+    "default": "none",
+    "accessControlList": [
+      {
+        "id": "mohcine.tor@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "adrian.stanciu@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "micheline.guiserix@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "diamantis.sellis@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "fanny.silencieux@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "raphael.durville@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "jeremy.reynard@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "sylvain.joubert@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "leopold.cramer@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "vincent.carluer@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "dev.sample.webapp@example.com",
+        "role": "editor"
+      },
+      {
+        "id": "tristan.huet@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "esra.adiller.ext@cosmotech.com",
+        "role": "admin"
+      }
+    ]
+  }
 }

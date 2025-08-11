@@ -1,2121 +1,1926 @@
 {
-    "id": "sol-5zqgl616jqj",
-    "organizationId": "o-7yn4gn7er7j",
-    "key": "warpengadxqabrewerysol",
-    "name": "Brewery warp eng adx qa solution",
-    "description": "Brewery Solution warp engineering adx qa",
-    "repository": "brewery_simulator",
-    "alwaysPull": false,
-    "csmSimulator": null,
-    "version": "1.4.2",
-    "ownerId": "111b200b-9120-41b9-a18c-14cacbdd669f",
-    "sdkVersion": null,
-    "url": null,
-    "tags": [
-        "1day",
-        "Brewery"
-    ],
-    "parameters": [
-        {
-            "id": "stock",
-            "labels": {
-                "fr": "Stock",
-                "en": "Stock"
-            },
-            "varType": "int",
-            "defaultValue": "100",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicValues": {
-                    "type": "cypher",
-                    "query": "OPTIONAL MATCH (b:Bar) RETURN AVG(b.Stock) AS average_stock",
-                    "resultKey": "average_stock"
-                }
-            }
-        },
-        {
-            "id": "restock_qty",
-            "labels": {
-                "fr": "Restock",
-                "en": "Restock"
-            },
-            "varType": "int",
-            "defaultValue": "25",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "nb_waiters",
-            "labels": {
-                "fr": "Serveurs",
-                "en": "Waiters"
-            },
-            "varType": "int",
-            "defaultValue": "10",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicValues": {
-                    "type": "cypher",
-                    "query": "OPTIONAL MATCH (b:Bar) RETURN AVG(b.NbWaiters) AS nbWaiters",
-                    "resultKey": "nbWaiters"
-                }
-            }
-        },
-        {
-            "id": "currency",
-            "labels": {
-                "fr": "Symbole de la monnaie",
-                "en": "Currency symbol"
-            },
-            "varType": "enum",
-            "defaultValue": "USD",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "enumValues": [
-                    {
-                        "key": "USD",
-                        "value": {
-                            "en": "United States dollar ($)",
-                            "fr": "Dollar américain ($)"
-                        },
-                        "tooltipText": {
-                            "fr": "Le dollar américain est la monnaie nationale des États-Unis et de plusieurs autres pays",
-                            "en": "The United States dollar is the official currency of the United States and several other countries"
-                        }
-                    },
-                    {
-                        "key": "EUR",
-                        "value": "Euro (€)",
-                        "tooltipText": {
-                            "fr": "L'euro est la monnaie unique de 20 des 27 États membres de l'Union européenne",
-                            "en": "Euro is the official currency of 20 of the 27 member states of the European Union"
-                        }
-                    },
-                    {
-                        "key": "BTC",
-                        "value": "Bitcoin (฿)",
-                        "tooltipText": {
-                            "fr": "Le Bitcoin est une cryptomonnaie dont l'objectif est de créer un système financier décentralisé",
-                            "en": "Bitcoin is a protocol which implements a public, permanent, and decentralized ledger"
-                        }
-                    },
-                    {
-                        "key": "JPY",
-                        "value": {
-                            "en": "Japanese yen (¥)",
-                            "fr": "Yen (¥)"
-                        }
-                    }
-                ],
-                "tooltipText": {
-                    "fr": "Choisissez un symbole :\n\t- $\n\t- €\n\t- ฿\n\t- ¥",
-                    "en": "Choose a symbol:\n\t- $\n\t- €\n\t- ฿\n\t- ¥"
-                }
-            }
-        },
-        {
-            "id": "currency_name",
-            "labels": {
-                "fr": "Nom de la monnaie",
-                "en": "Currency name"
-            },
-            "varType": "string",
-            "defaultValue": "EUR",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "Choisissez un nom de monnaie",
-                    "en": "Choose a currency name"
-                },
-                "minLength": 2.0,
-                "maxLength": 10.0
-            }
-        },
-        {
-            "id": "currency_value",
-            "labels": {
-                "fr": "Valeur",
-                "en": "Value"
-            },
-            "varType": "number",
-            "defaultValue": "1000",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "Choisissez une valeur",
-                    "en": "Set value"
-                }
-            }
-        },
-        {
-            "id": "currency_used",
-            "labels": {
-                "fr": "Activer la monnaie",
-                "en": "Enable currency"
-            },
-            "varType": "bool",
-            "defaultValue": "false",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "Activez la monnaie",
-                    "en": "Enable the currency"
-                }
-            }
-        },
-        {
-            "id": "start_date",
-            "labels": {
-                "fr": "Date de départ",
-                "en": "Start date"
-            },
-            "varType": "date",
-            "defaultValue": "2014-08-18T00:00:00.000Z",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "Choisissez une date de début",
-                    "en": "Choose a start date"
-                }
-            }
-        },
-        {
-            "id": "end_date",
-            "labels": {
-                "fr": "Date de fin",
-                "en": "End date"
-            },
-            "varType": "date",
-            "defaultValue": "2014-08-20T00:00:00.000Z",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "Choisissez une date de fin",
-                    "en": "Choose an end date"
-                },
-                "validation": "> start_date"
-            }
-        },
-        {
-            "id": "average_consumption",
-            "labels": {
-                "fr": "Consommation moyenne",
-                "en": "Average consumption"
-            },
-            "varType": "number",
-            "defaultValue": "3",
-            "minValue": "0",
-            "maxValue": "10",
-            "regexValidation": null,
-            "options": {
-                "subType": "SLIDER",
-                "tooltipText": {
-                    "fr": "En pintes",
-                    "en": "In pints"
-                }
-            }
-        },
-        {
-            "id": "additional_seats",
-            "labels": {
-                "fr": "Sièges additionnels",
-                "en": "Additional seats"
-            },
-            "varType": "number",
-            "defaultValue": "-4",
-            "minValue": "-600",
-            "maxValue": "2500",
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "La valeur peut être comprise entre -600 et 2500",
-                    "en": "Value can be between -600 and 2500"
-                }
-            }
-        },
-        {
-            "id": "additional_tables",
-            "labels": {
-                "fr": "Tables additionnelles",
-                "en": "Additional tables"
-            },
-            "varType": "number",
-            "defaultValue": "3",
-            "minValue": "-150",
-            "maxValue": "12000",
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "La valeur peut être comprise entre -150 et 12000",
-                    "en": "Value can be between -150 and 12000"
-                }
-            }
-        },
-        {
-            "id": "activated",
-            "labels": {
-                "en": "Activated",
-                "fr": "Activé"
-            },
-            "varType": "bool",
-            "defaultValue": "false",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "evaluation",
-            "labels": {
-                "fr": "Evaluation",
-                "en": "Evaluation"
-            },
-            "varType": "string",
-            "defaultValue": "Good",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "minLength": 2.0
-            }
-        },
-        {
-            "id": "volume_unit",
-            "labels": {
-                "en": "Volume unit",
-                "fr": "Unité de volume"
-            },
-            "varType": "enum",
-            "defaultValue": "LITRE",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "enumValues": [
-                    {
-                        "key": "LITRE",
-                        "value": "L"
-                    },
-                    {
-                        "key": "BARREL",
-                        "value": "bl"
-                    },
-                    {
-                        "key": "CUBIC_METRE",
-                        "value": "m³"
-                    }
-                ],
-                "subType": "RADIO"
-            }
-        },
-        {
-            "id": "comment",
-            "labels": {
-                "en": "Comment",
-                "fr": "Commentaire"
-            },
-            "varType": "string",
-            "defaultValue": "None",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "maxLength": 30.0
-            }
-        },
-        {
-            "id": "additional_date",
-            "labels": {
-                "en": "Additional date",
-                "fr": "Date additionnelle"
-            },
-            "varType": "date",
-            "defaultValue": "2022-06-22T00:00:00.000Z",
-            "minValue": "2021-01-01T00:00:00.000Z",
-            "maxValue": "2022-12-31T00:00:00.000Z",
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "initial_stock_dataset",
-            "labels": {
-                "fr": "Stock de départ",
-                "en": "Initial stock"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "connectorId": "c-6k67x3lm99p",
-                "description": "Initial stock dataset part",
-                "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx",
-                "shouldRenameFileOnUpload": true
-            }
-        },
-        {
-            "id": "example_dataset_part_1",
-            "labels": {
-                "fr": "Exemple de sous-partie de dataset 1",
-                "en": "Example dataset part 1"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "connectorId": "c-6k67x3lm99p",
-                "description": "1st example of dataset part",
-                "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx",
-                "tooltipText": {
-                    "fr": "Choisissez un dataset",
-                    "en": "Set a dataset"
-                }
-            }
-        },
-        {
-            "id": "example_dataset_part_2",
-            "labels": {
-                "fr": "Exemple de sous-partie de dataset 2",
-                "en": "Example dataset part 2"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "connectorId": "c-6k67x3lm99p",
-                "description": "2nd example of dataset part",
-                "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx"
-            }
-        },
-        {
-            "id": "example_dataset_part_3",
-            "labels": {
-                "fr": "Exemple de sous-partie de dataset 3",
-                "en": "Example dataset part 3"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "connectorId": "c-6k67x3lm99p",
-                "description": "3rd example of dataset part",
-                "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx",
-                "tooltipText": {
-                    "fr": "Choisissez un dataset",
-                    "en": "Set a dataset"
-                }
-            }
-        },
-        {
-            "id": "customers",
-            "labels": {
-                "fr": "Clients Additionnels",
-                "en": "Additional Customers"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "canChangeRowsNumber": true,
-                "connectorId": "c-6k67x3lm99p",
-                "description": "customers data",
-                "subType": "TABLE",
-                "columns": [
-                    {
-                        "field": "name",
-                        "type": [
-                            "nonResizable",
-                            "nonSortable"
-                        ]
-                    },
-                    {
-                        "field": "age",
-                        "type": [
-                            "int"
-                        ],
-                        "minValue": 0.0,
-                        "maxValue": 120.0,
-                        "acceptsEmptyFields": true
-                    },
-                    {
-                        "headerName": "consumption",
-                        "children": [
-                            {
-                                "field": "canDrinkAlcohol",
-                                "type": [
-                                    "bool"
-                                ]
-                            },
-                            {
-                                "field": "favoriteDrink",
-                                "type": [
-                                    "enum"
-                                ],
-                                "defaultValue": "Beer",
-                                "enumValues": [
-                                    "AppleJuice",
-                                    "Beer",
-                                    "OrangeJuice",
-                                    "Wine"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "headerName": "identity",
-                        "children": [
-                            {
-                                "field": "birthday",
-                                "type": [
-                                    "date"
-                                ],
-                                "minValue": "1900-01-01",
-                                "maxValue": "2022-12-19T13:46:15.223Z",
-                                "acceptsEmptyFields": true
-                            },
-                            {
-                                "field": "height",
-                                "type": [
-                                    "number"
-                                ],
-                                "minValue": 0.0,
-                                "maxValue": 2.5,
-                                "acceptsEmptyFields": true
-                            }
-                        ]
-                    }
-                ],
-                "dateFormat": "dd/MM/yyyy",
-                "tooltipText": {
-                    "fr": "Importez ou exportez un fichier clients",
-                    "en": "Import or export a customers file"
-                }
-            }
-        },
-        {
-            "id": "events",
-            "labels": {
-                "fr": "Evénements",
-                "en": "Events"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": "d-pj7wwxd95zm",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "tooltipText": {
-                    "fr": "Importez ou exportez un fichier d'événements",
-                    "en": "Import or export an events file"
-                },
-                "connectorId": "c-6k67x3lm99p",
-                "description": "events data",
-                "subType": "TABLE",
-                "columns": [
-                    {
-                        "field": "theme",
-                        "type": [
-                            "string"
-                        ]
-                    },
-                    {
-                        "field": "date",
-                        "type": [
-                            "date"
-                        ],
-                        "minValue": "01/01/1900",
-                        "maxValue": "31/12/2999"
-                    },
-                    {
-                        "field": "timeOfDay",
-                        "type": [
-                            "enum"
-                        ],
-                        "defaultValue": "evening",
-                        "enumValues": [
-                            "morning",
-                            "midday",
-                            "afternoon",
-                            "evening"
-                        ]
-                    },
-                    {
-                        "field": "eventType",
-                        "type": [
-                            "string",
-                            "nonResizable",
-                            "nonEditable"
-                        ]
-                    },
-                    {
-                        "field": "reservationsNumber",
-                        "type": [
-                            "int"
-                        ],
-                        "minValue": 0.0,
-                        "maxValue": 300.0,
-                        "acceptsEmptyFields": true
-                    },
-                    {
-                        "field": "online",
-                        "type": [
-                            "bool",
-                            "nonSortable"
-                        ]
-                    }
-                ],
-                "dateFormat": "dd/MM/yyyy"
-            }
-        },
-        {
-            "id": "satisfactionArc",
-            "labels": {
-                "fr": "Réseau de satisfaction",
-                "en": "Satisfaction network"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "canChangeRowsNumber": true,
-                "connectorId": "c-6k67x3lm99p",
-                "description": "Links of satisfaction influence between customers",
-                "subType": "TABLE",
-                "dynamicValues": {
-                    "query": "MATCH(csource:Customer)-[r]->(ctarget:Customer) WITH {source: csource.id, target: ctarget.id, name: r.name} as fields RETURN fields",
-                    "resultKey": "fields"
-                },
-                "columns": [
-                    {
-                        "field": "source",
-                        "headerName": "Source",
-                        "type": [
-                            "string"
-                        ]
-                    },
-                    {
-                        "field": "target",
-                        "headerName": "Target",
-                        "type": [
-                            "string"
-                        ]
-                    },
-                    {
-                        "field": "name",
-                        "headerName": "Name",
-                        "type": [
-                            "string",
-                            "nonEditable",
-                            "nonSortable"
-                        ],
-                        "defaultValue": "arc_to_Customer",
-                        "acceptsEmptyFields": "false"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "initial_state",
-            "labels": {
-                "fr": "Etat initial",
-                "en": "Initial state"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "connectorId": "c-6k67x3lm99p",
-                "subType": "TABLE",
-                "dynamicValues": {
-                    "query": "MATCH(customer: Customer) WITH {name: customer.id, satisfaction: customer.Satisfaction, surroundingSatisfaction: customer.SurroundingSatisfaction, thirsty: customer.Thirsty} as fields RETURN fields",
-                    "resultKey": "fields"
-                },
-                "columns": [
-                    {
-                        "field": "name",
-                        "headerName": "Name",
-                        "type": [
-                            "string"
-                        ]
-                    },
-                    {
-                        "field": "satisfaction",
-                        "headerName": "Satisfaction",
-                        "type": [
-                            "int"
-                        ],
-                        "minValue": 0.0,
-                        "maxValue": 10.0,
-                        "acceptsEmptyFields": true
-                    },
-                    {
-                        "field": "surroundingSatisfaction",
-                        "headerName": "Surrounding satisfaction",
-                        "type": [
-                            "int"
-                        ],
-                        "minValue": 0.0,
-                        "maxValue": 10.0,
-                        "acceptsEmptyFields": true
-                    },
-                    {
-                        "field": "thirsty",
-                        "headerName": "Thirsty",
-                        "type": [
-                            "bool"
-                        ],
-                        "acceptsEmptyFields": true
-                    }
-                ]
-            }
-        },
-        {
-            "id": "training_start_date",
-            "labels": {
-                "fr": "Date de départ",
-                "en": "Start date"
-            },
-            "varType": "date",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "training_end_date",
-            "labels": {
-                "fr": "Date de Fin",
-                "en": "End date"
-            },
-            "varType": "date",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_stock",
-            "labels": {
-                "fr": "Stock",
-                "en": "Stock"
-            },
-            "varType": "string",
-            "defaultValue": "100",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "countries",
-            "labels": {
-                "fr": "Pays",
-                "en": "Countries"
-            },
-            "varType": "list",
-            "defaultValue": "[\"FRANCE\",\"INDIA\"]",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "enumValues": [
-                    {
-                        "key": "FRANCE",
-                        "value": "France"
-                    },
-                    {
-                        "key": "GERMANY",
-                        "value": {
-                            "en": "Germany",
-                            "fr": "Allemagne"
-                        }
-                    },
-                    {
-                        "key": "GREECE",
-                        "value": {
-                            "en": "Greece",
-                            "fr": "Grèce"
-                        }
-                    },
-                    {
-                        "key": "INDIA",
-                        "value": {
-                            "en": "India",
-                            "fr": "Inde"
-                        }
-                    },
-                    {
-                        "key": "JAPAN",
-                        "value": {
-                            "en": "Japan",
-                            "fr": "Japon"
-                        }
-                    }
-                ],
-                "tooltipText": {
-                    "fr": "Choisissez un ensemble de pays parmi la liste proposée",
-                    "en": "Select countries among the list"
-                }
-            }
-        },
-        {
-            "id": "dynamic_values_customers_enum",
-            "labels": {
-                "fr": "Client (enum)",
-                "en": "Customer (enum)"
-            },
-            "varType": "enum",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicEnumValues": {
-                    "type": "cypher",
-                    "query": "MATCH(n:Customer) RETURN n.id as customer_id",
-                    "resultKey": "customer_id"
-                }
-            }
-        },
-        {
-            "id": "dynamic_values_customers_list",
-            "labels": {
-                "fr": "Liste de clients (list)",
-                "en": "Customers list (list)"
-            },
-            "varType": "list",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicEnumValues": {
-                    "type": "cypher",
-                    "query": "MATCH(n:Customer) RETURN n.id as customer_id",
-                    "resultKey": "customer_id"
-                }
-            }
-        },
-        {
-            "id": "dynamic_values_customers_max",
-            "labels": {
-                "fr": "Nombre maximal de clients",
-                "en": "Maximum number of customers"
-            },
-            "varType": "int",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicValues": {
-                    "type": "cypher",
-                    "query": "MATCH(c:Customer) RETURN count(c) as customers_max",
-                    "resultKey": "customers_max"
-                }
-            }
-        },
-        {
-            "id": "etl_param_restock_quantity",
-            "labels": {
-                "fr": "Réapprovisionnement",
-                "en": "Restock"
-            },
-            "varType": "string",
-            "defaultValue": "25",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_num_waiters",
-            "labels": {
-                "fr": "Serveurs",
-                "en": "Waiters"
-            },
-            "varType": "string",
-            "defaultValue": "5",
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_bar_instance",
-            "labels": {
-                "fr": "fichier d'instance",
-                "en": "instance file"
-            },
-            "varType": "%DATASETID%",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "connectorId": "c-6k67x3lm99p",
-                "description": "Initial stock dataset part",
-                "defaultFileTypeFilter": ".zip",
-                "shouldRenameFileOnUpload": true
-            }
-        },
-        {
-            "id": "etl_param_azure_storage_co_string",
-            "labels": {
-                "fr": "azure storage connection string",
-                "en": "azure storage connection string"
-            },
-            "varType": "string",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_az_storage_account",
-            "labels": {
-                "fr": "azure storage account name",
-                "en": "azure storage account name"
-            },
-            "varType": "string",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_az_storage_container",
-            "labels": {
-                "fr": "azure storage container name",
-                "en": "azure storage container name"
-            },
-            "varType": "string",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_az_storage_path",
-            "labels": {
-                "fr": "azure storage path",
-                "en": "azure storage path"
-            },
-            "varType": "string",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": null
-        },
-        {
-            "id": "etl_param_subdataset_filter_is_thirsty",
-            "labels": {
-                "fr": "Filtrer par",
-                "en": "Filter by"
-            },
-            "varType": "enum",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "enumValues": [
-                    {
-                        "key": "THIRSTY",
-                        "value": {
-                            "en": "Thirsty",
-                            "fr": "A soif"
-                        }
-                    },
-                    {
-                        "key": "NOT_THIRSTY",
-                        "value": {
-                            "en": "Not thirsty",
-                            "fr": "N'a pas soif"
-                        }
-                    }
-                ],
-                "tooltipText": {
-                    "fr": "Conserver uniquement les clients en fonction de leur soif initiale",
-                    "en": "Keep only customers defined by their initial thirst level"
-                }
-            }
-        },
-        {
-            "id": "etl_param_subdataset_filter_thirsty_multiselect",
-            "labels": {
-                "fr": "Filtrer par",
-                "en": "Filter by"
-            },
-            "varType": "list",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "enumValues": [
-                    {
-                        "key": "THIRSTY",
-                        "value": {
-                            "en": "Thirsty",
-                            "fr": "A soif"
-                        }
-                    },
-                    {
-                        "key": "NOT_THIRSTY",
-                        "value": {
-                            "en": "Not thirsty",
-                            "fr": "N'a pas soif"
-                        }
-                    }
-                ],
-                "tooltipText": {
-                    "fr": "Conserver uniquement les clients en fonction de leur soif initiale",
-                    "en": "Keep only customers defined by their initial thirst level"
-                }
-            }
-        },
-        {
-            "id": "etl_param_subdataset_filter_dynamic_customer_name",
-            "labels": {
-                "fr": "Filtrer par client",
-                "en": "Filter by customer"
-            },
-            "varType": "enum",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicEnumValues": {
-                    "type": "cypher",
-                    "query": "MATCH(n:Customer) RETURN n.id as id",
-                    "resultKey": "id"
-                }
-            }
-        },
-        {
-            "id": "etl_param_subdataset_filter_dynamic_customers_list",
-            "labels": {
-                "fr": "Filtrer par clients",
-                "en": "Filter by customers"
-            },
-            "varType": "list",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "dynamicEnumValues": {
-                    "type": "cypher",
-                    "query": "MATCH(n:Customer) RETURN n.id as id",
-                    "resultKey": "id"
-                }
-            }
-        },
-        {
-            "id": "scenario_to_compare",
-            "labels": {
-                "fr": "Scénario à comparer",
-                "en": "Scenario to compare"
-            },
-            "varType": "enum",
-            "defaultValue": null,
-            "minValue": null,
-            "maxValue": null,
-            "regexValidation": null,
-            "options": {
-                "subType": "SCENARIOS",
-                "runTemplateFilter": [
-                    "1",
-                    "3"
-                ],
-                "tooltipText": {
-                    "fr": "Scénario auquel on va comparer les données",
-                    "en": "Scenario against which to compare data"
-                }
-            }
+  "id": "sol-5zqgl616jqj",
+  "organizationId": "o-7yn4gn7er7j",
+  "key": "warpengadxqabrewerysol",
+  "name": "Brewery warp eng adx qa solution",
+  "description": "Brewery Solution warp engineering adx qa",
+  "repository": "brewery_simulator",
+  "alwaysPull": false,
+  "csmSimulator": null,
+  "version": "1.4.2",
+  "ownerId": "111b200b-9120-41b9-a18c-14cacbdd669f",
+  "sdkVersion": null,
+  "url": null,
+  "tags": ["1day", "Brewery"],
+  "parameters": [
+    {
+      "id": "stock",
+      "labels": {
+        "fr": "Stock",
+        "en": "Stock"
+      },
+      "varType": "int",
+      "defaultValue": "100",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicValues": {
+          "type": "cypher",
+          "query": "OPTIONAL MATCH (b:Bar) RETURN AVG(b.Stock) AS average_stock",
+          "resultKey": "average_stock"
         }
-    ],
-    "parameterGroups": [
-        {
-            "id": "bar_parameters",
-            "labels": {
-                "fr": "Bar",
-                "en": "Pub"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "stock",
-                "restock_qty",
-                "nb_waiters"
-            ]
-        },
-        {
-            "id": "basic_types",
-            "labels": {
-                "fr": "Exemple monnaie",
-                "en": "Currency example"
-            },
-            "isTable": null,
-            "options": {
-                "authorizedRoles": [
-                    "Platform.Admin",
-                    "Organization.User"
-                ],
-                "hideParameterGroupIfNoPermission": false
-            },
-            "parentId": null,
-            "parameters": [
-                "currency",
-                "currency_name",
-                "currency_value",
-                "currency_used",
-                "start_date",
-                "end_date",
-                "average_consumption"
-            ]
-        },
-        {
-            "id": "training_dates",
-            "labels": {
-                "fr": "Dates de simulation",
-                "en": "Simulation dates"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "training_start_date",
-                "training_end_date"
-            ]
-        },
-        {
-            "id": "file_upload",
-            "labels": {
-                "en": "Initial values",
-                "fr": "Valeurs initiales"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "initial_stock_dataset"
-            ]
-        },
-        {
-            "id": "dataset_parts",
-            "labels": {
-                "en": "Dataset parts",
-                "fr": "Fragments de dataset"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "example_dataset_part_1",
-                "example_dataset_part_2"
-            ]
-        },
-        {
-            "id": "extra_dataset_part",
-            "labels": {
-                "en": "Additional dataset part",
-                "fr": "Fragment additionnel"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "example_dataset_part_3"
-            ]
-        },
-        {
-            "id": "customers",
-            "labels": {
-                "en": "Customers",
-                "fr": "Clients"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "initial_state",
-                "customers",
-                "dynamic_values_customers_enum",
-                "dynamic_values_customers_list",
-                "dynamic_values_customers_max"
-            ]
-        },
-        {
-            "id": "events",
-            "labels": {
-                "en": "Events",
-                "fr": "Évènements"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "events",
-                "additional_seats",
-                "activated",
-                "evaluation"
-            ]
-        },
-        {
-            "id": "cyphersatisfaction",
-            "labels": {
-                "fr": "Réseau de satisfaction",
-                "en": "Satisfaction network"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "satisfactionArc"
-            ]
-        },
-        {
-            "id": "initial_state",
-            "labels": {
-                "en": "Initial state",
-                "fr": "Etat initial"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "initial_state"
-            ]
-        },
-        {
-            "id": "additional_parameters",
-            "labels": {
-                "en": "Additional parameters",
-                "fr": "Paramètres additionnels"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "volume_unit",
-                "additional_tables",
-                "comment",
-                "additional_date",
-                "countries",
-                "scenario_to_compare"
-            ]
-        },
-        {
-            "id": "training_dates",
-            "labels": {
-                "fr": "Dates de simulation",
-                "en": "Simulation dates"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "training_start_date",
-                "training_end_date"
-            ]
-        },
-        {
-            "id": "dynamic_values_customers_group",
-            "labels": {
-                "fr": "Clients",
-                "en": "Customers"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "dynamic_values_customers_enum",
-                "dynamic_values_customers_list",
-                "dynamic_values_customers_max"
-            ]
-        },
-        {
-            "id": "etl_param_group_bar_parameters",
-            "labels": {
-                "fr": "Bar",
-                "en": "Bar"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_stock",
-                "etl_param_restock_quantity",
-                "etl_param_num_waiters"
-            ]
-        },
-        {
-            "id": "etl_param_group_local_file",
-            "labels": {
-                "fr": "local_file",
-                "en": "local_file"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_bar_instance"
-            ]
-        },
-        {
-            "id": "etl_param_group_azure_storage",
-            "labels": {
-                "fr": "azure_storage_connection",
-                "en": "azure_storage connexion"
-            },
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_azure_storage_co_string",
-                "etl_param_az_storage_account",
-                "etl_param_az_storage_container",
-                "etl_param_az_storage_path"
-            ]
-        },
-        {
-            "id": "etl_param_group_sub_dataset_by_filter",
-            "labels": null,
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_subdataset_filter_is_thirsty"
-            ]
-        },
-        {
-            "id": "etl_param_group_sub_dataset_by_dynamic_filter",
-            "labels": null,
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_subdataset_filter_dynamic_customer_name"
-            ]
-        },
-        {
-            "id": "etl_param_group_sub_dataset_by_dynamic_filter_with_multiple_selection",
-            "labels": null,
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_subdataset_filter_dynamic_customers_list"
-            ]
-        },
-        {
-            "id": "etl_param_group_sub_dataset_by_filter_with_multiple_selection",
-            "labels": null,
-            "isTable": null,
-            "options": null,
-            "parentId": null,
-            "parameters": [
-                "etl_param_subdataset_filter_thirsty_multiselect"
-            ]
+      }
+    },
+    {
+      "id": "restock_qty",
+      "labels": {
+        "fr": "Restock",
+        "en": "Restock"
+      },
+      "varType": "int",
+      "defaultValue": "25",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "nb_waiters",
+      "labels": {
+        "fr": "Serveurs",
+        "en": "Waiters"
+      },
+      "varType": "int",
+      "defaultValue": "10",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicValues": {
+          "type": "cypher",
+          "query": "OPTIONAL MATCH (b:Bar) RETURN AVG(b.NbWaiters) AS nbWaiters",
+          "resultKey": "nbWaiters"
         }
-    ],
-    "runTemplates": [
-        {
-            "id": "1",
-            "name": "Run template with Brewery parameters",
-            "labels": {
-                "fr": "Run template avec les paramètres de Brewery ",
-                "en": "Run template with Brewery parameters"
+      }
+    },
+    {
+      "id": "currency",
+      "labels": {
+        "fr": "Symbole de la monnaie",
+        "en": "Currency symbol"
+      },
+      "varType": "enum",
+      "defaultValue": "USD",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "enumValues": [
+          {
+            "key": "USD",
+            "value": {
+              "en": "United States dollar ($)",
+              "fr": "Dollar américain ($)"
             },
-            "description": "Run template with Brewery parameters",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "1",
-                "With params"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": true,
-            "applyParameters": true,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": true,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "bar_parameters",
-                "file_upload"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "2",
-            "name": "Run template without parameters",
-            "labels": {
-                "fr": "Run template sans paramètres",
-                "en": "Run template without parameters"
-            },
-            "description": "Run template without parameters",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "2",
-                "No param"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": false,
-            "applyParameters": false,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": false,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": null,
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "3",
-            "name": "Run template with mock basic types parameters",
-            "labels": {
-                "fr": "Run template avec paramètres basiques fictifs",
-                "en": "Run template with mock basic types parameters"
-            },
-            "description": "Run template with mock basic types parameters",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "3",
-                "Example"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": false,
-            "applyParameters": false,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": false,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "basic_types",
-                "customers",
-                "events",
-                "cyphersatisfaction",
-                "dataset_parts",
-                "additional_parameters"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "dynamic_values_customers",
-            "name": null,
-            "labels": {
-                "fr": "Valeurs dynamiques (requiert un dataset Twingraph)",
-                "en": "Dynamic values (requires a Twingraph dataset)"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": null,
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "dynamic_values_customers_group"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "hidden test run template",
-            "name": "Hidden test run template without parameters",
-            "labels": {
-                "fr": "Run template masqué sans paramètres",
-                "en": "Hidden test run template without parameters"
-            },
-            "description": "Run template without parameters",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "2",
-                "No param"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": false,
-            "applyParameters": false,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": false,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": null,
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "high cpu (DO NOT USE)",
-            "name": "high cpu (DO NOT USE)",
-            "labels": {
-                "fr": "Surcharge processeur (ne pas utiliser)",
-                "en": "high cpu (DO NOT USE)"
-            },
-            "description": "high cpu (DO NOT USE)",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "1",
-                "With params",
-                "custom high cpu"
-            ],
-            "computeSize": "highcpu",
-            "runSizing": {
-                "requests": {
-                    "cpu": "0.5",
-                    "memory": "128Mi"
-                },
-                "limits": {
-                    "cpu": "1",
-                    "memory": "256Mi"
-                }
-            },
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": true,
-            "applyParameters": true,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": true,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "bar_parameters"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "consume_to_redis",
-            "name": "probe consumer to redis",
-            "labels": {
-                "fr": "Run template avec probe consumer pour redis",
-                "en": "Run template with probe consumer to direct Redis"
-            },
-            "description": "Run template with probe consumer to direct Redis",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "consumer to redis",
-                "No param"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": false,
-            "applyParameters": false,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": false,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": null,
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "consume_to_api",
-            "name": "probe consumer to api",
-            "labels": {
-                "fr": "Run template avec probe consumer pour l'API Cosmotech\n",
-                "en": "Run template with probe consumer to Cosmotech API"
-            },
-            "description": "Run template with probe consumer to Cosmotech API",
-            "csmSimulation": "BreweryDemoSimulationWithConnector",
-            "tags": [
-                "consumer to api",
-                "No param"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": true,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": false,
-            "applyParameters": false,
-            "validateData": false,
-            "sendDatasetsToDataWarehouse": true,
-            "sendInputParametersToDataWarehouse": false,
-            "preRun": false,
-            "run": true,
-            "postRun": false,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": null,
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": "argoWorkflow",
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "etl_with_local_file",
-            "name": null,
-            "labels": {
-                "fr": "Brewery (.zip) depuis un fichier local",
-                "en": "Brewery (.zip) from Local File"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "datasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_bar_parameters",
-                "etl_param_group_local_file"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "etl_with_azure_storage",
-            "name": null,
-            "labels": {
-                "fr": "Brewery (.zip) depuis Azure Storage",
-                "en": "Brewery (.zip) from Azure Storage"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "datasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_bar_parameters",
-                "etl_param_group_azure_storage"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "etl_sub_dataset_by_filter",
-            "name": null,
-            "labels": {
-                "fr": "Filtre de dataset",
-                "en": "Dataset filter"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "subdatasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_sub_dataset_by_filter"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "./etl_sub_dataset_by_filter",
-            "name": null,
-            "labels": {
-                "fr": "Filtre dynamique de dataset",
-                "en": "Dataset dynamic filter"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "subdatasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_sub_dataset_by_dynamic_filter"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": ".//etl_sub_dataset_by_filter",
-            "name": null,
-            "labels": {
-                "fr": "Filtre par sélection multiple",
-                "en": "Multi-selection filter"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "subdatasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_sub_dataset_by_filter_with_multiple_selection"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": ".///etl_sub_dataset_by_filter",
-            "name": null,
-            "labels": {
-                "fr": "Filtre dynamique avec sélection multiple",
-                "en": "Dynamic filter with multi-selection"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "subdatasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_sub_dataset_by_dynamic_filter_with_multiple_selection"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "etl_sub_dataset_by_filter_boolean",
-            "name": null,
-            "labels": {
-                "fr": "Filtre de données sur une valeur booléenne",
-                "en": "Dataset filter on a boolean value"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "subdatasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_sub_dataset_by_filter"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        },
-        {
-            "id": "etl_sub_dataset_by_filter_multi",
-            "name": null,
-            "labels": {
-                "fr": "Filtre dynamique avec sélection multiple",
-                "en": "Dataset filter on a multi-selection dynamic values"
-            },
-            "description": null,
-            "csmSimulation": null,
-            "tags": [
-                "subdatasource"
-            ],
-            "computeSize": null,
-            "runSizing": null,
-            "noDataIngestionState": null,
-            "fetchDatasets": null,
-            "scenarioDataDownloadTransform": null,
-            "fetchScenarioParameters": null,
-            "applyParameters": null,
-            "validateData": null,
-            "sendDatasetsToDataWarehouse": null,
-            "sendInputParametersToDataWarehouse": null,
-            "preRun": null,
-            "run": null,
-            "postRun": null,
-            "parametersJson": null,
-            "parametersHandlerSource": null,
-            "datasetValidatorSource": null,
-            "preRunSource": null,
-            "runSource": null,
-            "postRunSource": null,
-            "scenariodataTransformSource": null,
-            "parameterGroups": [
-                "etl_param_group_sub_dataset_by_dynamic_filter_with_multiple_selection"
-            ],
-            "stackSteps": null,
-            "gitRepositoryUrl": null,
-            "gitBranchName": null,
-            "runTemplateSourceDir": null,
-            "orchestratorType": null,
-            "executionTimeout": null,
-            "deleteHistoricalData": null
-        }
-    ],
-    "security": {
-        "default": "none",
-        "accessControlList": [
-            {
-                "id": "mohcine.tor@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "adrian.stanciu@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "micheline.guiserix@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "diamantis.sellis@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "fanny.silencieux@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "raphael.durville@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "jeremy.reynard@cosmotech.com",
-                "role": "admin"
-            },
-            {
-                "id": "sylvain.joubert@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "leopold.cramer@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "vincent.carluer@cosmotech.com",
-                "role": "editor"
-            },
-            {
-                "id": "dev.sample.webapp@example.com",
-                "role": "editor"
-            },
-            {
-                "id": "tristan.huet@cosmotech.com",
-                "role": "admin"
+            "tooltipText": {
+              "fr": "Le dollar américain est la monnaie nationale des États-Unis et de plusieurs autres pays",
+              "en": "The United States dollar is the official currency of the United States and several other countries"
             }
+          },
+          {
+            "key": "EUR",
+            "value": "Euro (€)",
+            "tooltipText": {
+              "fr": "L'euro est la monnaie unique de 20 des 27 États membres de l'Union européenne",
+              "en": "Euro is the official currency of 20 of the 27 member states of the European Union"
+            }
+          },
+          {
+            "key": "BTC",
+            "value": "Bitcoin (฿)",
+            "tooltipText": {
+              "fr": "Le Bitcoin est une cryptomonnaie dont l'objectif est de créer un système financier décentralisé",
+              "en": "Bitcoin is a protocol which implements a public, permanent, and decentralized ledger"
+            }
+          },
+          {
+            "key": "JPY",
+            "value": {
+              "en": "Japanese yen (¥)",
+              "fr": "Yen (¥)"
+            }
+          }
+        ],
+        "tooltipText": {
+          "fr": "Choisissez un symbole :\n\t- $\n\t- €\n\t- ฿\n\t- ¥",
+          "en": "Choose a symbol:\n\t- $\n\t- €\n\t- ฿\n\t- ¥"
+        }
+      }
+    },
+    {
+      "id": "currency_name",
+      "labels": {
+        "fr": "Nom de la monnaie",
+        "en": "Currency name"
+      },
+      "varType": "string",
+      "defaultValue": "EUR",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "Choisissez un nom de monnaie",
+          "en": "Choose a currency name"
+        },
+        "minLength": 2.0,
+        "maxLength": 10.0
+      }
+    },
+    {
+      "id": "currency_value",
+      "labels": {
+        "fr": "Valeur",
+        "en": "Value"
+      },
+      "varType": "number",
+      "defaultValue": "1000",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "Choisissez une valeur",
+          "en": "Set value"
+        }
+      }
+    },
+    {
+      "id": "currency_used",
+      "labels": {
+        "fr": "Activer la monnaie",
+        "en": "Enable currency"
+      },
+      "varType": "bool",
+      "defaultValue": "false",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "Activez la monnaie",
+          "en": "Enable the currency"
+        }
+      }
+    },
+    {
+      "id": "start_date",
+      "labels": {
+        "fr": "Date de départ",
+        "en": "Start date"
+      },
+      "varType": "date",
+      "defaultValue": "2014-08-18T00:00:00.000Z",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "Choisissez une date de début",
+          "en": "Choose a start date"
+        }
+      }
+    },
+    {
+      "id": "end_date",
+      "labels": {
+        "fr": "Date de fin",
+        "en": "End date"
+      },
+      "varType": "date",
+      "defaultValue": "2014-08-20T00:00:00.000Z",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "Choisissez une date de fin",
+          "en": "Choose an end date"
+        },
+        "validation": "> start_date"
+      }
+    },
+    {
+      "id": "average_consumption",
+      "labels": {
+        "fr": "Consommation moyenne",
+        "en": "Average consumption"
+      },
+      "varType": "number",
+      "defaultValue": "3",
+      "minValue": "0",
+      "maxValue": "10",
+      "regexValidation": null,
+      "options": {
+        "subType": "SLIDER",
+        "tooltipText": {
+          "fr": "En pintes",
+          "en": "In pints"
+        }
+      }
+    },
+    {
+      "id": "additional_seats",
+      "labels": {
+        "fr": "Sièges additionnels",
+        "en": "Additional seats"
+      },
+      "varType": "number",
+      "defaultValue": "-4",
+      "minValue": "-600",
+      "maxValue": "2500",
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "La valeur peut être comprise entre -600 et 2500",
+          "en": "Value can be between -600 and 2500"
+        }
+      }
+    },
+    {
+      "id": "additional_tables",
+      "labels": {
+        "fr": "Tables additionnelles",
+        "en": "Additional tables"
+      },
+      "varType": "number",
+      "defaultValue": "3",
+      "minValue": "-150",
+      "maxValue": "12000",
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "La valeur peut être comprise entre -150 et 12000",
+          "en": "Value can be between -150 and 12000"
+        }
+      }
+    },
+    {
+      "id": "activated",
+      "labels": {
+        "en": "Activated",
+        "fr": "Activé"
+      },
+      "varType": "bool",
+      "defaultValue": "false",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "evaluation",
+      "labels": {
+        "fr": "Evaluation",
+        "en": "Evaluation"
+      },
+      "varType": "string",
+      "defaultValue": "Good",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "minLength": 2.0
+      }
+    },
+    {
+      "id": "volume_unit",
+      "labels": {
+        "en": "Volume unit",
+        "fr": "Unité de volume"
+      },
+      "varType": "enum",
+      "defaultValue": "LITRE",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "enumValues": [
+          {
+            "key": "LITRE",
+            "value": "L"
+          },
+          {
+            "key": "BARREL",
+            "value": "bl"
+          },
+          {
+            "key": "CUBIC_METRE",
+            "value": "m³"
+          }
+        ],
+        "subType": "RADIO"
+      }
+    },
+    {
+      "id": "comment",
+      "labels": {
+        "en": "Comment",
+        "fr": "Commentaire"
+      },
+      "varType": "string",
+      "defaultValue": "None",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "maxLength": 30.0
+      }
+    },
+    {
+      "id": "additional_date",
+      "labels": {
+        "en": "Additional date",
+        "fr": "Date additionnelle"
+      },
+      "varType": "date",
+      "defaultValue": "2022-06-22T00:00:00.000Z",
+      "minValue": "2021-01-01T00:00:00.000Z",
+      "maxValue": "2022-12-31T00:00:00.000Z",
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "initial_stock_dataset",
+      "labels": {
+        "fr": "Stock de départ",
+        "en": "Initial stock"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "connectorId": "c-6k67x3lm99p",
+        "description": "Initial stock dataset part",
+        "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx",
+        "shouldRenameFileOnUpload": true
+      }
+    },
+    {
+      "id": "example_dataset_part_1",
+      "labels": {
+        "fr": "Exemple de sous-partie de dataset 1",
+        "en": "Example dataset part 1"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "connectorId": "c-6k67x3lm99p",
+        "description": "1st example of dataset part",
+        "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx",
+        "tooltipText": {
+          "fr": "Choisissez un dataset",
+          "en": "Set a dataset"
+        }
+      }
+    },
+    {
+      "id": "example_dataset_part_2",
+      "labels": {
+        "fr": "Exemple de sous-partie de dataset 2",
+        "en": "Example dataset part 2"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "connectorId": "c-6k67x3lm99p",
+        "description": "2nd example of dataset part",
+        "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx"
+      }
+    },
+    {
+      "id": "example_dataset_part_3",
+      "labels": {
+        "fr": "Exemple de sous-partie de dataset 3",
+        "en": "Example dataset part 3"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "connectorId": "c-6k67x3lm99p",
+        "description": "3rd example of dataset part",
+        "defaultFileTypeFilter": ".zip,.csv,.json,.xls,.xlsx",
+        "tooltipText": {
+          "fr": "Choisissez un dataset",
+          "en": "Set a dataset"
+        }
+      }
+    },
+    {
+      "id": "customers",
+      "labels": {
+        "fr": "Clients Additionnels",
+        "en": "Additional Customers"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "canChangeRowsNumber": true,
+        "connectorId": "c-6k67x3lm99p",
+        "description": "customers data",
+        "subType": "TABLE",
+        "columns": [
+          {
+            "field": "name",
+            "type": ["nonResizable", "nonSortable"]
+          },
+          {
+            "field": "age",
+            "type": ["int"],
+            "minValue": 0.0,
+            "maxValue": 120.0,
+            "acceptsEmptyFields": true
+          },
+          {
+            "headerName": "consumption",
+            "children": [
+              {
+                "field": "canDrinkAlcohol",
+                "type": ["bool"]
+              },
+              {
+                "field": "favoriteDrink",
+                "type": ["enum"],
+                "defaultValue": "Beer",
+                "enumValues": ["AppleJuice", "Beer", "OrangeJuice", "Wine"]
+              }
+            ]
+          },
+          {
+            "headerName": "identity",
+            "children": [
+              {
+                "field": "birthday",
+                "type": ["date"],
+                "minValue": "1900-01-01",
+                "maxValue": "2022-12-19T13:46:15.223Z",
+                "acceptsEmptyFields": true
+              },
+              {
+                "field": "height",
+                "type": ["number"],
+                "minValue": 0.0,
+                "maxValue": 2.5,
+                "acceptsEmptyFields": true
+              }
+            ]
+          }
+        ],
+        "dateFormat": "dd/MM/yyyy",
+        "tooltipText": {
+          "fr": "Importez ou exportez un fichier clients",
+          "en": "Import or export a customers file"
+        }
+      }
+    },
+    {
+      "id": "events",
+      "labels": {
+        "fr": "Evénements",
+        "en": "Events"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": "d-pj7wwxd95zm",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "tooltipText": {
+          "fr": "Importez ou exportez un fichier d'événements",
+          "en": "Import or export an events file"
+        },
+        "connectorId": "c-6k67x3lm99p",
+        "description": "events data",
+        "subType": "TABLE",
+        "columns": [
+          {
+            "field": "theme",
+            "type": ["string"]
+          },
+          {
+            "field": "date",
+            "type": ["date"],
+            "minValue": "01/01/1900",
+            "maxValue": "31/12/2999"
+          },
+          {
+            "field": "timeOfDay",
+            "type": ["enum"],
+            "defaultValue": "evening",
+            "enumValues": ["morning", "midday", "afternoon", "evening"]
+          },
+          {
+            "field": "eventType",
+            "type": ["string", "nonResizable", "nonEditable"]
+          },
+          {
+            "field": "reservationsNumber",
+            "type": ["int"],
+            "minValue": 0.0,
+            "maxValue": 300.0,
+            "acceptsEmptyFields": true
+          },
+          {
+            "field": "online",
+            "type": ["bool", "nonSortable"]
+          }
+        ],
+        "dateFormat": "dd/MM/yyyy"
+      }
+    },
+    {
+      "id": "satisfactionArc",
+      "labels": {
+        "fr": "Réseau de satisfaction",
+        "en": "Satisfaction network"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "canChangeRowsNumber": true,
+        "connectorId": "c-6k67x3lm99p",
+        "description": "Links of satisfaction influence between customers",
+        "subType": "TABLE",
+        "dynamicValues": {
+          "query": "MATCH(csource:Customer)-[r]->(ctarget:Customer) WITH {source: csource.id, target: ctarget.id, name: r.name} as fields RETURN fields",
+          "resultKey": "fields"
+        },
+        "columns": [
+          {
+            "field": "source",
+            "headerName": "Source",
+            "type": ["string"]
+          },
+          {
+            "field": "target",
+            "headerName": "Target",
+            "type": ["string"]
+          },
+          {
+            "field": "name",
+            "headerName": "Name",
+            "type": ["string", "nonEditable", "nonSortable"],
+            "defaultValue": "arc_to_Customer",
+            "acceptsEmptyFields": "false"
+          }
         ]
+      }
+    },
+    {
+      "id": "initial_state",
+      "labels": {
+        "fr": "Etat initial",
+        "en": "Initial state"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "connectorId": "c-6k67x3lm99p",
+        "subType": "TABLE",
+        "dynamicValues": {
+          "query": "MATCH(customer: Customer) WITH {name: customer.id, satisfaction: customer.Satisfaction, surroundingSatisfaction: customer.SurroundingSatisfaction, thirsty: customer.Thirsty} as fields RETURN fields",
+          "resultKey": "fields"
+        },
+        "columns": [
+          {
+            "field": "name",
+            "headerName": "Name",
+            "type": ["string"]
+          },
+          {
+            "field": "satisfaction",
+            "headerName": "Satisfaction",
+            "type": ["int"],
+            "minValue": 0.0,
+            "maxValue": 10.0,
+            "acceptsEmptyFields": true
+          },
+          {
+            "field": "surroundingSatisfaction",
+            "headerName": "Surrounding satisfaction",
+            "type": ["int"],
+            "minValue": 0.0,
+            "maxValue": 10.0,
+            "acceptsEmptyFields": true
+          },
+          {
+            "field": "thirsty",
+            "headerName": "Thirsty",
+            "type": ["bool"],
+            "acceptsEmptyFields": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "training_start_date",
+      "labels": {
+        "fr": "Date de départ",
+        "en": "Start date"
+      },
+      "varType": "date",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "training_end_date",
+      "labels": {
+        "fr": "Date de Fin",
+        "en": "End date"
+      },
+      "varType": "date",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_stock",
+      "labels": {
+        "fr": "Stock",
+        "en": "Stock"
+      },
+      "varType": "string",
+      "defaultValue": "100",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "countries",
+      "labels": {
+        "fr": "Pays",
+        "en": "Countries"
+      },
+      "varType": "list",
+      "defaultValue": "[\"FRANCE\",\"INDIA\"]",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "enumValues": [
+          {
+            "key": "FRANCE",
+            "value": "France"
+          },
+          {
+            "key": "GERMANY",
+            "value": {
+              "en": "Germany",
+              "fr": "Allemagne"
+            }
+          },
+          {
+            "key": "GREECE",
+            "value": {
+              "en": "Greece",
+              "fr": "Grèce"
+            }
+          },
+          {
+            "key": "INDIA",
+            "value": {
+              "en": "India",
+              "fr": "Inde"
+            }
+          },
+          {
+            "key": "JAPAN",
+            "value": {
+              "en": "Japan",
+              "fr": "Japon"
+            }
+          }
+        ],
+        "tooltipText": {
+          "fr": "Choisissez un ensemble de pays parmi la liste proposée",
+          "en": "Select countries among the list"
+        }
+      }
+    },
+    {
+      "id": "dynamic_values_customers_enum",
+      "labels": {
+        "fr": "Client (enum)",
+        "en": "Customer (enum)"
+      },
+      "varType": "enum",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicEnumValues": {
+          "type": "cypher",
+          "query": "MATCH(n:Customer) RETURN n.id as customer_id",
+          "resultKey": "customer_id"
+        }
+      }
+    },
+    {
+      "id": "dynamic_values_customers_list",
+      "labels": {
+        "fr": "Liste de clients (list)",
+        "en": "Customers list (list)"
+      },
+      "varType": "list",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicEnumValues": {
+          "type": "cypher",
+          "query": "MATCH(n:Customer) RETURN n.id as customer_id",
+          "resultKey": "customer_id"
+        }
+      }
+    },
+    {
+      "id": "dynamic_values_customers_max",
+      "labels": {
+        "fr": "Nombre maximal de clients",
+        "en": "Maximum number of customers"
+      },
+      "varType": "int",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicValues": {
+          "type": "cypher",
+          "query": "MATCH(c:Customer) RETURN count(c) as customers_max",
+          "resultKey": "customers_max"
+        }
+      }
+    },
+    {
+      "id": "etl_param_restock_quantity",
+      "labels": {
+        "fr": "Réapprovisionnement",
+        "en": "Restock"
+      },
+      "varType": "string",
+      "defaultValue": "25",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_num_waiters",
+      "labels": {
+        "fr": "Serveurs",
+        "en": "Waiters"
+      },
+      "varType": "string",
+      "defaultValue": "5",
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_bar_instance",
+      "labels": {
+        "fr": "fichier d'instance",
+        "en": "instance file"
+      },
+      "varType": "%DATASETID%",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "connectorId": "c-6k67x3lm99p",
+        "description": "Initial stock dataset part",
+        "defaultFileTypeFilter": ".zip",
+        "shouldRenameFileOnUpload": true
+      }
+    },
+    {
+      "id": "etl_param_azure_storage_co_string",
+      "labels": {
+        "fr": "azure storage connection string",
+        "en": "azure storage connection string"
+      },
+      "varType": "string",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_az_storage_account",
+      "labels": {
+        "fr": "azure storage account name",
+        "en": "azure storage account name"
+      },
+      "varType": "string",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_az_storage_container",
+      "labels": {
+        "fr": "azure storage container name",
+        "en": "azure storage container name"
+      },
+      "varType": "string",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_az_storage_path",
+      "labels": {
+        "fr": "azure storage path",
+        "en": "azure storage path"
+      },
+      "varType": "string",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": null
+    },
+    {
+      "id": "etl_param_subdataset_filter_is_thirsty",
+      "labels": {
+        "fr": "Filtrer par",
+        "en": "Filter by"
+      },
+      "varType": "enum",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "enumValues": [
+          {
+            "key": "THIRSTY",
+            "value": {
+              "en": "Thirsty",
+              "fr": "A soif"
+            }
+          },
+          {
+            "key": "NOT_THIRSTY",
+            "value": {
+              "en": "Not thirsty",
+              "fr": "N'a pas soif"
+            }
+          }
+        ],
+        "tooltipText": {
+          "fr": "Conserver uniquement les clients en fonction de leur soif initiale",
+          "en": "Keep only customers defined by their initial thirst level"
+        }
+      }
+    },
+    {
+      "id": "etl_param_subdataset_filter_thirsty_multiselect",
+      "labels": {
+        "fr": "Filtrer par",
+        "en": "Filter by"
+      },
+      "varType": "list",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "enumValues": [
+          {
+            "key": "THIRSTY",
+            "value": {
+              "en": "Thirsty",
+              "fr": "A soif"
+            }
+          },
+          {
+            "key": "NOT_THIRSTY",
+            "value": {
+              "en": "Not thirsty",
+              "fr": "N'a pas soif"
+            }
+          }
+        ],
+        "tooltipText": {
+          "fr": "Conserver uniquement les clients en fonction de leur soif initiale",
+          "en": "Keep only customers defined by their initial thirst level"
+        }
+      }
+    },
+    {
+      "id": "etl_param_subdataset_filter_dynamic_customer_name",
+      "labels": {
+        "fr": "Filtrer par client",
+        "en": "Filter by customer"
+      },
+      "varType": "enum",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicEnumValues": {
+          "type": "cypher",
+          "query": "MATCH(n:Customer) RETURN n.id as id",
+          "resultKey": "id"
+        }
+      }
+    },
+    {
+      "id": "etl_param_subdataset_filter_dynamic_customers_list",
+      "labels": {
+        "fr": "Filtrer par clients",
+        "en": "Filter by customers"
+      },
+      "varType": "list",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "dynamicEnumValues": {
+          "type": "cypher",
+          "query": "MATCH(n:Customer) RETURN n.id as id",
+          "resultKey": "id"
+        }
+      }
+    },
+    {
+      "id": "scenario_to_compare",
+      "labels": {
+        "fr": "Scénario à comparer",
+        "en": "Scenario to compare"
+      },
+      "varType": "enum",
+      "defaultValue": null,
+      "minValue": null,
+      "maxValue": null,
+      "regexValidation": null,
+      "options": {
+        "subType": "SCENARIOS",
+        "runTemplateFilter": ["1", "3"],
+        "tooltipText": {
+          "fr": "Scénario auquel on va comparer les données",
+          "en": "Scenario against which to compare data"
+        }
+      }
     }
+  ],
+  "parameterGroups": [
+    {
+      "id": "bar_parameters",
+      "labels": {
+        "fr": "Bar",
+        "en": "Pub"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["stock", "restock_qty", "nb_waiters"]
+    },
+    {
+      "id": "basic_types",
+      "labels": {
+        "fr": "Exemple monnaie",
+        "en": "Currency example"
+      },
+      "isTable": null,
+      "options": {
+        "authorizedRoles": ["Platform.Admin", "Organization.User"],
+        "hideParameterGroupIfNoPermission": false
+      },
+      "parentId": null,
+      "parameters": ["currency", "currency_name", "currency_value", "currency_used", "start_date", "end_date", "average_consumption"]
+    },
+    {
+      "id": "training_dates",
+      "labels": {
+        "fr": "Dates de simulation",
+        "en": "Simulation dates"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["training_start_date", "training_end_date"]
+    },
+    {
+      "id": "file_upload",
+      "labels": {
+        "en": "Initial values",
+        "fr": "Valeurs initiales"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["initial_stock_dataset"]
+    },
+    {
+      "id": "dataset_parts",
+      "labels": {
+        "en": "Dataset parts",
+        "fr": "Fragments de dataset"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["example_dataset_part_1", "example_dataset_part_2"]
+    },
+    {
+      "id": "extra_dataset_part",
+      "labels": {
+        "en": "Additional dataset part",
+        "fr": "Fragment additionnel"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["example_dataset_part_3"]
+    },
+    {
+      "id": "customers",
+      "labels": {
+        "en": "Customers",
+        "fr": "Clients"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["initial_state", "customers", "dynamic_values_customers_enum", "dynamic_values_customers_list", "dynamic_values_customers_max"]
+    },
+    {
+      "id": "events",
+      "labels": {
+        "en": "Events",
+        "fr": "Évènements"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["events", "additional_seats", "activated", "evaluation"]
+    },
+    {
+      "id": "cyphersatisfaction",
+      "labels": {
+        "fr": "Réseau de satisfaction",
+        "en": "Satisfaction network"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["satisfactionArc"]
+    },
+    {
+      "id": "initial_state",
+      "labels": {
+        "en": "Initial state",
+        "fr": "Etat initial"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["initial_state"]
+    },
+    {
+      "id": "additional_parameters",
+      "labels": {
+        "en": "Additional parameters",
+        "fr": "Paramètres additionnels"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["volume_unit", "additional_tables", "comment", "additional_date", "countries", "scenario_to_compare"]
+    },
+    {
+      "id": "training_dates",
+      "labels": {
+        "fr": "Dates de simulation",
+        "en": "Simulation dates"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["training_start_date", "training_end_date"]
+    },
+    {
+      "id": "dynamic_values_customers_group",
+      "labels": {
+        "fr": "Clients",
+        "en": "Customers"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["dynamic_values_customers_enum", "dynamic_values_customers_list", "dynamic_values_customers_max"]
+    },
+    {
+      "id": "etl_param_group_bar_parameters",
+      "labels": {
+        "fr": "Bar",
+        "en": "Bar"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_stock", "etl_param_restock_quantity", "etl_param_num_waiters"]
+    },
+    {
+      "id": "etl_param_group_local_file",
+      "labels": {
+        "fr": "local_file",
+        "en": "local_file"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_bar_instance"]
+    },
+    {
+      "id": "etl_param_group_azure_storage",
+      "labels": {
+        "fr": "azure_storage_connection",
+        "en": "azure_storage connexion"
+      },
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_azure_storage_co_string", "etl_param_az_storage_account", "etl_param_az_storage_container", "etl_param_az_storage_path"]
+    },
+    {
+      "id": "etl_param_group_sub_dataset_by_filter",
+      "labels": null,
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_subdataset_filter_is_thirsty"]
+    },
+    {
+      "id": "etl_param_group_sub_dataset_by_dynamic_filter",
+      "labels": null,
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_subdataset_filter_dynamic_customer_name"]
+    },
+    {
+      "id": "etl_param_group_sub_dataset_by_dynamic_filter_with_multiple_selection",
+      "labels": null,
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_subdataset_filter_dynamic_customers_list"]
+    },
+    {
+      "id": "etl_param_group_sub_dataset_by_filter_with_multiple_selection",
+      "labels": null,
+      "isTable": null,
+      "options": null,
+      "parentId": null,
+      "parameters": ["etl_param_subdataset_filter_thirsty_multiselect"]
+    }
+  ],
+  "runTemplates": [
+    {
+      "id": "1",
+      "name": "Run template with Brewery parameters",
+      "labels": {
+        "fr": "Run template avec les paramètres de Brewery ",
+        "en": "Run template with Brewery parameters"
+      },
+      "description": "Run template with Brewery parameters",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["1", "With params"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": true,
+      "applyParameters": true,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": true,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["bar_parameters", "file_upload"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "2",
+      "name": "Run template without parameters",
+      "labels": {
+        "fr": "Run template sans paramètres",
+        "en": "Run template without parameters"
+      },
+      "description": "Run template without parameters",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["2", "No param"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": false,
+      "applyParameters": false,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": false,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": null,
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "3",
+      "name": "Run template with mock basic types parameters",
+      "labels": {
+        "fr": "Run template avec paramètres basiques fictifs",
+        "en": "Run template with mock basic types parameters"
+      },
+      "description": "Run template with mock basic types parameters",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["3", "Example"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": false,
+      "applyParameters": false,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": false,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["basic_types", "customers", "events", "cyphersatisfaction", "dataset_parts", "additional_parameters"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "dynamic_values_customers",
+      "name": null,
+      "labels": {
+        "fr": "Valeurs dynamiques (requiert un dataset Twingraph)",
+        "en": "Dynamic values (requires a Twingraph dataset)"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": null,
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["dynamic_values_customers_group"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "hidden test run template",
+      "name": "Hidden test run template without parameters",
+      "labels": {
+        "fr": "Run template masqué sans paramètres",
+        "en": "Hidden test run template without parameters"
+      },
+      "description": "Run template without parameters",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["2", "No param"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": false,
+      "applyParameters": false,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": false,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": null,
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "high cpu (DO NOT USE)",
+      "name": "high cpu (DO NOT USE)",
+      "labels": {
+        "fr": "Surcharge processeur (ne pas utiliser)",
+        "en": "high cpu (DO NOT USE)"
+      },
+      "description": "high cpu (DO NOT USE)",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["1", "With params", "custom high cpu"],
+      "computeSize": "highcpu",
+      "runSizing": {
+        "requests": {
+          "cpu": "0.5",
+          "memory": "128Mi"
+        },
+        "limits": {
+          "cpu": "1",
+          "memory": "256Mi"
+        }
+      },
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": true,
+      "applyParameters": true,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": true,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["bar_parameters"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "consume_to_redis",
+      "name": "probe consumer to redis",
+      "labels": {
+        "fr": "Run template avec probe consumer pour redis",
+        "en": "Run template with probe consumer to direct Redis"
+      },
+      "description": "Run template with probe consumer to direct Redis",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["consumer to redis", "No param"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": false,
+      "applyParameters": false,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": false,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": null,
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "consume_to_api",
+      "name": "probe consumer to api",
+      "labels": {
+        "fr": "Run template avec probe consumer pour l'API Cosmotech\n",
+        "en": "Run template with probe consumer to Cosmotech API"
+      },
+      "description": "Run template with probe consumer to Cosmotech API",
+      "csmSimulation": "BreweryDemoSimulationWithConnector",
+      "tags": ["consumer to api", "No param"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": true,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": false,
+      "applyParameters": false,
+      "validateData": false,
+      "sendDatasetsToDataWarehouse": true,
+      "sendInputParametersToDataWarehouse": false,
+      "preRun": false,
+      "run": true,
+      "postRun": false,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": null,
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": "argoWorkflow",
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "etl_with_local_file",
+      "name": null,
+      "labels": {
+        "fr": "Brewery (.zip) depuis un fichier local",
+        "en": "Brewery (.zip) from Local File"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["datasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_bar_parameters", "etl_param_group_local_file"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "etl_with_azure_storage",
+      "name": null,
+      "labels": {
+        "fr": "Brewery (.zip) depuis Azure Storage",
+        "en": "Brewery (.zip) from Azure Storage"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["datasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_bar_parameters", "etl_param_group_azure_storage"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "etl_sub_dataset_by_filter",
+      "name": null,
+      "labels": {
+        "fr": "Filtre de dataset",
+        "en": "Dataset filter"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["subdatasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_sub_dataset_by_filter"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "./etl_sub_dataset_by_filter",
+      "name": null,
+      "labels": {
+        "fr": "Filtre dynamique de dataset",
+        "en": "Dataset dynamic filter"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["subdatasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_sub_dataset_by_dynamic_filter"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": ".//etl_sub_dataset_by_filter",
+      "name": null,
+      "labels": {
+        "fr": "Filtre par sélection multiple",
+        "en": "Multi-selection filter"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["subdatasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_sub_dataset_by_filter_with_multiple_selection"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": ".///etl_sub_dataset_by_filter",
+      "name": null,
+      "labels": {
+        "fr": "Filtre dynamique avec sélection multiple",
+        "en": "Dynamic filter with multi-selection"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["subdatasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_sub_dataset_by_dynamic_filter_with_multiple_selection"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "etl_sub_dataset_by_filter_boolean",
+      "name": null,
+      "labels": {
+        "fr": "Filtre de données sur une valeur booléenne",
+        "en": "Dataset filter on a boolean value"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["subdatasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_sub_dataset_by_filter"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    },
+    {
+      "id": "etl_sub_dataset_by_filter_multi",
+      "name": null,
+      "labels": {
+        "fr": "Filtre dynamique avec sélection multiple",
+        "en": "Dataset filter on a multi-selection dynamic values"
+      },
+      "description": null,
+      "csmSimulation": null,
+      "tags": ["subdatasource"],
+      "computeSize": null,
+      "runSizing": null,
+      "noDataIngestionState": null,
+      "fetchDatasets": null,
+      "scenarioDataDownloadTransform": null,
+      "fetchScenarioParameters": null,
+      "applyParameters": null,
+      "validateData": null,
+      "sendDatasetsToDataWarehouse": null,
+      "sendInputParametersToDataWarehouse": null,
+      "preRun": null,
+      "run": null,
+      "postRun": null,
+      "parametersJson": null,
+      "parametersHandlerSource": null,
+      "datasetValidatorSource": null,
+      "preRunSource": null,
+      "runSource": null,
+      "postRunSource": null,
+      "scenariodataTransformSource": null,
+      "parameterGroups": ["etl_param_group_sub_dataset_by_dynamic_filter_with_multiple_selection"],
+      "stackSteps": null,
+      "gitRepositoryUrl": null,
+      "gitBranchName": null,
+      "runTemplateSourceDir": null,
+      "orchestratorType": null,
+      "executionTimeout": null,
+      "deleteHistoricalData": null
+    }
+  ],
+  "security": {
+    "default": "none",
+    "accessControlList": [
+      {
+        "id": "mohcine.tor@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "adrian.stanciu@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "micheline.guiserix@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "diamantis.sellis@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "fanny.silencieux@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "raphael.durville@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "jeremy.reynard@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "sylvain.joubert@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "leopold.cramer@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "vincent.carluer@cosmotech.com",
+        "role": "editor"
+      },
+      {
+        "id": "dev.sample.webapp@example.com",
+        "role": "editor"
+      },
+      {
+        "id": "tristan.huet@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "edon.tafili.ext@cosmotech.com",
+        "role": "admin"
+      },
+      {
+        "id": "esra.adiller.ext@cosmotech.com",
+        "role": "admin"
+      }
+    ]
+  }
 }
