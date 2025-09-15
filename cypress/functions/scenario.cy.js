@@ -391,6 +391,34 @@ class Scenario {
         });
       });
   }
+
+  static shareScenarioWithQATeam(scenarioName, permission) {
+    const users = ['fanny.silencieux@cosmotech.com','esra.adiller.ext@cosmotech.com'];
+    const names = ['fannysilencieux','esraadiller'];
+
+    //Share a scenario with all the QA team
+    this.searchScenarioInView(scenarioName);
+    cy.wait(1000);
+    // Click on share button
+    cy.get('[data-cy="share-scenario-button"]').click();
+
+    //Search for each user listed in the array "users" and share the scenario with them
+    users.forEach((user, index) => {
+      const name = names[index];
+      cy.get('[placeholder="Add people"]').click().type(user);
+      cy.get('[data-cy*="share-scenario-dialog-agents-select-' + name + '"]').click({ force: true });
+      cy.wait(500);
+
+      //Select role
+      cy.get('[data-cy="share-scenario-dialog-roles-checkbox-' + permission + '"]').click({ force: true });
+      cy.get('[data-cy=share-scenario-dialog-confirm-add-access-button]').click();
+    });
+
+    // Confirm the sharing
+    cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
+        
+    this.clearSearch();
+  }
 }
 
 module.exports = Scenario;

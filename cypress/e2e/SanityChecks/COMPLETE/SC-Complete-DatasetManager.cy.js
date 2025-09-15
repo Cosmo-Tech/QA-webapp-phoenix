@@ -12,7 +12,7 @@ describe('Dataset Manager feature', () => {
     datasetManager.deleteDataset('DLOP-PROD-13888-CheckOverview');
 
     datasetManager.createDatasetLocalFile('DLOP-PROD-13888-CheckOverview', 'A dataset to check the overview details', 'reference');
-    datasetManager.shareDatasetUser('DLOP-PROD-13888-CheckOverview', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    datasetManager.shareDatasetWithQATeam('DLOP-PROD-13888-CheckOverview', 'admin');
 
     // Open the details for customers. Have to force to click on the second button, as all buttons for details have the same id.
     cy.get('[data-cy="category-accordion-summary-customers"]').click();

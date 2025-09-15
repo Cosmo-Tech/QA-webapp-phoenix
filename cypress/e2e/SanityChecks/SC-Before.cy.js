@@ -28,7 +28,7 @@ describe('To run before any automated sanity check', () => {
     const datasetName = 'DLOP-Reference-for-automated-tests';
     // No need to remove in case of second try, as the function "createDataset" already check and remove if dataset with same nam
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
-    datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    datasetManager.shareDatasetWithQATeam(datasetName, 'admin');
   });
 
   it('Create another dataset with more data for some data tests', () => {
@@ -39,7 +39,7 @@ describe('To run before any automated sanity check', () => {
     // Remove in case it's a second try
     // No need to remove in case of second try, as the function "createDataset" already check and remove if dataset with same nam
     datasetManager.createDatasetLocalFile(datasetName, 'A dataset with 500 customers for brewery model', 'barcelona');
-    datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    datasetManager.shareDatasetWithQATeam(datasetName, 'admin');
   });
 
   // Clean all scenario to have the "no scenario" messages in different screens

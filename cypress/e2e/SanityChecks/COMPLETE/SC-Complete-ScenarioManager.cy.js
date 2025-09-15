@@ -39,7 +39,7 @@ describe('Scenario Manager feature', () => {
       .clear()
       .type('Updated-DLOP-PROD-13878' + '{enter}');
 
-    scenario.shareScenarioWithUser('Updated-DLOP-PROD-13878', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('Updated-DLOP-PROD-13878', 'admin');
 
     // Check the new name is persistant
     scenario.searchScenarioInManager('Updated-DLOP-PROD-13878');

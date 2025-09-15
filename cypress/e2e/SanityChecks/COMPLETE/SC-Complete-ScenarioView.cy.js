@@ -10,7 +10,7 @@ describe('Scenario View feature', () => {
     connection.connect();
     scenario.deleteScenario('DLOP-PROD-11815-ScenarioView');
     scenario.createScenario('DLOP-PROD-11815-ScenarioView', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('DLOP-PROD-11815-ScenarioView', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11815-ScenarioView', 'admin');
 
     // Validate scenario and check parameters are disabled
     scenario.validateScenario('DLOP-PROD-11815-ScenarioView');
@@ -102,7 +102,7 @@ describe('Scenario View feature', () => {
     connection.navigate('scenario-view');
     scenario.deleteScenario('DLOP-PROD-12097-UpdateParameters');
     scenario.createScenario('DLOP-PROD-12097-UpdateParameters', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('DLOP-PROD-12097-UpdateParameters', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-12097-UpdateParameters', 'admin');
 
     cy.get('[data-cy="launch-scenario-button"]').should('exist');
     //Check if the scenario parameter tab is unfolded and, if not, unfold it.
@@ -305,7 +305,7 @@ describe('Scenario View feature', () => {
     connection.navigate('dataset');
     // Create the dataset
     datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
-    datasetManager.shareDatasetUser(datasetName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    datasetManager.shareDatasetWithQATeam(datasetName, 'admin');
 
     // Create the scenario and run it
     scenario.createScenario(datasetName, 'master', datasetName, 'BreweryParameters');

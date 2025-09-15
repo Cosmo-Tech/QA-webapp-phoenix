@@ -16,7 +16,7 @@ describe('Dashboards and Digital Twin features', () => {
     scenario.createScenario('PROD-13750-DashboardsChecks-NoRun', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.createScenario('PROD-13750-DashboardsChecks-Run', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.runScenario('PROD-13750-DashboardsChecks-Run');
-    scenario.shareScenarioWithUser('PROD-13750-DashboardsChecks-Run', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('PROD-13750-DashboardsChecks-Run', 'admin');
 
     // Select the scenario that has not run
     scenario.searchScenarioInView('PROD-13750-DashboardsChecks-NoRun');
@@ -44,7 +44,7 @@ describe('Dashboards and Digital Twin features', () => {
     // Create the needed scenarios
     connection.navigate('scenario-view');
     scenario.createScenario('PROD-13751-DigitalTwin', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser('PROD-13751-DigitalTwin', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('PROD-13751-DigitalTwin', 'admin');
 
     // Go to Digital Twin section
     connection.navigate('digital-twin');

@@ -42,7 +42,7 @@ describe('Global IHM and menu checks', () => {
 
     // Create the scenario and share for manual checks
     scenario.createScenario(scenarioName, 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
-    scenario.shareScenarioWithUser(scenarioName, config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam(scenarioName, 'admin');
 
     // New buttons are available and the no scenario yet message is not anymore diplayed
     cy.get('[data-cy="create-scenario-button"]').should('exist');
@@ -73,10 +73,10 @@ describe('Global IHM and menu checks', () => {
     scenario.deleteScenario('B-RejectedScenario');
     scenario.createScenario('A-ValidatedScenario', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.validateScenario('A-ValidatedScenario');
-    scenario.shareScenarioWithUser('A-ValidatedScenario', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('A-ValidatedScenario', 'admin');
     scenario.createScenario('B-RejectedScenario', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
     scenario.rejectScenario('B-RejectedScenario');
-    scenario.shareScenarioWithUser('B-RejectedScenario', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('B-RejectedScenario', 'admin');
 
     // Check the scenario manager IHM
     connection.navigate('manager');

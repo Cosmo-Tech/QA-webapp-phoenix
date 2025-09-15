@@ -13,7 +13,7 @@ describe('Editable Tables Parameters', () => {
     scenario.deleteScenario('DLOP-EditableTables');
 
     scenario.createScenario('DLOP-EditableTables', 'master', 'DLOP-Barcelona-for-automated-tests', 'MultipleParameters');
-    scenario.shareScenarioWithUser('DLOP-EditableTables', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-EditableTables', 'admin');
 
     // No clean, as the scenario will be used in other tests
   });

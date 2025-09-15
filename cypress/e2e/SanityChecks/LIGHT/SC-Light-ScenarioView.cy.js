@@ -21,21 +21,21 @@ describe('Scenario View feature', () => {
     // Create all scenarios
     connection.navigate('scenario-view');
     scenario.createScenario('DLOP-PROD-11884-MasterLevel-A', 'master', 'DLOP-Reference-for-automated-tests', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-MasterLevel-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-MasterLevel-A', 'admin');
     scenario.createScenario('DLOP-PROD-11884-MasterLevel-B', 'master', 'DLOP-Reference-for-automated-tests', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-MasterLevel-B', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-MasterLevel-B', 'admin');
 
     scenario.createScenario('DLOP-PROD-11884-Children-A-A', 'child', 'DLOP-PROD-11884-MasterLevel-A', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-Children-A-A', 'admin');
     scenario.createScenario('DLOP-PROD-11884-Children-A-B', 'child', 'DLOP-PROD-11884-MasterLevel-A', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-B', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-Children-A-B', 'admin');
     scenario.createScenario('DLOP-PROD-11884-Children-B-A', 'child', 'DLOP-PROD-11884-MasterLevel-B', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-B-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-Children-B-A', 'admin');
 
     scenario.createScenario('DLOP-PROD-11884-Children-A-A-A', 'child', 'DLOP-PROD-11884-Children-A-A', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-A-A', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-Children-A-A-A', 'admin');
     scenario.createScenario('DLOP-PROD-11884-Children-A-A-B', 'child', 'DLOP-PROD-11884-Children-A-A', 'Run');
-    scenario.shareScenarioWithUser('DLOP-PROD-11884-Children-A-A-B', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-11884-Children-A-A-B', 'admin');
 
     //Run scenarios (to check parent or child scenarios can be run)
     scenario.runScenario('DLOP-PROD-11884-MasterLevel-A');
@@ -79,8 +79,8 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="create-scenario-dialog-submit-button"]').click({ force: true });
     cy.wait(1000);
 
-    scenario.shareScenarioWithUser('DLOP-PROD-13885-ChildDescriptionAndTag', config.permissionUserEmail(), config.permissionUserName(), 'admin');
-    scenario.shareScenarioWithUser('DLOP-PROD-13885-MasterDescriptionAndTag', config.permissionUserEmail(), config.permissionUserName(), 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-13885-ChildDescriptionAndTag', 'admin');
+    scenario.shareScenarioWithQATeam('DLOP-PROD-13885-MasterDescriptionAndTag', 'admin');
   });
 
   it('PROD-11883 and PROD-11809: Create and run scenario', () => {
