@@ -8,6 +8,7 @@
     "@azure/msal-node": "^3.7.3",
     "@azure/msal-react": "^3.0.19",
     "assert": "^2.0.0",
+    "cypress": "^13.15.1",
     "cypress-file-upload": "^5.0.8",
     "cypress-localstorage-commands": "^2.2.4",
     "cypress-mochawesome-reporter": "^3.3.0",
