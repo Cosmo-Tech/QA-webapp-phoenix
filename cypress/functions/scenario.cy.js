@@ -416,8 +416,6 @@ class Scenario {
 
     // Confirm the sharing
     cy.get('[data-cy="share-scenario-dialog-submit-button"]').click({ force: true });
-        
-    this.clearSearch();
   }
 }
 
