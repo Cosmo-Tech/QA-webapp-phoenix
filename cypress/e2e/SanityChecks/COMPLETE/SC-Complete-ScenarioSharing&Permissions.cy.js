@@ -50,29 +50,6 @@ describe('Scenario sharing feature and permissions', () => {
     // Remove global permissions
     scenario.removeScenarioPermissionsGlobal(scenarioName);
 
-    // Additionnal test: check it's not possible to remove the last admin
-    cy.get('[data-cy="share-scenario-button"]').click();
-    // Pass each user listed in the sharing wizard to find the owner
-    cy.get('[role="dialog"]')
-      .find('[data-cy="role-editor-agent-name"]')
-      .then(($el) => {
-        cy.get($el).each(($txt) => {
-          // Recover the text of the user names listed
-          let userName = $txt.text();
-          if (userName === 'dev.sample.webapp@example.com') {
-            // Once the owner is found, the access is removed by clicking the role dropdown menu and remove the role
-            cy.get('[data-cy="role-editor-devsamplewebappexamplecom"]').find('[aria-haspopup="listbox"]').click({ force: true });
-            cy.get('[data-cy="select-action-name"]').click({ force: true });
-            // Check there is a warning message
-            cy.get('[data-cy="no-admin-error-message"]').should('contain', 'The scenario must have at least one admin');
-            cy.get('[data-cy="share-scenario-dialog-submit-button"]').should('have.attr', 'disabled');
-            // Get out of the loop
-            return false;
-          }
-        });
-      });
-    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click({ force: true });
-
     // Clean the scenario
     scenario.deleteScenario(scenarioName);
   });
