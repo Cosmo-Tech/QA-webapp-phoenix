@@ -37,4 +37,5 @@ CYPRESS_AUTHENTICATE_WITH_SERVICE_ACCOUNT=1 \
   node_modules/.bin/cypress run \
   --reporter cypress-mochawesome-reporter \
   --browser electron
-```
+
+TestTest```
