@@ -1,0 +1,143 @@
+{
+  "datasets": {
+    "reference": {
+      "name": "DLOP-Reference-for-automated-tests",
+      "description": "A basic reference dataset for brewery model",
+      "fileType": "reference"
+    },
+    "barcelona": {
+      "name": "DLOP-Barcelona-for-automated-tests", 
+      "description": "A dataset with 500 customers for brewery model",
+      "fileType": "barcelona"
+    },
+    "testDatasets": {
+      "prod12909": "PROD-12909",
+      "prod12910": "PROD-12910",
+      "prod12909Sub": "PROD-12909-sub",
+      "prod12910Sub": "PROD-12910-sub",
+      "prod14371": "DLOP-PROD-14371",
+      "prod14371Updated": "DLOP-Updated-PROD-14371",
+      "prod14373": "DLOP-PROD-14373"
+    }
+  },
+  "scenarios": {
+    "deletion": {
+      "name": "DLOP-ScenarioForDeletion",
+      "branch": "master",
+      "parameters": "BreweryParameters"
+    },
+    "testScenarios": {
+      "longScenarioName": "DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs",
+      "validatedScenario": "A-ValidatedScenario",
+      "rejectedScenario": "B-RejectedScenario",
+      "deleteScenario": "DLOP-PROD-1187-DeleteScenario",
+      "searchScenarios": {
+        "main": "PROD-13879-SearchScenario",
+        "notResearched": "SearchScenario-NotResearched",
+        "searchScenarioProd": "SearchScenario-PROD-13879",
+        "longSearchScenario": "SearchScenario-PROD-13879-SearchScenario",
+        "prodVariant": "PROD-1373X",
+        "firstDescriptionTag": "PROD-13879-FirstSearchTestDescriptionOrTag",
+        "secondDescriptionTag": "PROD-13879-SecondSearchTestDescriptionOrTag"
+      }
+    },
+    "common": {
+      "branch": "master",
+      "breweryParameters": "BreweryParameters",
+      "noParameters": "NoParameters"
+    }
+  },
+  "ui": {
+    "noDatasets": {
+      "placeholder": "no-datasets-placeholder",
+      "title": "You don't have any datasets yet",
+      "subtitle": {
+        "selector": "no-datasets-user-subtitle",
+        "textParts": ["Click on", "to import your first data"]
+      },
+      "createButton": "create-dataset-button"
+    },
+    "noScenarios": {
+      "dashboards": {
+        "placeholder": "dashboard-placeholder",
+        "message": "You can create scenarios in the Scenario view"
+      },
+      "digitalTwin": {
+        "message": "No scenario. You can create a new scenario in the Scenario view."
+      },
+      "scenarioView": {
+        "message": "No scenario yet",
+        "createMessage": "You can create a scenario by clicking on the \"CREATE\" button"
+      }
+    },
+    "buttons": {
+      "createScenario": "create-scenario-button",
+      "shareScenario": "share-scenario-button",
+      "validateScenario": "validate-scenario-button",
+      "rejectScenario": "reject-scenario-button",
+      "launchScenario": "launch-scenario-button",
+      "dashboardsAccordion": "dashboards-accordion",
+      "scenarioParamsAccordion": "scenario-params-accordion",
+      "successfulRunLogs": "successful-run-logs-download-button",
+      "scenarioDelete": "scenario-delete-button"
+    },
+    "search": {
+      "field": "scenario-manager-search-field",
+      "fieldId": "#scenario-manager-search-field"
+    },
+    "metadata": {
+      "runTemplateName": "run-template-name",
+      "datasetName": "dataset-name",
+      "runTemplate": "Run template with Brewery parameters"
+    },
+    "dialogs": {
+      "confirmDelete": {
+        "description": "confirm-scenario-delete-description",
+        "irreversibleText": "This operation is irreversible",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel"
+      },
+      "about": {
+        "closeButton": "about-dialog-close-button"
+      },
+      "technicalInfo": {
+        "closeButton": "technical-info-dialog-close-button"
+      }
+    },
+    "menu": {
+      "documentation": "documentation-link",
+      "support": "support-link",
+      "technicalInfo": "technical-info-button",
+      "about": "about-button"
+    }
+  },
+  "sharing": {
+    "qaTeam": {
+      "role": "admin"
+    }
+  },
+  "descriptions": {
+    "basicReference": "A basic reference dataset for brewery model",
+    "barcelonaDataset": "A dataset with 500 customers for brewery model",
+    "subdatasetLocalFile": "This is a subdataset from a local file dataset",
+    "subdatasetAzureStorage": "This is a subdataset from an Azure Storage dataset",
+    "qaTeamBest": "Description here will contain the sentence \"QA team is the best\"",
+    "testingBest": "Description here will contain the sentence \"Testing is the best thing in the world\""
+  },
+  "tags": {
+    "localFile": "localFile",
+    "azureStorage": "AzureStorage",
+    "subdataset": "Subdataset",
+    "firstTag": "FirstTag",
+    "secondTag": "SecondTag",
+    "localFileAgain": "localFileAgain",
+    "azureStorageAgain": "AzureStorageAgain",
+    "subdatasetAgain": "SubdatasetAgain"
+  },
+  "searchTerms": {
+    "qaTeamBest": "QA team is the best",
+    "secondTag": "SecondTag",
+    "prod13879": "PROD-13879",
+    "noMatch": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

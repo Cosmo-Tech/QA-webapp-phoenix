@@ -100,7 +100,7 @@ describe('Scenario View feature', () => {
     cy.get('[role="dialog"]').should('contain', 'Master');
     cy.get('[id="scenarioType-label"]').should('have.text', 'Run Type');
     cy.get('[id="scenarioType"]').should('exist');
-    cy.get('[data-cy="scenario-select-input"').should('contain', 'Parent Scenario');
+    cy.get('[data-cy="scenario-select-input"]').should('contain', 'Parent Scenario');
     cy.get('[data-cy="create-scenario-dialog-cancel-button"]').should('not.be.disabled');
     cy.get('[data-cy="create-scenario-dialog-submit-button"]').should('be.disabled');
 
@@ -149,7 +149,7 @@ describe('Scenario View feature', () => {
     cy.get('[data-cy="create-scenario-dialog-cancel-button"]').click();
     cy.get('[placeholder="Scenario"]').type('3e-.Z90 RTE_FR', { force: true });
     cy.wait(500);
-    cy.get('[role="presentation"').should('contain', 'No options');
+    cy.get('[role="presentation"]').should('contain', 'No options');
 
     // Create scenario
     scenario.createScenario('DLOP-PROD-11883-CheckCreationForm', 'master', 'DLOP-Reference-for-automated-tests', 'BreweryParameters');
