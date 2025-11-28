@@ -110,7 +110,7 @@ function openScenarioCreationDialog() {
 // Select a parent scenario
 function selectParentScenario(scenarioName) {
   getScenarioCreationDialogMasterCheckbox().uncheck();
-  getScenarioCreationDialogParentScenarioSelector().click();
+  getScenarioCreationDialogParentScenarioSelector().click({ force: true });
   getScenarioCreationDialogParentScenarioSelector().should('not.be.disabled');
   // clear() does not always work, use "{selectAll}{backspace}" instead
   getScenarioCreationDialogParentScenarioSelector().type('{selectAll}{backspace}' + scenarioName);
@@ -149,13 +149,30 @@ function cancelCreateScenario() {
   getScenarioCreationDialogCancelButton().click();
 }
 
-function createScenario(scenarioName, isMaster, datasetOrMasterName, runTemplate) {
-  const createScenarioAlias = api.interceptCreateScenario();
-  const getScenariosAlias = api.interceptGetScenarios();
+function getNewScenarioDescription() {
+  return cy.get(GENERIC_SELECTORS.scenario.createDialog.description);
+}
+
+function setNewScenarioDescription(description) {
+  getNewScenarioDescription().type(description);
+}
+
+function getNewScenarioTags() {
+  return cy.get(GENERIC_SELECTORS.scenario.createDialog.tags);
+}
+
+function addNewScenarioTag(tag) {
+  getNewScenarioTags().type(tag + '{enter}');
+}
+
+function createScenario(scenarioName, isMaster, datasetOrMasterName, runTemplate, description, tags) {
+  const createScenarioAlias = api.interceptCreateSimulationRunner();
 
   openScenarioCreationDialog();
   getScenarioCreationDialog().should('be.visible');
   getScenarioCreationDialogNameField().type(scenarioName);
+  if (description) setNewScenarioDescription(description);
+  if (tags) tags.forEach((tag) => addNewScenarioTag(tag));
   if (isMaster === true) {
     selectDataset(datasetOrMasterName);
   } else {
@@ -167,19 +184,15 @@ function createScenario(scenarioName, isMaster, datasetOrMasterName, runTemplate
   getScenarioCreationDialog().should('not.exist');
 
   let scenarioCreated;
-  api.waitAlias(createScenarioAlias).then((req) => {
+  return api.waitAlias(createScenarioAlias).then((req) => {
     scenarioCreated = req.response.body;
     expect(scenarioCreated.name.toLowerCase()).to.equal(scenarioName.toLowerCase());
     expect(scenarioCreated.runTemplateName.toLowerCase()).to.equal(runTemplate.toLowerCase());
-  });
-
-  return api.waitAlias(getScenariosAlias).then((interception) => {
-    const nameGet = interception.response.body.find((obj) => obj.id === scenarioCreated.id).name;
-    expect(nameGet).to.equal(scenarioCreated.name);
-
     return {
       scenarioCreatedId: scenarioCreated.id,
       scenarioCreatedName: scenarioCreated.name,
+      scenarioCreatedDescription: scenarioCreated.description,
+      scenarioCreatedTags: scenarioCreated.tags,
       scenarioCreatedOwnerName: scenarioCreated.ownerName,
       scenarioCreatedCreationDate: scenarioCreated.creationDate,
       scenarioCreatedRunTemplateName: runTemplate,
@@ -189,34 +202,19 @@ function createScenario(scenarioName, isMaster, datasetOrMasterName, runTemplate
 }
 
 function validateScenario(scenarioId) {
-  const validateScenarioAlias = api.interceptUpdateScenario({ scenarioId });
-  const getScenarioAlias = api.interceptGetScenario(scenarioId);
-
+  const validateScenarioAlias = api.interceptUpdateSimulationRunner({ scenarioId });
   getScenarioValidateButton().click();
-  Scenarios.getScenarioValidationStatusLoadingSpinner().should('be.visible');
-
   api.waitAlias(validateScenarioAlias);
-  api.waitAlias(getScenarioAlias);
 }
 function rejectScenario(scenarioId) {
-  const rejectScenarioAlias = api.interceptUpdateScenario({ scenarioId });
-  const getScenarioAlias = api.interceptGetScenario(scenarioId);
-
+  const rejectScenarioAlias = api.interceptUpdateSimulationRunner({ scenarioId });
   getScenarioRejectButton().click();
-  Scenarios.getScenarioValidationStatusLoadingSpinner().should('be.visible');
-
   api.waitAlias(rejectScenarioAlias);
-  api.waitAlias(getScenarioAlias);
 }
 function resetScenarioValidationStatus(scenarioId) {
-  const resetScenarioAlias = api.interceptUpdateScenario({ scenarioId });
-  const getScenarioAlias = api.interceptGetScenario(scenarioId);
-
+  const resetScenarioAlias = api.interceptUpdateSimulationRunner({ scenarioId });
   getScenarioValidationStatusChipDeleteIcon().click();
-  Scenarios.getScenarioValidationStatusLoadingSpinner().should('be.visible');
-
   api.waitAlias(resetScenarioAlias);
-  api.waitAlias(getScenarioAlias);
 }
 
 export const Scenarios = {

@@ -1,0 +1,811 @@
+// Copyright (c) Cosmo Tech.
+// Licensed under the MIT license.
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import equal from 'fast-deep-equal';
+import rfdc from 'rfdc';
+import { AgGridUtils, FileBlobUtils } from '@cosmotech/core';
+import { Table, TABLE_DATA_STATUS, UPLOAD_FILE_STATUS_KEY } from '@cosmotech/ui';
+import { useFileParameters } from '../../../../hooks/FileParameterHooks';
+import { Api } from '../../../../services/config/Api';
+import { useFindDatasetById } from '../../../../state/datasets/hooks.js';
+import { useOrganizationId } from '../../../../state/organizations/hooks';
+import { useWorkspaceId } from '../../../../state/workspaces/hooks.js';
+import { gridLight, gridDark } from '../../../../theme/';
+import { ConfigUtils, TranslationUtils } from '../../../../utils';
+import { FileManagementUtils } from '../../../../utils/FileManagementUtils';
+import { TableUtils } from '../../../../utils/TableUtils';
+import { TableExportDialog, TableRevertDataDialog, TableDeleteRowsDialog } from './components';
+
+const clone = rfdc();
+
+const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd';
+const MAX_ERRORS_COUNT = 100;
+
+const _generateGridDataFromCSV = (fileContent, parameterData, options) => {
+  return AgGridUtils.fromCSV(
+    fileContent,
+    ConfigUtils.getParameterAttribute(parameterData, 'hasHeader') || true,
+    AgGridUtils.getFlattenColumnsWithoutGroups(ConfigUtils.getParameterAttribute(parameterData, 'columns')),
+    options
+  );
+};
+
+const _generateGridDataFromXLSX = async (fileBlob, parameterData, options) => {
+  return await AgGridUtils.fromXLSX(
+    fileBlob,
+    ConfigUtils.getParameterAttribute(parameterData, 'hasHeader') || true,
+    AgGridUtils.getFlattenColumnsWithoutGroups(ConfigUtils.getParameterAttribute(parameterData, 'columns')),
+    options
+  );
+};
+
+export const GenericTable = ({
+  parameterData,
+  context,
+  parameterValue,
+  setParameterValue,
+  resetParameterValue,
+  isDirty = false,
+}) => {
+  const { downloadDatasetPartFileData } = useFileParameters();
+  const { t } = useTranslation();
+  const organizationId = useOrganizationId();
+  const workspaceId = useWorkspaceId();
+  const findDatasetById = useFindDatasetById();
+  const scenarioId = useSelector((state) => state.scenario?.current?.data?.id);
+  const canChangeRowsNumber = ConfigUtils.getParameterAttribute(parameterData, 'canChangeRowsNumber') ?? false;
+
+  const parameterId = parameterData.id;
+  const [parameter, setParameter] = useState(parameterValue || {});
+
+  const lockId = `${scenarioId}_${parameterId}`;
+
+  const [isConfirmRowsDeletionDialogOpen, setConfirmRowsDeletionDialogOpen] = useState(false);
+  const selectedRowsRef = useRef();
+
+  const [placeholder, setPlaceholder] = useState();
+
+  useEffect(() => {
+    if (context.visibilityOptions?.import === false) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.noDataPlaceholderTitle', 'No data'),
+        body: t('genericcomponent.table.labels.noDataPlaceholderBody', 'No data to display.'),
+      });
+    } else if (canChangeRowsNumber) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.addRowPlaceholderTitle', 'Import or create your first data'),
+        body: t(
+          'genericcomponent.table.labels.addRowPlaceholderBody',
+          'Import a valid csv or xlsx file,' +
+            'or add a new row, so that your data will be displayed in an interactive table.'
+        ),
+      });
+    } else {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.placeholderTitle', 'Import your first data'),
+        body: t(
+          'genericcomponent.table.labels.placeholderBody',
+          'After importing a valid csv or xlsx file, your data will be displayed in an interactive table.'
+        ),
+      });
+    }
+  }, [canChangeRowsNumber, context.visibilityOptions?.import, t]);
+
+  const tableLabels = {
+    label: t(TranslationUtils.getParameterTranslationKey(parameterId), parameterId),
+    loading: t('genericcomponent.table.labels.loading', 'Loading...'),
+    clearErrors: t('genericcomponent.table.button.clearErrors', 'Clear'),
+    errorsPanelMainError: t('genericcomponent.table.labels.fileImportError', 'File load failed.'),
+    placeholderTitle: placeholder?.title,
+    placeholderBody: placeholder?.body,
+    import: t('genericcomponent.table.labels.import', 'Import'),
+    export: t('genericcomponent.table.labels.export', 'Export'),
+    addRow: t('genericcomponent.table.labels.addRow', 'Add a new row'),
+    deleteRows: t('genericcomponent.table.labels.deleteRows', 'Remove selected rows'),
+    fullscreen: t('genericcomponent.table.labels.fullscreen', 'Fullscreen'),
+    revert: t('genericcomponent.table.labels.revert', 'Revert'),
+  };
+  const tableExportDialogLabels = {
+    cancel: t('genericcomponent.table.export.labels.cancel', 'Cancel'),
+    export: t('genericcomponent.table.export.labels.export', 'Export'),
+    fileNameInputLabel: t('genericcomponent.table.export.labels.fileNameInputLabel', 'Name'),
+    fileTypeSelectLabel: t('genericcomponent.table.export.labels.fileTypeSelectLabel', 'Type'),
+    title: t('genericcomponent.table.export.labels.title', 'Export file'),
+    exportDescription: t(
+      'genericcomponent.table.export.labels.exportDescription',
+      'Your file will be saved on your computer.'
+    ),
+  };
+
+  const { columns, options } = useMemo(() => {
+    const columns = AgGridUtils.getColumnsWithHeaderName(ConfigUtils.getParameterAttribute(parameterData, 'columns'));
+    const dateFormat = ConfigUtils.getParameterAttribute(parameterData, 'dateFormat') ?? DEFAULT_DATE_FORMAT;
+    return { columns, options: { dateFormat } };
+  }, [parameterData]);
+
+  const isUnmount = useRef(false);
+  const gridRef = useRef(null);
+  useEffect(() => {
+    return () => {
+      isUnmount.current = true;
+      gridRef.current = null;
+    };
+  }, []);
+
+  // Store last parameter in a ref
+  // Update a state is async, so, in case of multiple call of updateParameterValue in same function
+  // parameter state value will be updated only in last call.
+  // We need here to use a ref value for be sure to have the good value.
+  const lastNewParameterValue = useRef(parameter);
+  const updateParameterValue = useCallback(
+    (newValuePart, shouldReset = false) => {
+      const newParameterValue = {
+        ...lastNewParameterValue.current,
+        ...newValuePart,
+      };
+
+      lastNewParameterValue.current = newParameterValue;
+      if (!isUnmount.current) {
+        setParameter(newParameterValue);
+      }
+
+      // Update parameterValue in another process to allow grid to update parameter before.
+      // if not, the parent should update parameterValue in same time that grid refreshing by update local parameter.
+      setTimeout(() => {
+        // Prevent useless update of parameterValue if multiple updateParameterValue was done before
+        if (lastNewParameterValue.current === newParameterValue) {
+          if (shouldReset) {
+            resetParameterValue(newParameterValue);
+          } else {
+            setParameterValue(newParameterValue);
+          }
+        }
+      });
+    },
+    [resetParameterValue, setParameterValue]
+  );
+
+  const updateParameterValueWithReset = (newValuePart) => {
+    updateParameterValue(newValuePart, true);
+  };
+
+  useEffect(() => {
+    if (
+      parameterValue?.status !== parameter.status ||
+      !equal(parameterValue?.errors, parameter.errors) ||
+      !equal(parameterValue?.displayData, parameter.displayData)
+    ) {
+      // Ignore undesired update of the table if its content is being initialized
+      if (
+        lastNewParameterValue.current.displayStatus === TABLE_DATA_STATUS.READY &&
+        parameterValue.displayStatus === TABLE_DATA_STATUS.DOWNLOADING
+      )
+        return;
+
+      lastNewParameterValue.current = parameterValue;
+      setParameter(parameterValue);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parameterValue]);
+
+  const setClientFileDescriptorStatuses = (newFileStatus, newDisplayStatus, shouldReset = false) => {
+    updateParameterValue(
+      {
+        status: newFileStatus,
+        displayStatus: newDisplayStatus,
+      },
+      shouldReset
+    );
+  };
+
+  const setClientFileDescriptorStatusesWithReset = (newFileStatus, newDisplayStatus) => {
+    setClientFileDescriptorStatuses(newFileStatus, newDisplayStatus, true);
+  };
+
+  const _checkForLock = () => {
+    if (GenericTable.downloadLocked === undefined) {
+      GenericTable.downloadLocked = {};
+    } else if (lockId in GenericTable.downloadLocked === false) {
+      GenericTable.downloadLocked[lockId] = false;
+    } else if (GenericTable.downloadLocked[lockId]) {
+      return true;
+    }
+    return false;
+  };
+
+  const isDataFetchedFromDataset = !!parameterData?.additionalData?.dynamicValues;
+
+  const _getDataFromTwingraphDataset = async (setClientFileDescriptor) => {
+    const fileName = `${parameterData.id}.csv`;
+    const _setClientFileDescriptorToError = () => {
+      setClientFileDescriptor({
+        value: null,
+        serializedData: null,
+        displayData: null,
+        errors: null,
+        displayStatus: TABLE_DATA_STATUS.ERROR,
+      });
+    };
+
+    setClientFileDescriptor({
+      value: null,
+      serializedData: null,
+      displayData: null,
+      errors: null,
+      displayStatus: TABLE_DATA_STATUS.DOWNLOADING,
+    });
+    if (_checkForLock()) {
+      return;
+    }
+    GenericTable.downloadLocked[lockId] = true;
+    const sourceDatasetId = context.targetDatasetId;
+
+    if (!sourceDatasetId) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.noDataPlaceholderTitle', 'No data'),
+        body: t(
+          'genericcomponent.table.labels.noDatasetsError',
+          'Impossible to fetch data from dataset because the list of datasets is empty'
+        ),
+      });
+      _setClientFileDescriptorToError();
+      return;
+    }
+
+    const dynamicValuesConfig = ConfigUtils.getParameterAttribute(parameterData, 'dynamicValues');
+    const query = dynamicValuesConfig?.query;
+    if (!query) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.noQueryPlaceholderTitle', 'No data'),
+        body: t(
+          'genericcomponent.table.labels.NoQueryErrorImportFalse',
+          'Impossible to fetch data from dataset because there is no twingraph query defined for this parameter. '
+        ),
+      });
+      _setClientFileDescriptorToError();
+      return;
+    }
+
+    if (findDatasetById(sourceDatasetId)?.ingestionStatus == null) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.noTwingraph', 'No Twingraph'),
+        body: t(
+          'genericcomponent.table.labels.noTwingraphDatasetError',
+          'Only twingraph datasets can be used to fetch table data dynamically'
+        ),
+      });
+      _setClientFileDescriptorToError();
+      return;
+    }
+
+    const resultKey = dynamicValuesConfig?.resultKey;
+    let data;
+    try {
+      ({ data } = await Api.Datasets.twingraphQuery(organizationId, workspaceId, sourceDatasetId, { query }));
+    } catch (error) {
+      setPlaceholder({
+        title: error?.response?.statusText ?? t('genericcomponent.table.labels.queryFailedError', 'Query failed'),
+        body: t(
+          'genericcomponent.table.labels.unknownQueryError',
+          'Something went wrong when querying the table data. Please contact your administrator if the ' +
+            'problem persists.'
+        ),
+      });
+      console.error(error?.response?.data?.detail);
+      _setClientFileDescriptorToError();
+      return;
+    }
+
+    if (data.length === 0) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.noDataPlaceholderTitle', 'No data'),
+        body: t(
+          'genericcomponent.table.labels.wrongQueryError',
+          'Returned result is empty, there is probably an error in your query configuration. ' +
+            'Please, check your solution'
+        ),
+      });
+      _setClientFileDescriptorToError();
+      return;
+    }
+
+    const rowsDict = data.map((row) => row[resultKey]);
+    if (rowsDict.includes(undefined)) {
+      setPlaceholder({
+        title: t('genericcomponent.table.labels.configErrorPlaceholderTitle', 'Configuration error'),
+        body: t(
+          'genericcomponent.table.labels.wrongResultKeyError',
+          `Returned result doesn't have ${resultKey} property.
+          Probably there is an error in resultKey configuration, please, check your solution`,
+          { resultKey }
+        ),
+      });
+      _setClientFileDescriptorToError();
+      return;
+    }
+
+    const csvRows = AgGridUtils.toCSV(rowsDict, columns);
+
+    const agGridData = _generateGridDataFromCSV(csvRows, parameterData);
+    if (agGridData.error) {
+      setClientFileDescriptor({
+        displayStatus: TABLE_DATA_STATUS.ERROR,
+        errors: agGridData.error,
+      });
+    } else {
+      // FIXME import & use forgeFileParameter
+      setClientFileDescriptor({
+        name: fileName,
+        value: null,
+        displayData: agGridData.rows,
+        errors: null,
+        status: UPLOAD_FILE_STATUS_KEY.READY_TO_UPLOAD,
+        displayStatus: TABLE_DATA_STATUS.READY,
+        serialize: serializeToCSV,
+      });
+    }
+
+    GenericTable.downloadLocked[lockId] = false;
+  };
+
+  const _downloadDatasetFileContentFromStorage = async (
+    organizationId,
+    workspaceId,
+    clientFileDescriptor,
+    setClientFileDescriptor
+  ) => {
+    // Setting the table status to DOWNLOADING again even when the download is already active (and thus locked) seems
+    // to fix a race condition in the table parameter state. This can be used to fix the missing loading spinner.
+    setClientFileDescriptor({
+      value: null,
+      serializedData: null,
+      displayData: null,
+      errors: null,
+      status: UPLOAD_FILE_STATUS_KEY.READY_TO_DOWNLOAD,
+      displayStatus: TABLE_DATA_STATUS.DOWNLOADING,
+    });
+
+    if (_checkForLock()) {
+      return;
+    }
+    GenericTable.downloadLocked[lockId] = true;
+
+    const data = await downloadDatasetPartFileData(clientFileDescriptor, setClientFileDescriptorStatusesWithReset);
+
+    if (data) {
+      const fileName = clientFileDescriptor.name;
+      const finalStatus = UPLOAD_FILE_STATUS_KEY.READY_TO_DOWNLOAD;
+      _parseCSVFileContent(data, fileName, clientFileDescriptor, setClientFileDescriptor, finalStatus);
+    } else {
+      setClientFileDescriptor({
+        value: null,
+        serializedData: null,
+        errors: null,
+        displayData: null,
+        status: UPLOAD_FILE_STATUS_KEY.READY_TO_DOWNLOAD,
+        displayStatus: TABLE_DATA_STATUS.ERROR,
+      });
+    }
+    GenericTable.downloadLocked[lockId] = false;
+  };
+
+  const serializeToCSV = useCallback(() => {
+    const newFileContent = AgGridUtils.toCSV(lastNewParameterValue.current.displayData, columns, options);
+    updateParameterValue({ serializedData: newFileContent });
+    gridRef.current?.api?.stopEditing();
+    return newFileContent;
+  }, [columns, options, updateParameterValue]);
+
+  const _parseCSVFileContent = useCallback(
+    (
+      fileContent,
+      fileName,
+      clientFileDescriptor,
+      setClientFileDescriptor,
+      finalStatus,
+      clientFileDescriptorRestoreValue
+    ) => {
+      setClientFileDescriptor({
+        name: fileName,
+        value: null,
+        displayData: null,
+        errors: null,
+        serializedData: fileContent,
+        status: finalStatus,
+        displayStatus: TABLE_DATA_STATUS.PARSING,
+      });
+
+      const agGridData = _generateGridDataFromCSV(fileContent, parameterData, options);
+      if (agGridData.error) {
+        if (clientFileDescriptorRestoreValue && clientFileDescriptorRestoreValue.status !== 'EMPTY') {
+          setClientFileDescriptor({
+            ...clientFileDescriptorRestoreValue,
+            errors: agGridData.error,
+          });
+        } else {
+          setClientFileDescriptor({
+            displayStatus: TABLE_DATA_STATUS.ERROR,
+            errors: agGridData.error,
+          });
+        }
+      } else {
+        setClientFileDescriptor({
+          name: fileName,
+          value: null,
+          displayData: agGridData.rows,
+          errors: agGridData.error,
+          serializedData: fileContent,
+          status: finalStatus,
+          displayStatus: TABLE_DATA_STATUS.READY,
+          serialize: serializeToCSV,
+        });
+      }
+    },
+    [options, parameterData, serializeToCSV]
+  );
+
+  const _readAndParseCSVFile = useCallback(
+    (file, clientFileDescriptor, setClientFileDescriptor, clientFileDescriptorRestoreValue) => {
+      if (!file) {
+        return;
+      }
+      const fileName = lastNewParameterValue.current?.name ?? '';
+      setClientFileDescriptor({
+        name: fileName,
+        value: null,
+        serializedData: null,
+        displayData: null,
+        errors: null,
+        status: UPLOAD_FILE_STATUS_KEY.READY_TO_UPLOAD,
+        displayStatus: TABLE_DATA_STATUS.UPLOADING,
+      });
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const fileContent = event.target.result;
+        const finalStatus = UPLOAD_FILE_STATUS_KEY.READY_TO_UPLOAD;
+        _parseCSVFileContent(
+          fileContent,
+          fileName,
+          clientFileDescriptor,
+          setClientFileDescriptor,
+          finalStatus,
+          clientFileDescriptorRestoreValue
+        );
+      };
+
+      reader.readAsText(file);
+    },
+    [_parseCSVFileContent]
+  );
+
+  const _readAndParseXLSXFile = useCallback(
+    async (file, clientFileDescriptor, setClientFileDescriptor, clientFileDescriptorRestoreValue) => {
+      if (!file) return;
+
+      let fileName = lastNewParameterValue.current?.name ?? '';
+      if (fileName.endsWith('.xlsx')) fileName = fileName.replace(/.xlsx$/, '.csv');
+
+      setClientFileDescriptor({
+        name: fileName,
+        file,
+        serializedData: null,
+        displayData: null,
+        errors: null,
+        status: UPLOAD_FILE_STATUS_KEY.READY_TO_UPLOAD,
+        displayStatus: TABLE_DATA_STATUS.PARSING,
+      });
+
+      const agGridData = await _generateGridDataFromXLSX(file, parameterData, options);
+      if (agGridData.error) {
+        if (clientFileDescriptorRestoreValue && clientFileDescriptorRestoreValue.status !== 'EMPTY') {
+          setClientFileDescriptor({
+            ...clientFileDescriptorRestoreValue,
+            errors: agGridData.error,
+          });
+        } else {
+          setClientFileDescriptor({
+            errors: agGridData.error,
+            displayStatus: TABLE_DATA_STATUS.ERROR,
+          });
+        }
+      } else {
+        const newFileContent = AgGridUtils.toCSV(
+          agGridData.rows,
+          ConfigUtils.getParameterAttribute(parameterData, 'columns'),
+          options
+        );
+        setClientFileDescriptor({
+          name: fileName,
+          value: null,
+          serializedData: newFileContent,
+          displayData: agGridData.rows,
+          errors: agGridData.error,
+          status: UPLOAD_FILE_STATUS_KEY.READY_TO_UPLOAD,
+          displayStatus: TABLE_DATA_STATUS.READY,
+          serialize: serializeToCSV,
+        });
+      }
+    },
+    [options, parameterData, serializeToCSV]
+  );
+
+  const importFile = useCallback(
+    (event) => {
+      // TODO: ask confirmation if data already exist
+      const previousFileBackup = clone(parameter);
+      const options = { defaultFileTypeFilter: '.csv, .xlsx' };
+      const file = FileManagementUtils.prepareToUpload(event, updateParameterValue, parameterData, options);
+      if (file.name.endsWith('.csv')) {
+        _readAndParseCSVFile(file, parameter, updateParameterValue, previousFileBackup);
+      } else if (file.name.endsWith('.xlsx')) {
+        _readAndParseXLSXFile(file, parameter, updateParameterValue, previousFileBackup);
+      } else {
+        updateParameterValue({
+          errors: [{ summary: 'Unknown file type, please provide a CSV or XLSX file.', loc: file.name }],
+        });
+      }
+    },
+    [_readAndParseCSVFile, _readAndParseXLSXFile, parameter, updateParameterValue, parameterData]
+  );
+
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
+  const openExportDialog = () => setIsExportDialogOpen(true);
+  const closeExportDialog = () => setIsExportDialogOpen(false);
+  const [isRevertDialogOpen, setIsRevertDialogOpen] = useState(false);
+  const closeRevertDialog = () => setIsRevertDialogOpen(false);
+  const exportCSV = useCallback(
+    (fileName) => {
+      const fileContent = AgGridUtils.toCSV(parameter.displayData, columns, options);
+      FileBlobUtils.downloadFileFromData(fileContent, fileName);
+    },
+    [columns, options, parameter.displayData]
+  );
+  const exportXSLX = useCallback(
+    (fileName) => {
+      const fileContent = AgGridUtils.toXLSX(parameter.displayData, columns, options);
+      FileBlobUtils.downloadFileFromData(fileContent, fileName);
+    },
+    [columns, options, parameter.displayData]
+  );
+  const exportFile = useCallback(
+    (fileName) => {
+      if (fileName.toLowerCase().endsWith('.xlsx')) exportXSLX(fileName);
+      else exportCSV(fileName);
+    },
+    [exportCSV, exportXSLX]
+  );
+  const exportTable = useCallback(
+    (fileName) => {
+      closeExportDialog();
+      exportFile(fileName);
+    },
+    [exportFile]
+  );
+
+  const updateOnFirstEdition = useCallback(() => {
+    if (!parameter.serialize || !isDirty) {
+      updateParameterValue({
+        status: UPLOAD_FILE_STATUS_KEY.READY_TO_UPLOAD,
+        displayStatus: TABLE_DATA_STATUS.READY,
+        errors: null,
+        serialize: serializeToCSV,
+      });
+    }
+  }, [parameter.serialize, isDirty, serializeToCSV, updateParameterValue]);
+
+  const onCellChange = updateOnFirstEdition;
+
+  const onClearErrors = () => {
+    updateParameterValue({
+      errors: null,
+    });
+  };
+
+  const buildErrorsPanelTitle = (errorsCount, maxErrorsCount) => {
+    let title = t('genericcomponent.table.labels.errorsCount', '{{count}} errors occurred:', {
+      count: errorsCount,
+    });
+    if (errorsCount > maxErrorsCount) {
+      title +=
+        ' ' +
+        t('genericcomponent.table.labels.maxErrorsCount', '(only the top first {{maxCount}} results)', {
+          maxCount: maxErrorsCount,
+        });
+    }
+    return title;
+  };
+
+  const alreadyDownloaded =
+    parameter.displayStatus !== undefined &&
+    [
+      TABLE_DATA_STATUS.ERROR,
+      TABLE_DATA_STATUS.DOWNLOADING,
+      TABLE_DATA_STATUS.PARSING,
+      TABLE_DATA_STATUS.READY,
+    ].includes(parameter.displayStatus);
+
+  // Trigger dataset download only when mounting the component
+  useEffect(() => {
+    if (
+      parameter.datasetId &&
+      parameter.datasetPartId &&
+      !parameter.serializedData &&
+      parameter.status === UPLOAD_FILE_STATUS_KEY.READY_TO_DOWNLOAD &&
+      !alreadyDownloaded
+    ) {
+      _downloadDatasetFileContentFromStorage(organizationId, workspaceId, parameter, updateParameterValueWithReset);
+    } else if (
+      isDataFetchedFromDataset &&
+      !parameter.serializedData &&
+      parameter.status === UPLOAD_FILE_STATUS_KEY.EMPTY &&
+      !alreadyDownloaded
+    ) {
+      _getDataFromTwingraphDataset(updateParameterValueWithReset);
+    }
+  });
+
+  const onAddRow = useCallback(() => {
+    const newLine = TableUtils.createNewTableLine(
+      parameterData.additionalData.columns,
+      parameterData.additionalData.dateFormat
+    );
+    const rowsCountBeforeRowAddition = parameter?.displayData?.length ?? 0;
+    if (rowsCountBeforeRowAddition === 0) {
+      updateParameterValue({ displayData: [newLine], name: parameter?.file?.name ?? `${parameterData.id}.csv` });
+      updateOnFirstEdition();
+      return;
+    }
+
+    const gridApi = gridRef.current?.api;
+    if (!gridApi) return;
+
+    const getRowNodeIndex = (rowNode) => {
+      const index = rowNode?.childIndex ?? parseInt(rowNode?.id);
+      return isNaN(index) ? -1 : index;
+    };
+
+    const isSortEnabled = gridApi.getColumnState().find((column) => column.sort !== null) !== undefined;
+    const selectedLines = gridApi.getSelectedNodes() ?? [];
+    const lastSelectedLine = selectedLines[selectedLines.length - 1];
+
+    let addIndexForTransaction = rowsCountBeforeRowAddition;
+    let addIndex = rowsCountBeforeRowAddition;
+    if (!isSortEnabled) {
+      addIndexForTransaction = selectedLines.length > 0 ? lastSelectedLine.rowIndex + 1 : 0;
+      addIndex = selectedLines.length > 0 ? getRowNodeIndex(lastSelectedLine) + 1 : 0;
+    }
+
+    if (isSortEnabled) {
+      parameter.displayData.push(newLine);
+    } else if (selectedLines?.length > 0) {
+      parameter.displayData.splice(addIndex, 0, newLine);
+    } else {
+      parameter.displayData.unshift(newLine);
+    }
+
+    gridApi.applyTransaction({ add: [newLine], addIndex: addIndexForTransaction });
+    gridApi.deselectAll();
+    updateOnFirstEdition();
+  }, [
+    updateOnFirstEdition,
+    parameter.displayData,
+    parameter.file?.name,
+    parameterData.id,
+    parameterData.additionalData.columns,
+    parameterData.additionalData.dateFormat,
+    updateParameterValue,
+  ]);
+
+  const deleteRow = useCallback(() => {
+    const gridApi = gridRef.current?.api;
+    if (!gridApi) return;
+
+    const nodesDataToRemove = gridApi.getSelectedNodes().map((rowNode) => rowNode.data);
+    gridApi.applyTransaction({ remove: nodesDataToRemove });
+
+    const _findRowIndexFromData = (nodeData) => parameter.displayData.findIndex((row) => row === nodeData);
+    nodesDataToRemove.forEach((nodeDataToRemove) => {
+      const rowIndexToRemove = _findRowIndexFromData(nodeDataToRemove);
+      parameter.displayData.splice(rowIndexToRemove, 1);
+    });
+
+    if (parameter.displayData.length === 0) {
+      updateParameterValue({ displayData: parameter.displayData });
+    }
+
+    updateOnFirstEdition();
+  }, [updateOnFirstEdition, parameter.displayData, updateParameterValue]);
+
+  const onDeleteRow = useCallback(() => {
+    const selectedRows = gridRef.current?.api?.getSelectedNodes() ?? [];
+    selectedRowsRef.current = selectedRows;
+    if (selectedRows.length > 1 && localStorage.getItem('dontAskAgainToDeleteRow') !== 'true') {
+      setConfirmRowsDeletionDialogOpen(true);
+    } else deleteRow();
+  }, [deleteRow]);
+
+  const revertTableWithDatasetData = useCallback(
+    (isChecked) => {
+      localStorage.setItem('dontAskAgainToRevertTableData', isChecked);
+      closeRevertDialog();
+      // To trigger isDirty state when an already saved table was reverted and avoid it in other cases, we need to
+      // updateParameterValue setter and updateOnFirstEdition function that triggers the start of edition; on the other
+      // hand, updateParameterValueWithReset setter rollbacks modified values without triggering isDirty
+      _getDataFromTwingraphDataset(parameter.serializedData ? updateParameterValue : updateParameterValueWithReset);
+      if (parameter.serializedData) updateOnFirstEdition();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [parameter.serializedData, updateParameterValue, updateParameterValueWithReset, updateOnFirstEdition]
+  );
+
+  const onRevertTableData = useCallback(() => {
+    if (localStorage.getItem('dontAskAgainToRevertTableData') !== 'true') setIsRevertDialogOpen(true);
+    else revertTableWithDatasetData('true');
+  }, [setIsRevertDialogOpen, revertTableWithDatasetData]);
+
+  return (
+    <>
+      <TableExportDialog
+        defaultFileName={parameterId}
+        labels={tableExportDialogLabels}
+        open={isExportDialogOpen}
+        onClose={closeExportDialog}
+        onExport={exportTable}
+      />
+      <Table
+        key={parameterId}
+        data-cy={`table-${parameterData.id}`}
+        id={`table-${parameterData.id}`}
+        gridRef={gridRef}
+        labels={tableLabels}
+        tooltipText={t(TranslationUtils.getParameterTooltipTranslationKey(parameterData.id), '')}
+        dateFormat={options.dateFormat}
+        editMode={context.editMode}
+        dataStatus={parameter.displayStatus || TABLE_DATA_STATUS.EMPTY}
+        errors={parameter.errors}
+        columns={columns}
+        rows={parameter.displayData ?? []}
+        agTheme={context.isDarkTheme ? gridDark.agTheme : gridLight.agTheme}
+        onImport={importFile}
+        onExport={openExportDialog}
+        onAddRow={canChangeRowsNumber ? onAddRow : null}
+        onDeleteRow={canChangeRowsNumber ? onDeleteRow : null}
+        onRevert={isDataFetchedFromDataset ? onRevertTableData : null}
+        onCellChange={onCellChange}
+        onClearErrors={onClearErrors}
+        buildErrorsPanelTitle={buildErrorsPanelTitle}
+        maxErrorsCount={MAX_ERRORS_COUNT}
+        isDirty={isDirty}
+        visibilityOptions={context.tableOptions?.buttons}
+        height={context.tableOptions?.height ?? '258px'}
+      />
+      <TableDeleteRowsDialog
+        open={isConfirmRowsDeletionDialogOpen}
+        onClose={() => setConfirmRowsDeletionDialogOpen(false)}
+        onConfirm={(isChecked) => {
+          setConfirmRowsDeletionDialogOpen(false);
+          localStorage.setItem('dontAskAgainToDeleteRow', isChecked);
+          deleteRow();
+        }}
+        selectedRowsCount={selectedRowsRef.current?.length ?? 0}
+      />
+      <TableRevertDataDialog
+        onClose={closeRevertDialog}
+        onConfirm={(isChecked) => revertTableWithDatasetData(isChecked)}
+        open={isRevertDialogOpen}
+      />
+    </>
+  );
+};
+
+GenericTable.propTypes = {
+  parameterData: PropTypes.object.isRequired,
+  context: PropTypes.object.isRequired,
+  parameterValue: PropTypes.any,
+  setParameterValue: PropTypes.func.isRequired,
+  resetParameterValue: PropTypes.func.isRequired,
+  isDirty: PropTypes.bool,
+};

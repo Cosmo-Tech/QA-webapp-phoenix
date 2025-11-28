@@ -6,26 +6,30 @@ import { apiUtils as api } from '../../utils';
 function getScenarioManagerView() {
   return cy.get(GENERIC_SELECTORS.scenario.manager.view);
 }
-function switchToScenarioManager() {
-  cy.get(GENERIC_SELECTORS.scenario.manager.tabName).click();
+function switchToScenarioManager(options) {
+  // eslint-disable-next-line cypress/no-force -- Workaround for MUI hidden elements not correctly ignored by cypress
+  cy.get(GENERIC_SELECTORS.scenario.manager.tabName).click({ force: true, ...options });
 }
 function getDeleteScenarioButton() {
   return cy.get(GENERIC_SELECTORS.scenario.manager.button.delete);
 }
 function deleteScenario(scenarioName, isRunning = false) {
-  const getScenarioToDeleteAlias = api.interceptGetScenario();
-  const deleteScenarioAlias = api.interceptDeleteScenario(scenarioName);
-  const reqStopScenarioRunAlias = isRunning && api.interceptStopScenarioRun();
-  const getScenariosAlias = api.interceptGetScenarios();
+  const getScenarioToDeleteAlias = api.interceptGetRunner();
+  const getScenarioToDeleteStateAlias = isRunning && api.interceptGetRunnerRunState(1);
+  const deleteScenarioAlias = api.interceptDeleteRunner(scenarioName);
+  const reqStopScenarioRunAlias = isRunning && api.interceptStopRunner();
 
   writeInFilter(scenarioName);
+  getDeleteScenarioButton().should('have.length', 1);
   getDeleteScenarioButton().click();
   cy.get(GENERIC_SELECTORS.scenario.manager.confirmDeleteDialog).contains('button', 'Confirm').click();
 
   api.waitAlias(getScenarioToDeleteAlias);
   api.waitAlias(deleteScenarioAlias);
-  if (isRunning) api.waitAlias(reqStopScenarioRunAlias);
-  api.waitAlias(getScenariosAlias);
+  if (isRunning) {
+    api.waitAlias(getScenarioToDeleteStateAlias);
+    api.waitAlias(reqStopScenarioRunAlias);
+  }
 }
 
 function deleteScenarioList(scenarioNamesToDelete) {
@@ -42,7 +46,7 @@ function writeInFilter(searchStr) {
 }
 
 function getScenarioAccordions() {
-  return cy.get(GENERIC_SELECTORS.scenario.manager.scenarioAccordions);
+  return cy.get(GENERIC_SELECTORS.scenario.manager.scenarioAccordions, { timeout: 10000 });
 }
 
 function getScenarioAccordion(scenarioId) {
@@ -57,20 +61,26 @@ function getScenarioCreationDate(scenarioId) {
   return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.creationDate);
 }
 
-function getScenarioEditableLabel(scenarioId, timeout = 5) {
-  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.editableLabel, {
+function getRenameScenarioButton(scenarioId) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.button.renameScenario);
+}
+function getScenarioEditableLink(scenarioId, timeout = 5) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.editableLink, {
     timeout: timeout * 1000,
   });
 }
-function getScenarioEditableLabelInEditMode(scenarioId, timeout = 5) {
-  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.editableLabelInEditMode, {
+function getScenarioEditableLinkInEditMode(scenarioId, timeout = 5) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.editableLinkInEditMode, {
     timeout: timeout * 1000,
   });
 }
 function renameScenario(scenarioId, newScenarioName) {
-  return ScenarioManager.getScenarioEditableLabel(scenarioId)
-    .click()
-    .type('{selectAll}{backspace}' + newScenarioName + '{enter}');
+  const renameScenarioAlias = api.interceptUpdateRunner(scenarioId);
+
+  getRenameScenarioButton(scenarioId).click();
+  getScenarioEditableLinkInEditMode(scenarioId).type('{selectAll}{backspace}' + newScenarioName + '{enter}');
+
+  api.waitAlias(renameScenarioAlias);
 }
 
 function getScenarioValidationStatusChip(scenarioId) {
@@ -87,6 +97,77 @@ function getScenarioRunStatus(scenarioId, scenarioStatus, timeout = 5) {
   });
 }
 
+function getScenarioDescriptionInput(scenarioId, timeout = 5) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.description.input);
+}
+
+function getScenarioDisabledDescription(scenarioId, timeout = 5) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.description.disabled, {
+    timeout: timeout * 1000,
+  });
+}
+
+function editScenarioDescription(scenarioId, newDescription) {
+  getScenarioDisabledDescription(scenarioId).click();
+  getScenarioDescriptionInput(scenarioId).type('{selectAll}{backspace}' + newDescription);
+}
+
+function cancelMetadataEdition() {
+  cy.get('body').type('{esc}');
+}
+
+function saveScenarioDescription(scenarioId, newDescription, validateRequest) {
+  const options = { validateRequest };
+  const alias = api.interceptUpdateRunner(options);
+  editScenarioDescription(scenarioId, newDescription);
+  getScenarioManagerView().click();
+  getScenarioDisabledDescription(scenarioId).should('have.text', newDescription);
+  api.waitAlias(alias);
+}
+
+function getScenarioTags(scenarioId) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.tags.container);
+}
+
+function getScenarioTag(scenarioId, index) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.tags.tag.replace('$TAGINDEX', index));
+}
+
+function checkScenarioTagsChips(scenarioTags, scenarioId) {
+  scenarioTags.forEach((tag, index) => {
+    getScenarioTag(scenarioId, index).should('have.text', tag);
+  });
+}
+
+function getAddScenarioTagButton(scenarioId) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.tags.add);
+}
+
+function getAddScenarioTagTextfield(scenarioId) {
+  return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.tags.textfield);
+}
+
+function addScenarioTag(scenarioId, tag) {
+  getScenarioTags(scenarioId).trigger('mouseover');
+  getAddScenarioTagButton(scenarioId).should('exist').click();
+  getAddScenarioTagTextfield(scenarioId).should('exist').type(tag);
+}
+
+function saveScenarioTag(scenarioId, newTag, validateRequest) {
+  const options = { validateRequest };
+  const alias = api.interceptUpdateRunner(options);
+  addScenarioTag(scenarioId, newTag);
+  getScenarioManagerView().click();
+  api.waitAlias(alias);
+}
+
+function deleteScenarioTag(scenarioId, index, validateRequest) {
+  const options = { validateRequest };
+  const alias = api.interceptUpdateRunner(options);
+  getScenarioTag(scenarioId, index).find(GENERIC_SELECTORS.scenario.tags.cancelIcon).should('exist').click();
+  api.waitAlias(alias);
+}
+
 function getScenarioRunTemplate(scenarioId) {
   return getScenarioAccordion(scenarioId).find(GENERIC_SELECTORS.scenario.manager.scenarioRunTemplate);
 }
@@ -101,7 +182,7 @@ function getScenarioViewRedirect(scenarioId) {
 
 function openScenarioFromScenarioManager(scenarioId) {
   getScenarioViewRedirect(scenarioId).should('exist');
-  api.interceptGetScenario(scenarioId);
+  api.interceptGetRunner(scenarioId);
   getScenarioViewRedirect(scenarioId).click();
   cy.url({ timeout: 5000 }).should('include', `/scenario/${scenarioId}`);
 }
@@ -164,8 +245,9 @@ export const ScenarioManager = {
   getScenarioAccordion,
   getScenarioOwnerName,
   getScenarioCreationDate,
-  getScenarioEditableLabel,
-  getScenarioEditableLabelInEditMode,
+  getRenameScenarioButton,
+  getScenarioEditableLink,
+  getScenarioEditableLinkInEditMode,
   renameScenario,
   getScenarioValidationStatusChip,
   getScenarioValidationStatusLoadingSpinner,
@@ -177,4 +259,11 @@ export const ScenarioManager = {
   getScenarioAccordionExpandButton,
   triggerScenarioAccordionExpandOrCollapse,
   openScenarioFromScenarioManager,
+  getScenarioDisabledDescription,
+  checkScenarioTagsChips,
+  editScenarioDescription,
+  cancelMetadataEdition,
+  saveScenarioDescription,
+  saveScenarioTag,
+  deleteScenarioTag,
 };

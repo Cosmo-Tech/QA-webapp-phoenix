@@ -1,0 +1,32 @@
+// Copyright (c) Cosmo Tech.
+// Licensed under the MIT license.
+import { t } from 'i18next';
+import { FileBlobUtils } from '@cosmotech/core';
+import applicationStore from '../../state/Store.config';
+import { setApplicationErrorMessage } from '../../state/app/reducers';
+import { Api } from '../config/Api';
+
+async function downloadLogsFile(organizationId, workspaceId, runnerId, lastRunId) {
+  try {
+    const fileName = `${runnerId}_${lastRunId}_logs.txt`;
+    const { data } = await Api.RunnerRuns.getRunLogs(organizationId, workspaceId, runnerId, lastRunId);
+
+    const logsText = typeof data === 'string' ? data : String(data ?? '');
+
+    FileBlobUtils.downloadFileFromData(logsText, fileName);
+  } catch (error) {
+    console.error(error);
+    applicationStore.dispatch(
+      setApplicationErrorMessage({
+        error,
+        errorMessage: t('commoncomponents.banner.logs', "Log file hasn't been downloaded."),
+      })
+    );
+  }
+}
+
+const RunnerRunService = {
+  downloadLogsFile,
+};
+
+export default RunnerRunService;

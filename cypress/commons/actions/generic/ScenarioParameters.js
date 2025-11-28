@@ -13,7 +13,7 @@ function getParametersAccordionSummary() {
   return cy.get(GENERIC_SELECTORS.scenario.parameters.accordionSummary);
 }
 function getTabsErrorBadge(container) {
-  return container.find('[data-cy=error-badge]');
+  return container.find('[data-cy=error-badge]').children('span');
 }
 
 // Generic get & set actions for scenario parameters
@@ -25,6 +25,14 @@ function getParameterValue(id) {
 }
 function getParameterInput(id) {
   return getParameterContainer(id).find(GENERIC_SELECTORS.genericComponents.basicInput.input);
+}
+
+function getDynamicParameterLoadingSpinner() {
+  return cy.get(GENERIC_SELECTORS.scenario.parameters.loadingSpinner);
+}
+
+function getDynamicValueErrorIcon() {
+  return cy.get(GENERIC_SELECTORS.scenario.parameters.dynamicValueErrorIcon);
 }
 
 // TODO: add generic setters for scenario parameters input ()
@@ -110,12 +118,18 @@ function cancelDiscardAndContinue() {
 function launch(options) {
   const expectedPollsCount = options?.runOptions?.expectedPollsCount ?? stub.getScenarioRunOptions().expectedPollsCount;
   const aliases = [
-    options?.saveAndLaunch ? api.interceptUpdateScenario() : undefined,
-    api.interceptLaunchScenario(options?.runOptions),
-    api.interceptGetScenario(options?.scenarioId, expectedPollsCount),
-    api.interceptGetScenarioRun(),
-    api.interceptGetScenarioRunStatus(),
+    options?.saveAndLaunch ? api.interceptUpdateSimulationRunner() : undefined,
+    api.interceptStartRunner(options?.runOptions),
+    api.interceptGetRunnerRunState(expectedPollsCount),
   ];
+  options?.datasetsEvents?.reverse()?.forEach((datasetEvent) => {
+    aliases.push(api.interceptCreateDataset({ id: datasetEvent.id, validateRequest: datasetEvent.onDatasetCreation }));
+    aliases.push(api.interceptUpdateDataset({ id: datasetEvent.id, validateRequest: datasetEvent.onDatasetUpdate }));
+    aliases.push(
+      ...api.interceptUpdateDatasetSecurity({ id: datasetEvent.id, securityChanges: datasetEvent.securityChanges })
+    );
+    aliases.push(api.interceptUploadWorkspaceFile());
+  });
   getLaunchButton(options?.getLaunchButtonTimeout ?? 180)
     .should('not.be.disabled')
     .click();
@@ -149,7 +163,7 @@ function save(options = {}) {
     aliases.push(api.interceptUploadWorkspaceFile());
   });
 
-  const reqUpdateScenarioAlias = api.interceptUpdateScenario(options?.updateOptions);
+  const reqUpdateScenarioAlias = api.interceptUpdateSimulationRunner(options?.updateOptions);
   aliases.push(reqUpdateScenarioAlias);
 
   getSaveButton().should('not.be.disabled').click();
@@ -160,12 +174,12 @@ function save(options = {}) {
 }
 
 function cancelRun(confirm = true) {
-  const reqStopScenarioRunAlias = confirm && api.interceptStopScenarioRun();
-  getStopScenarioRunButton().click();
+  const reqStopScenarioRunAlias = confirm && api.interceptStopRunner();
+  getStopScenarioRunButton().click({ force: true });
   if (confirm) {
-    getStopScenarioRunConfirmButton().click();
+    getStopScenarioRunConfirmButton().click({ force: true });
     api.waitAlias(reqStopScenarioRunAlias);
-  } else getStopScenarioRunCancelButton().click();
+  } else getStopScenarioRunCancelButton().click({ force: true });
 }
 
 function waitForScenarioRunEnd(timeout = 300) {
@@ -209,4 +223,6 @@ export const ScenarioParameters = {
   getParametersDiscardAndContinueButton,
   getParametersCancelDiscardAndContinueButton,
   getTabsErrorBadge,
+  getDynamicParameterLoadingSpinner,
+  getDynamicValueErrorIcon,
 };

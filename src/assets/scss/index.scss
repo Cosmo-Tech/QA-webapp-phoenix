@@ -1,0 +1,75 @@
+// Copyright (c) Cosmo Tech.
+// Licensed under the MIT license.
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+#root {
+  height: 100%;
+}
+
+.scenarioChartNode {
+  color: white;
+}
+
+.scenarioChartNodeSelected {
+  color: #2e2e2e;
+}
+
+.scenarioChart {
+  margin: auto;
+}
+
+.scenarioChartNode .scenarioName {
+  color: #ffad38;
+}
+
+.scenarioChartNodeSelected .scenarioName {
+  color: #000000;
+}
+
+.scenarioChart .google-visualization-orgchart-linebottom {
+  border-bottom: 1px solid #ffad38;
+}
+
+.scenarioChart .google-visualization-orgchart-lineleft {
+  border-left: 1px solid #ffad38;
+}
+
+.scenarioChart .google-visualization-orgchart-lineright {
+  border-right: 1px solid #ffad38;
+}
+
+.scenarioChart .google-visualization-orgchart-linetop {
+  border-top: 1px solid #ffad38;
+}
+
+.google-visualization-orgchart-table {
+  margin: 0 auto;
+}
+
+.MuiPaper-root.MuiCard-root {
+  div {
+    iframe {
+      border: none;
+      box-sizing: unset;
+    }
+  }
+}

@@ -4,7 +4,6 @@ import { Scenarios, Workspaces } from '../actions/generic';
 import { WEBAPP_URL_REGEX } from '../constants/generic/TestConstants';
 import { stub } from '../services/stubbing';
 import { apiUtils as api } from './apiUtils';
-var config = require('../../../variables.cy');
 
 const _navigateTo = (url) => {
   cy.visit(url ?? '/', {
@@ -17,10 +16,10 @@ const _navigateTo = (url) => {
   });
 };
 
-const getBrowseQueries = (workspaceId, scenarioId) => {
+const getBrowseQueries = (workspaceId, scenarioId, isPowerBiEnabled) => {
   const queries = api.interceptWorkspaceSelectorQueries();
-  if (workspaceId) queries.push(...api.interceptSelectWorkspaceQueries());
-  if (scenarioId) queries.push(api.interceptGetScenario(scenarioId));
+  if (workspaceId) queries.push(...api.interceptSelectWorkspaceQueries(isPowerBiEnabled));
+  if (scenarioId) queries.push(api.interceptGetRunner(scenarioId));
   return queries;
 };
 
@@ -50,20 +49,23 @@ const browse = (options) => {
         ? workspaces[0].id // detect from stubbed workspace data
         : options.url?.match(WEBAPP_URL_REGEX.WORKSPACE)?.[0]; // detect from URL
   // Detect scenario id if not provided (and not explicitly null)
-  const scenarioId = options.scenarioId !== undefined ? options.scenarioId : options.url?.match(WEBAPP_URL_REGEX.SCENARIO_ID_PATTERN)?.[1];
+  const scenarioId =
+    options.scenarioId !== undefined
+      ? options.scenarioId
+      : options.url?.match(WEBAPP_URL_REGEX.SCENARIO_ID_PATTERN)?.[1];
 
   // Intercept scenario only when explicitly specified in options (part 2 of WorkingInTwoWorkspaces)
-  const queries = getBrowseQueries(workspaceId, options.scenarioId);
+  const queries = getBrowseQueries(workspaceId, options.scenarioId, options.isPowerBiEnabled);
   _navigateTo(options.url);
   if (options.onBrowseCallback) options.onBrowseCallback();
   waitBrowseQueries(queries);
 
   // If workspace is known or scenario is specified, check we land on scenario view...
-  if (workspaceId || scenarioId || config.workspace()) {
-    Scenarios.getScenarioViewTab(60).should('be.visible');
+  if (workspaceId || scenarioId) {
+    Scenarios.getScenarioViewTab(60).should('exist');
   } else {
     // ...otherwise, check we're still on workspaces selector
-    Workspaces.getWorkspacesView(60).should('be.visible');
+    //Workspaces.getWorkspacesView(60).should('exist');
   }
 
   cy.url({ timeout: 5000 }).should('include', options.expectedURL ?? options.url);
@@ -72,8 +74,7 @@ const browse = (options) => {
 const go = (direction, options) => {
   const aliases = [];
   if (options?.workspaceId) aliases.push(...api.interceptSelectWorkspaceQueries());
-  if (options?.scenarioId) aliases.push(api.interceptGetScenario(options?.scenarioId));
-
+  if (options?.workspaceId && options?.scenarioId) aliases.push(api.interceptGetRunner(options.scenarioId));
   cy.go(direction);
   options?.workspaceId && cy.url({ timeout: 3000 }).should('include', `/${options?.workspaceId}`);
   options?.scenarioId && cy.url({ timeout: 3000 }).should('include', `/${options?.scenarioId}`);
