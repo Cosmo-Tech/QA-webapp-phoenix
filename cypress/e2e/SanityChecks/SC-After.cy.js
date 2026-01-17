@@ -4,14 +4,25 @@ const datasetManager = require('../../functions/datasetManager.cy.js');
 const config = require('../../../variables.cy.js');
 const scenario = require('../../functions/scenario.cy.js');
 
+let testData;
+
 describe('To use after the sanity check and the manual checks', () => {
-  it('Clean all scenarios resulting of the sanity check (fail if no scenario)', () => {
+  before(() => {
+    cy.fixture('lightTestData').then((data) => {
+      testData = data;
+    });
+  });
+
+  beforeEach(() => {
     connection.connect();
+  });
+
+  it('Clean all scenarios resulting of the sanity check (fail if no scenario)', () => {
     // Delete scenarios
     connection.navigate('manager');
-    scenario.deleteScenario('DLOP-PROD-13867-ThisIsAVeryLongScenarioNameSoThreeDotsWillDisplaysInsteadOfCompleteNameToCheckSpecs');
-    scenario.deleteScenario('A-ValidatedScenario');
-    scenario.deleteScenario('B-RejectedScenario');
+    scenario.deleteScenario(testData.scenarios.testScenarios.longScenarioName);
+    scenario.deleteScenario(testData.scenarios.testScenarios.validatedScenario);
+    scenario.deleteScenario(testData.scenarios.testScenarios.rejectedScenario);
     scenario.deleteScenario('DLOP-PROD-14373');
     scenario.deleteScenario('DLOP-PROD-13240-Admin');
     scenario.deleteScenario('DLOP-PROD-13240-Editor');
@@ -35,20 +46,20 @@ describe('To use after the sanity check and the manual checks', () => {
     scenario.deleteScenario('DLOP-PROD-13235-OverwritePermissions');
     scenario.deleteScenario('PROD-13750-DashboardsChecks-Run');
     scenario.deleteScenario('PROD-13751-DigitalTwin');
-  });
-
-  it('Clean all datasets resulting of the sanity check', () => {
-    connection.connect();
+    if (!connection.isConnected || !connection.isConnected()) {
+      connection.connect();
+    }
     // Delete datasets
     connection.navigate('dataset');
-    datasetManager.deleteDataset('DLOP-Reference-for-automated-tests');
-    datasetManager.deleteDataset('DLOP-Barcelona-for-automated-tests');
+    // Delete datasets
+    connection.navigate('dataset');
+    datasetManager.deleteDataset(testData.datasets.reference.name);
+    datasetManager.deleteDataset(testData.datasets.barcelona.name);
     datasetManager.deleteDataset('DLOP-PROD-13240-Admin');
     datasetManager.deleteDataset('DLOP-PROD-13240-Editor');
     datasetManager.deleteDataset('DLOP-PROD-13240-Viewer');
     datasetManager.deleteDataset('DLOP-PROD-14373');
-    datasetManager.deleteDataset('DLOP-PROD-13888-CheckOverview');
-    datasetManager.deleteDataset('DLOP-PROD-13235-OverwritePermissions');
     datasetManager.deleteDataset('DLOP-PROD-13236-NoPermissions');
   });
 });
+
