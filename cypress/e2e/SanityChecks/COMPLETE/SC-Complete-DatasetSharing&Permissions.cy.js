@@ -1,147 +1,211 @@
-import 'cypress-file-upload';
-const connection = require('../../../functions/connect.cy.js');
-const datasetManager = require('../../../functions/datasetManager.cy.js');
-const config = require('../../../../variables.cy.js');
-const scenario = require('../../../functions/scenario.cy.js');
+require("cypress-file-upload");
+const connection = require("../../../functions/connect.cy.js");
+const datasetManager = require("../../../functions/datasetManager.cy.js");
+const config = require("../../../../variables.cy.js");
+const scenario = require("../../../functions/scenario.cy.js");
 
-describe('Dataset Manager Sharing and Permissions Sanity Checks', () => {
-  it('PROD-13233 and PROD-13238 -> Share a dataset', () => {
-    connection.connect();
-    connection.navigate('dataset');
-    const datasetName = 'DLOP-PROD-13233-Reference';
+describe("Dataset Manager Sharing and Permissions Sanity Checks", () => {
+	it("PROD-13233 and PROD-13238 -> Share a dataset", () => {
+		connection.connect();
+		connection.navigate("dataset");
+		const datasetName = "DLOP-PROD-13233-Reference";
 
-    // Clean in case it's a second try
-    datasetManager.deleteDataset('DLOP-PROD-13233-Reference');
+		// Clean in case it's a second try
+		datasetManager.deleteDataset("DLOP-PROD-13233-Reference");
 
-    // Create the dataset
-    datasetManager.createDatasetLocalFile(datasetName, 'A basic reference dataset for brewery model', 'reference');
-    datasetManager.selectDataset(datasetName);
-    cy.wait(1000);
+		// Create the dataset
+		datasetManager.createDatasetLocalFile(
+			datasetName,
+			"A basic reference dataset for brewery model",
+			"reference",
+		);
+		datasetManager.selectDataset(datasetName);
+		cy.wait(1000);
 
-    // Click on share button and search for someone not in the organization
-    cy.get('[data-testid="ShareIcon"]').click();
-    cy.get('[placeholder="Add people"]').click().type('personne');
-    // No option should be found
-    cy.get('[data-cy*="share-scenario-dialog-agents-select-"]').should('not.exist');
-    cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click({ force: true });
-    datasetManager.clearSearch();
+		// Click on share button and search for someone not in the organization
+		cy.get('[data-testid="ShareIcon"]').click();
+		cy.get('[placeholder="Add people"]').click().type("personne");
+		// No option should be found
+		cy.get('[data-cy*="share-scenario-dialog-agents-select-"]').should(
+			"not.exist",
+		);
+		cy.get('[data-cy="share-scenario-dialog-first-cancel-button"]').click({
+			force: true,
+		});
+		datasetManager.clearSearch();
 
-    // Share the "admin" permissions with someone
-    datasetManager.shareDatasetWithQATeam(datasetName, 'admin');
+		// Share the "admin" permissions with someone
+		datasetManager.shareDatasetWithQATeam(datasetName, "admin");
 
-    // Check you're still admin even with someone else admin too. If no longer admin, delete button is no longer visible
-    cy.get('[data-testid="DeleteForeverIcon"').should('exist');
+		// Check you're still admin even with someone else admin too. If no longer admin, delete button is no longer visible
+		cy.get('[data-testid="DeleteForeverIcon"').should("exist");
 
-    // Update global permission to 'viewer'
-    datasetManager.updateDatasetGlobal(datasetName, 'viewer');
+		// Update global permission to 'viewer'
+		datasetManager.updateDatasetGlobal(datasetName, "viewer");
 
-    // Update global permission to 'editor'
-    datasetManager.updateDatasetGlobal(datasetName, 'editor');
+		// Update global permission to 'editor'
+		datasetManager.updateDatasetGlobal(datasetName, "editor");
 
-    // Update global permission to 'admin'
-    datasetManager.updateDatasetGlobal(datasetName, 'admin');
+		// Update global permission to 'admin'
+		datasetManager.updateDatasetGlobal(datasetName, "admin");
 
-    // Update global permission to 'viewer'
-    datasetManager.updateDatasetGlobal(datasetName, 'viewer');
+		// Update global permission to 'viewer'
+		datasetManager.updateDatasetGlobal(datasetName, "viewer");
 
-    // Remove global permissions
-    datasetManager.removeDatasetPermissionsGlobal(datasetName);
+		// Remove global permissions
+		datasetManager.removeDatasetPermissionsGlobal(datasetName);
 
-    datasetManager.clearSearch();
-    datasetManager.deleteDataset(datasetName);
-  });
+		datasetManager.clearSearch();
+		datasetManager.deleteDataset(datasetName);
+	});
 
-  it('PROD-13240, PROD-13235 -> Check permissions, need to be completed manually', () => {
-    connection.connect();
-    const datasetNameAdmin = 'DLOP-PROD-13240-Admin';
-    const datasetNameEditor = 'DLOP-PROD-13240-Editor';
-    const datasetNameViewer = 'DLOP-PROD-13240-Viewer';
+	it("PROD-13240, PROD-13235 -> Check permissions, need to be completed manually", () => {
+		connection.connect();
+		const datasetNameAdmin = "DLOP-PROD-13240-Admin";
+		const datasetNameEditor = "DLOP-PROD-13240-Editor";
+		const datasetNameViewer = "DLOP-PROD-13240-Viewer";
 
-    // Clean in case it's a second try
-    datasetManager.deleteDataset(datasetNameAdmin);
-    datasetManager.deleteDataset(datasetNameEditor);
-    datasetManager.deleteDataset(datasetNameViewer);
-    scenario.deleteScenario(datasetNameAdmin);
-    scenario.deleteScenario(datasetNameEditor);
-    scenario.deleteScenario(datasetNameViewer);
+		// Clean in case it's a second try
+		datasetManager.deleteDataset(datasetNameAdmin);
+		datasetManager.deleteDataset(datasetNameEditor);
+		datasetManager.deleteDataset(datasetNameViewer);
+		scenario.deleteScenario(datasetNameAdmin);
+		scenario.deleteScenario(datasetNameEditor);
+		scenario.deleteScenario(datasetNameViewer);
 
-    connection.navigate('dataset');
+		connection.navigate("dataset");
 
-    // Create the dataset Admin
-    datasetManager.createDatasetLocalFile(datasetNameAdmin, 'A basic reference dataset for brewery model', 'reference');
-    // Share the "admin" permissions with someone
-    datasetManager.shareDatasetWithQATeam(datasetNameAdmin, 'admin');
-    // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
-    datasetManager.overviewDataset(datasetNameAdmin);
+		// Create the dataset Admin
+		datasetManager.createDatasetLocalFile(
+			datasetNameAdmin,
+			"A basic reference dataset for brewery model",
+			"reference",
+		);
+		// Share the "admin" permissions with someone
+		datasetManager.shareDatasetWithQATeam(datasetNameAdmin, "admin");
+		// Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
+		datasetManager.overviewDataset(datasetNameAdmin);
 
-    // Create the dataset Editor
-    datasetManager.createDatasetLocalFile(datasetNameEditor, 'A basic reference dataset for brewery model', 'reference');
-    // Share the "admin" permissions with someone
-    datasetManager.shareDatasetWithQATeam(datasetNameEditor, 'editor');
-    // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
-    datasetManager.overviewDataset(datasetNameEditor);
+		// Create the dataset Editor
+		datasetManager.createDatasetLocalFile(
+			datasetNameEditor,
+			"A basic reference dataset for brewery model",
+			"reference",
+		);
+		// Share the "admin" permissions with someone
+		datasetManager.shareDatasetWithQATeam(datasetNameEditor, "editor");
+		// Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
+		datasetManager.overviewDataset(datasetNameEditor);
 
-    // Create the dataset Viewer
-    datasetManager.createDatasetLocalFile(datasetNameViewer, 'A basic reference dataset for brewery model', 'reference');
-    // Share the "admin" permissions with someone
-    datasetManager.shareDatasetWithQATeam(datasetNameViewer, 'viewer');
-    // Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
-    datasetManager.overviewDataset(datasetNameViewer);
+		// Create the dataset Viewer
+		datasetManager.createDatasetLocalFile(
+			datasetNameViewer,
+			"A basic reference dataset for brewery model",
+			"reference",
+		);
+		// Share the "admin" permissions with someone
+		datasetManager.shareDatasetWithQATeam(datasetNameViewer, "viewer");
+		// Check admin permissions on owned dataset, using the function overview as this check the presence of the button "delete", only available if admin
+		datasetManager.overviewDataset(datasetNameViewer);
 
-    connection.navigate('scenario-view');
-    scenario.createScenario(datasetNameAdmin, 'master', datasetNameAdmin, 'NoParameters');
-    scenario.runScenario(datasetNameAdmin);
-    scenario.shareScenarioWithQATeam(datasetNameAdmin, 'admin');
+		connection.navigate("scenario-view");
+		scenario.createScenario(
+			datasetNameAdmin,
+			"master",
+			datasetNameAdmin,
+			"NoParameters",
+		);
+		scenario.runScenario(datasetNameAdmin);
+		scenario.shareScenarioWithQATeam(datasetNameAdmin, "admin");
 
-    scenario.createScenario(datasetNameEditor, 'master', datasetNameEditor, 'NoParameters');
-    scenario.runScenario(datasetNameEditor);
-    scenario.shareScenarioWithQATeam(datasetNameEditor, 'admin');
+		scenario.createScenario(
+			datasetNameEditor,
+			"master",
+			datasetNameEditor,
+			"NoParameters",
+		);
+		scenario.runScenario(datasetNameEditor);
+		scenario.shareScenarioWithQATeam(datasetNameEditor, "admin");
 
-    scenario.createScenario(datasetNameViewer, 'master', datasetNameViewer, 'NoParameters');
-    scenario.runScenario(datasetNameViewer);
-    scenario.shareScenarioWithQATeam(datasetNameViewer, 'admin');
-    // Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
-  });
+		scenario.createScenario(
+			datasetNameViewer,
+			"master",
+			datasetNameViewer,
+			"NoParameters",
+		);
+		scenario.runScenario(datasetNameViewer);
+		scenario.shareScenarioWithQATeam(datasetNameViewer, "admin");
+		// Scenarios are not deleted, as they have to be manually checked. They will be deleted in the test SC-after.cy.js
+	});
 
-  it('PROD-13235 -> Overwrite Permissions', () => {
-    connection.connect();
-    connection.navigate('dataset');
+	it("PROD-13235 -> Overwrite Permissions", () => {
+		connection.connect();
+		connection.navigate("dataset");
 
-    // Clean in case it's a second try
-    datasetManager.deleteDataset('DLOP-PROD-13235-OverwritePermissions');
-    scenario.deleteScenario('DLOP-PROD-13235-OverwritePermissions');
+		// Clean in case it's a second try
+		datasetManager.deleteDataset("DLOP-PROD-13235-OverwritePermissions");
+		scenario.deleteScenario("DLOP-PROD-13235-OverwritePermissions");
 
-    // Create a dataset with Reference
-    datasetManager.createDatasetLocalFile('DLOP-PROD-13235-OverwritePermissions', 'Check overwrite permissions', 'reference');
-    // Create and run a scenario
-    scenario.createScenario('DLOP-PROD-13235-OverwritePermissions', 'master', 'DLOP-PROD-13235-OverwritePermissions', 'NoParameters');
-    scenario.runScenario('DLOP-PROD-13235-OverwritePermissions');
-    scenario.shareScenarioWithQATeam('DLOP-PROD-13235-OverwritePermissions', 'admin');
+		// Create a dataset with Reference
+		datasetManager.createDatasetLocalFile(
+			"DLOP-PROD-13235-OverwritePermissions",
+			"Check overwrite permissions",
+			"reference",
+		);
+		// Create and run a scenario
+		scenario.createScenario(
+			"DLOP-PROD-13235-OverwritePermissions",
+			"master",
+			"DLOP-PROD-13235-OverwritePermissions",
+			"NoParameters",
+		);
+		scenario.runScenario("DLOP-PROD-13235-OverwritePermissions");
+		scenario.shareScenarioWithQATeam(
+			"DLOP-PROD-13235-OverwritePermissions",
+			"admin",
+		);
 
-    // Update global permissions to "viewer" while the permissions for the tester are set to "Admin"
-    datasetManager.updateDatasetGlobal('DLOP-PROD-13235-OverwritePermissions', 'viewer');
-    cy.wait(1000);
-    datasetManager.shareDatasetWithQATeam('DLOP-PROD-13235-OverwritePermissions', 'admin');
-    cy.wait(3000);
+		// Update global permissions to "viewer" while the permissions for the tester are set to "Admin"
+		datasetManager.updateDatasetGlobal(
+			"DLOP-PROD-13235-OverwritePermissions",
+			"viewer",
+		);
+		cy.wait(1000);
+		datasetManager.shareDatasetWithQATeam(
+			"DLOP-PROD-13235-OverwritePermissions",
+			"admin",
+		);
+		cy.wait(3000);
 
-    // No deletion of the dataset, as manually checks are needed
-  });
+		// No deletion of the dataset, as manually checks are needed
+	});
 
-  it("PROD-13236 -> Check user with no permission can't see a dataset", () => {
-    connection.connect();
-    connection.navigate('dataset');
+	it("PROD-13236 -> Check user with no permission can't see a dataset", () => {
+		connection.connect();
+		connection.navigate("dataset");
 
-    // Clean in case it's a second try
-    datasetManager.deleteDataset('DLOP-PROD-13236-NoPermissions');
+		// Clean in case it's a second try
+		datasetManager.deleteDataset("DLOP-PROD-13236-NoPermissions");
 
-    // Create a dataset with Reference
-    datasetManager.createDatasetLocalFile('DLOP-PROD-13236-NoPermissions', 'Check user can not see a non shared dataset', 'reference');
+		// Create a dataset with Reference
+		datasetManager.createDatasetLocalFile(
+			"DLOP-PROD-13236-NoPermissions",
+			"Check user can not see a non shared dataset",
+			"reference",
+		);
 
-    // Set permissions for the tester to "Admin" then remove the permissions
-    datasetManager.shareDatasetWithQATeam('DLOP-PROD-13236-NoPermissions', 'admin');
-    cy.wait(1000);
-    datasetManager.removeDatasetPermissionsUser('DLOP-PROD-13236-NoPermissions', config.permissionUserEmail(), config.permissionUserName());
+		// Set permissions for the tester to "Admin" then remove the permissions
+		datasetManager.shareDatasetWithQATeam(
+			"DLOP-PROD-13236-NoPermissions",
+			"admin",
+		);
+		cy.wait(1000);
+		datasetManager.removeDatasetPermissionsUser(
+			"DLOP-PROD-13236-NoPermissions",
+			config.permissionUserEmail(),
+			config.permissionUserName(),
+		);
 
-    // No deletion of the dataset, as manually checks are needed
-  });
+		// No deletion of the dataset, as manually checks are needed
+	});
 });
